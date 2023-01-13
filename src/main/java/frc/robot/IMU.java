@@ -33,9 +33,9 @@ public class IMU {
                 imutab.addNumber("internal_pitch", () -> ahrs.getPitch());
                 imutab.addNumber("internal_yaw", () -> ahrs.getYaw());
 
-                imutab.addNumber("x", () -> cx);
-                imutab.addNumber("y", () -> cy);
-                imutab.addNumber("z", () -> cz);
+                imutab.addNumber("x", () -> (cx%360));
+                imutab.addNumber("y", () -> (cy%360));
+                imutab.addNumber("z", () -> (cz%360));
         }
 
         public synchronized void periodic() {
@@ -47,6 +47,7 @@ public class IMU {
 
                 pt = t;
 
+                if (ahrs.isCalibrating()) cal_starttime = t;
                 if (isCalibrating()) {
                         cal_x += ahrs.getRawGyroX();
                         cal_y += ahrs.getRawGyroY();
@@ -67,7 +68,7 @@ public class IMU {
         }
 
         public synchronized boolean isCalibrating() {
-                return Timer.getFPGATimestamp() < cal_starttime + 2;
+                return Timer.getFPGATimestamp() < cal_starttime + 5;
         }
 
         public synchronized void zeroX() { cx = 0; }

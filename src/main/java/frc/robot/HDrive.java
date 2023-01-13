@@ -19,18 +19,4 @@ public class HDrive {
                 top_rgt.set(vr);
                 bot_rgt.set(vr);
         }
-        public void FODrive(double vx, double vy, double omega, double angle){
-                double vl, vr, vm, fm,sm;
-                fm = Math.sin(angle)*vy+Math.cos(angle)*vy;
-                sm = Math.cos(angle)*vy+Math.sin(angle)*vy;
-                vl = fm - omega;
-                vr = fm + omega;
-                vm = sm;
-                
-                bot_lef.set(vl);
-                top_lef.set(vl);
-                mid.set(vm);
-                top_rgt.set(vr);
-                bot_rgt.set(vr);
-        }
 }

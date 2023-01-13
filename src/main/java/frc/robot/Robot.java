@@ -4,6 +4,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -11,19 +12,20 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class Robot extends TimedRobot {
-        //Joystick left_js = new Joystick(1);
-        //Joystick right_js = new Joystick(0);
+        Joystick left_js = new Joystick(1);
+        Joystick right_js = new Joystick(0);
 
-        //HDrive hdrive = new HDrive();
+        HDrive hdrive = new HDrive();
         ShuffleboardTab camtab = Shuffleboard.getTab("Camera");
 
-        PhotonCamera cam = new PhotonCamera("TopCamera");
-        PhotonPipelineResult res;
+        //PhotonCamera cam = new PhotonCamera("TopCamera");
+        //PhotonPipelineResult res;
 
-        IMU imu;
+        IMU imu = new IMU();
 
         @Override
         public void robotInit() {
+                /*
                 camtab.addNumber("cam_last_timestamp", () -> res.getTimestampSeconds());
                 camtab.addNumber("latency", () -> res.getLatencyMillis());
                 camtab.addBoolean("has_target", () -> res.hasTargets());
@@ -60,6 +62,7 @@ public class Robot extends TimedRobot {
                         }
                         else return new double[0];
                 });
+                */
                 imu.init();
         }
 
@@ -69,13 +72,20 @@ public class Robot extends TimedRobot {
 
         @Override
         public void robotPeriodic() {
-                res = cam.getLatestResult();
+                //res = cam.getLatestResult();
                 imu.periodic();
         }
 
         @Override
         public void teleopPeriodic() {
+                double vf = -left_js.getY();
+                double vs = -left_js.getX();
+                double omega = right_js.getX();
+                double robot_angle = imu.getY();
+                double vx = vf * Math.cos(robot_angle*Math.PI/180) - vs * Math.sin(robot_angle*Math.PI/180);
+                double vy = vf * Math.sin(robot_angle*Math.PI/180) + vs * Math.cos(robot_angle*Math.PI/180);
                 // robot centric drive
                 //hdrive.drive(-left_js.getY(), left_js.getX(), -right_js.getX());
+                hdrive.drive(-vx,vy,-omega);
         }
 }
