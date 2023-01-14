@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -39,8 +38,8 @@ public class Robot extends TimedRobot {
 
         @Override
         public void robotInit() {
-                taglocs.put(1, new Transform2d(new Translation2d(0, 0), new Rotation2d(Math.PI/2)));
-                taglocs.put(2, new Transform2d(new Translation2d(1.75, 0), new Rotation2d(Math.PI/2)));
+                taglocs.put(1, new Transform2d(new Translation2d(0, 0), new Rotation2d(0)));
+                taglocs.put(2, new Transform2d(new Translation2d(0, -1.75), new Rotation2d(0)));
 
                 camtab.addNumber("cam_last_timestamp", () -> last_time);
                 camtab.addNumber("latency", () -> ping);
@@ -108,10 +107,14 @@ public class Robot extends TimedRobot {
                                 target_ids.add(target.getFiducialId());
                                 Transform2d trans = three_to_two(target.getBestCameraToTarget());
                                 target_loc.add(trans);
-                                // PLUS is matrix multiplication wtf
-                                // in the wrong direction
+                                // let A,B be transforms
+                                // A+B = BA // wpilib be weird ikr and you can't do reflections either
+                                // we need to find Tcam_tag Ttag_field
+                                // = Ttag_field + Tcam_tag
                                 if(taglocs.containsKey(target.getFiducialId()))
-                                        predicted_pose.add(trans.inverse().plus(taglocs.get(target.getFiducialId())));
+                                        predicted_pose.add(
+                                                taglocs.get(target.getFiducialId()).plus(trans.inverse())
+                                        );
                         }
                 }
                 if(predicted_pose.size()>0)
