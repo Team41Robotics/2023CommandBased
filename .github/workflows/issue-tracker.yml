@@ -4,6 +4,7 @@ on:
     types: [opened, reopened, closed]
   pull_request_review_comment:
     types: [created]
+  push:
 jobs:
   notify:
     runs-on: ubuntu-latest
