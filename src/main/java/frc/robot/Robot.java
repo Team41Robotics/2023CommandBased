@@ -12,26 +12,20 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class Robot extends TimedRobot {
-        Joystick left_js = new Joystick(1);
-        Joystick right_js = new Joystick(0);
-        boolean FOD = false;
-
         HDrive hdrive = new HDrive();
         ShuffleboardTab camtab = Shuffleboard.getTab("Camera");
         ShuffleboardTab imutab = Shuffleboard.getTab("Inertial");
 
         PhotonCamera cam = new PhotonCamera("TopCamera");
 
-        AHRS imu = new AHRS();
+        public static AHRS imu = new AHRS();
 
         HashMap<Integer, Transform2d> taglocs = new HashMap<>();
         Field2d field = new Field2d();
@@ -105,7 +99,7 @@ public class Robot extends TimedRobot {
                 if(res.hasTargets()) {
                         for (PhotonTrackedTarget target: res.getTargets()) {
                                 target_ids.add(target.getFiducialId());
-                                Transform2d trans = three_to_two(target.getBestCameraToTarget());
+                                Transform2d trans = Util.transformThreeToTwo(target.getBestCameraToTarget());
                                 target_loc.add(trans);
                                 // let A,B be transforms
                                 // A+B = BA // wpilib be weird ikr and you can't do reflections either
@@ -123,10 +117,6 @@ public class Robot extends TimedRobot {
                 last_time = time;
         }
 
-        public Transform2d three_to_two(Transform3d three) {
-                return new Transform2d(three.getTranslation().toTranslation2d(), three.getRotation().toRotation2d());
-        }
-
         @Override
         public void robotPeriodic() {
                 processAprilTags();
@@ -134,29 +124,6 @@ public class Robot extends TimedRobot {
 
         @Override
         public void teleopPeriodic() {
-                double vf = -deadZone(left_js.getY());
-                double vs = -deadZone(left_js.getX());
-                double omega = deadZone(right_js.getX());
-
-                if(Math.abs(omega) < 0.5) omega=0;
-
-                double robot_angle = imu.getYaw();
-                double vx = vf * Math.cos(robot_angle*Math.PI/180) - vs * Math.sin(robot_angle*Math.PI/180);
-                double vy = vf * Math.sin(robot_angle*Math.PI/180) + vs * Math.cos(robot_angle*Math.PI/180);
-
-                if(right_js.getRawButtonPressed(2)) FOD = !FOD;
-                if(left_js.getRawButton(2)) imu.zeroYaw();
-
-                if(left_js.getRawButton(1))
-                        hdrive.drive(0.5 * Math.signum(imu.getPitch())*Math.sqrt(Math.abs(imu.getPitch() / 15)),0,0);
-                else if(FOD) 
-                        hdrive.drive(-vx, vy,-omega);
-                else
-                        hdrive.drive(vf, -vs, -omega);
-        }
-
-
-        private double deadZone(double joystickAxis){
-                return ((Math.abs(joystickAxis)>0.2)?joystickAxis:0);
+                hdrive.teleopPeriodic();
         }
 }
