@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
                 robot_pose = apriltags_pose.plus(odom.delta(last_time));
         }
 
-        double target_angle = 0;
+        double target_angle = 0; // FIXME change
         double target_x = 1;
         double target_y = -0.1;
         double aut_x = 0;
