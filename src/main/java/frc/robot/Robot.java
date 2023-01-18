@@ -6,7 +6,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import com.kauailabs.navx.IMUProtocol.YPRUpdate;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +14,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
+// NOTE: A+B = BA;
+// NOTE2: BE CAREFUL WITH ROTATION WRAPPING !!!!!!
 
 public class Robot extends TimedRobot {
         HDrive hdrive = new HDrive();
@@ -44,9 +46,6 @@ public class Robot extends TimedRobot {
                 imutab.addNumber("pitch", () -> imu.getPitch());
                 imutab.addNumber("yaw", () -> imu.getYaw());
 
-                imutab.addNumber("X", () -> imu.getRawAccelX());
-                imutab.addNumber("Y", () -> imu.getRawAccelY());
-                imutab.addNumber("Z", () -> imu.getRawAccelZ());
                 auttab.addNumber("X", () -> aut_x);
                 auttab.addNumber("Y", () -> aut_y);
                 auttab.addNumber("w", () -> aut_omega);
@@ -77,10 +76,6 @@ public class Robot extends TimedRobot {
                                         transl=transl.plus(pose.getTranslation().times(1/ambiguity));
                                         totAmbiguity += 1/ambiguity;
                                 }
-                                // let A,B be transforms
-                                // A+B = BA // wpilib be weird ikr and you can't do reflections either
-                                // we need to find Tcam_tag Ttag_field
-                                // = Ttag_field + Tcam_tag
                         }
                         rot /= totAmbiguity;
                         transl = transl.div(totAmbiguity);
@@ -90,13 +85,12 @@ public class Robot extends TimedRobot {
 
         @Override
         public void robotPeriodic() {
-                System.out.println("robotperiodic");
                 processAprilTags();
                 odom.robotPeriodic();
                 robot_pose = apriltags_pose.plus(odom.delta(last_time));
         }
 
-        double target_angle = 0; // FIXME change
+        double target_angle = 180; // FIXME change // should be fixed now (?)
         double target_x = 1;
         double target_y = -0.1;
         double aut_x = 0;
@@ -104,7 +98,6 @@ public class Robot extends TimedRobot {
         double aut_omega = 0;
         @Override
         public void teleopPeriodic() {
-                System.out.println("teleopperiodic");
                 //hdrive.teleopPeriodic();
                 double vx, vy, omega;
                 aut_x=vx = robot_pose.getX() - target_x;
@@ -112,15 +105,9 @@ public class Robot extends TimedRobot {
                 vx *= 1.5;
                 vy *= 1.5;
                 double delta = robot_pose.getRotation().getDegrees() - target_angle;
-                delta %= 360;
-                delta += 360;
-                delta %= 360;
-                if(delta > 180) delta = 360-delta;
+                delta = Util.normRot(delta * Math.PI/180) * 180/Math.PI;
                 System.out.println("delta = " + delta);
                 aut_omega = omega = -delta / 90;
-                //hdrive.vl = vx;
-                //hdrive.vr = vy;
-                //hdrive.vm = omega;
                 if(DS.getLTrig())hdrive.FODdrive(vx, vy, omega);
                 else hdrive.teleopPeriodic();
         }

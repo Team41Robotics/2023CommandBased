@@ -21,7 +21,7 @@ public class Odom {
         public void robotPeriodic() {
                 double t = Timer.getFPGATimestamp();
                 double dt = t - pt;
-                // fake odom with navx
+                // fake odom with navx // FIXME do real odom ; current not used
                 double vx = Robot.imu.getVelocityX();
                 double vy = Robot.imu.getVelocityY();
                 double theta = Robot.imu.getAngle() / 180 * Math.PI;
@@ -29,9 +29,8 @@ public class Odom {
                 ptheta = theta;
 
                 Translation2d transl = new Translation2d(vx * dt, vy * dt);
-                transl = transl.rotateBy(new Rotation2d(dtheta));
 
-                Transform2d trans = new Transform2d(transl, new Rotation2d());
+                Transform2d trans = new Transform2d(transl, new Rotation2d(dtheta));
                 odom.add(now().plus(trans));
                 odom_times.add(Timer.getFPGATimestamp());
                 pt = t;
