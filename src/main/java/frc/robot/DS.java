@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.Joystick;
 public class DS {
         public static Joystick left_js = new Joystick(1);
         public static Joystick right_js = new Joystick(0);
+        // X + when back
+        // Y + when right
         
         public static double getLX() {return left_js.getX();}
         public static double getLY() {return left_js.getY();}

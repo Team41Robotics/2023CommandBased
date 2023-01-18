@@ -16,6 +16,7 @@ public class HDrive {
                 dttab.addNumber("vl",()->vl);
                 dttab.addNumber("vr",()->vr);
                 dttab.addNumber("vm",()->vm);
+                dttab.addBoolean("FOD",()->FOD);
         }
 
         double vl, vr, vm;
@@ -26,16 +27,24 @@ public class HDrive {
 
                 bot_lef.set(vl);
                 top_lef.set(vl);
-                mid.set(vm);
+                mid.set(-vm);
                 top_rgt.set(vr);
                 bot_rgt.set(vr);
+        }
+
+        public void FODdrive(double vf, double vs, double omega) {
+                double robot_angle = Robot.imu.getYaw();
+                double vx = vf * Math.cos(robot_angle*Math.PI/180) - vs * Math.sin(robot_angle*Math.PI/180);
+                double vy = vf * Math.sin(robot_angle*Math.PI/180) + vs * Math.cos(robot_angle*Math.PI/180);
+
+                drive(vx, vy, omega);
         }
 
         boolean FOD = false;
         public void teleopPeriodic() {
                 double vf = -Util.deadZone(DS.getLY());
                 double vs = -Util.deadZone(DS.getLX());
-                double omega = Util.deadZone(DS.getRX());
+                double omega = -Util.deadZone(DS.getRX());
 
                 if(Math.abs(omega) < 0.5) omega=0;
 
@@ -49,8 +58,8 @@ public class HDrive {
                 if(DS.getLTrig()) // janky; FIXME later
                         drive(0.5 * Math.signum(Robot.imu.getPitch())*Math.sqrt(Math.abs(Robot.imu.getPitch() / 15)),0,0);
                 else if(FOD) 
-                        drive(-vx, vy,-omega);
+                        drive(vx, vy, omega);
                 else
-                        drive(vf, -vs, -omega);
+                        drive(vf, vs, omega);
         }
 }
