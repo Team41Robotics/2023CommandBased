@@ -91,8 +91,8 @@ public class Robot extends TimedRobot {
         }
 
         double target_angle = 180; // FIXME change // should be fixed now (?)
-        double target_x = 1;
-        double target_y = -0.1;
+        double target_x = 2;
+        double target_y = -1;
         double aut_x = 0;
         double aut_y = 0;
         double aut_omega = 0;
@@ -107,8 +107,10 @@ public class Robot extends TimedRobot {
                 double delta = robot_pose.getRotation().getDegrees() - target_angle;
                 delta = Util.normRot(delta * Math.PI/180) * 180/Math.PI;
                 System.out.println("delta = " + delta);
-                aut_omega = omega = -delta / 90;
-                if(DS.getLTrig())hdrive.FODdrive(vx, vy, omega);
+                aut_omega = omega = -delta / 45;
+                if(DS.getRTrig())hdrive.FODdrive(vx, vy, 0);
+                else if(DS.right_js.getRawButton(2))hdrive.FODdrive(0, 0, omega);
+                //else if(DS.getRTrig())hdrive.FODdrive(0, 0, omega);
                 else hdrive.teleopPeriodic();
         }
 }

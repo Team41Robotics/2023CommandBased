@@ -26,6 +26,8 @@ public class Util {
         }
         public static double normRot(double rad) {
                 rad %= 2*Math.PI;
+                rad += 2*Math.PI;
+                rad %= 2*Math.PI;
                 if(rad > Math.PI) rad -= 2*Math.PI;
                 return rad;
         }
