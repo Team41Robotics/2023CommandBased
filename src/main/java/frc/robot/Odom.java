@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 
+// FIXME UNTESTED
 public class Odom {
         ArrayList<Double> odom_times = new ArrayList<>();
         ArrayList<Transform2d> odom = new ArrayList<>();
@@ -17,7 +18,7 @@ public class Odom {
         }
 
         double pt = Timer.getFPGATimestamp();
-        double ptheta = Robot.imu.getYaw();
+        double ptheta = Robot.getYaw();
         public void robotPeriodic() {
                 double t = Timer.getFPGATimestamp();
                 double dt = t - pt;
