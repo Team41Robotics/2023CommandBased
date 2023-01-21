@@ -1,8 +1,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 
-public class PIDController {
+public class PIDController implements Sendable {
         double kP, kI, kD;
         double I_thres;
 
@@ -11,6 +13,20 @@ public class PIDController {
                 this.kI = kI;
                 this.kD = kD;
                 this.I_thres = I_thres;
+        }
+
+        public double getkP() { return kP; }
+        public double getkI() { return kI; }
+        public double getkD() { return kD; }
+        public void setkP(double kP) { this.kP = kP; }
+        public void setkI(double kI) { this.kI = kI; }
+        public void setkD(double kD) { this.kD = kD; }
+
+        public void initSendable(SendableBuilder builder) {
+                builder.setSmartDashboardType("PIDController");
+                builder.addDoubleProperty("p", this::getkP, this::setkP);
+                builder.addDoubleProperty("i", this::getkI, this::setkI);
+                builder.addDoubleProperty("d", this::getkD, this::setkD);
         }
 
         double perror=0;
