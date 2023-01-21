@@ -12,7 +12,8 @@ public class DS {
         public static double getLY() {return left_js.getY();}
         public static double getRX() {return right_js.getX();}
         public static double getRY() {return right_js.getY();}
-
+        public static boolean getLThumb() {return left_js.getRawButton(2);}
+        public static boolean getRThumb() {return right_js.getRawButton(2);}
         public static boolean getLTrig() {return left_js.getRawButton(1);}
         public static boolean getRTrig() {return right_js.getRawButton(1);}
 }
