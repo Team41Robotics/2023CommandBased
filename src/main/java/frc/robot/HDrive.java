@@ -35,8 +35,8 @@ public class HDrive {
 
         double vl, vr, vm;
         public void drive(double vx, double vy, double omega) {
-                vl = vx + omega;
-                vr = vx - omega;
+                vl = -vx + omega;
+                vr = -vx - omega;
                 vm = vy;
 
                 bot_lef.set(vl);
