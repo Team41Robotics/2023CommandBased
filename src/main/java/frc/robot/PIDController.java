@@ -19,7 +19,6 @@ public class PIDController implements Sendable {
         public void setkP(double kP) { this.kP = kP; }
         public void setkI(double kI) { this.kI = kI; }
         public void setkD(double kD) { this.kD = kD; }
-
         public void initSendable(SendableBuilder builder) {
                 builder.setSmartDashboardType("PIDController");
                 builder.addDoubleProperty("p", this::getkP, this::setkP);
