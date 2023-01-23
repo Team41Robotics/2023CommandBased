@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class IMU {
-        public AHRS ahrs = new AHRS();
+        private AHRS ahrs = new AHRS();
         public double yawOffset = 0;
         ShuffleboardTab imutab = Shuffleboard.getTab("Inertial");
 
