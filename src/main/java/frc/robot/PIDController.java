@@ -5,7 +5,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
 public class PIDController implements Sendable {
-        double kP, kI, kD;
+        private double kP, kI, kD;
         double I_thres;
 
         public PIDController(double kP, double kI, double kD, double I_thres) {
