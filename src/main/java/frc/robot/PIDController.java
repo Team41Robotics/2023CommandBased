@@ -13,7 +13,6 @@ public class PIDController implements Sendable {
                 this.kD = kD;
                 this.I_thres = I_thres;
         }
-
         public double getkP() { return kP; }
         public double getkI() { return kI; }
         public double getkD() { return kD; }
