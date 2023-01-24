@@ -20,7 +20,11 @@ public class GoTo extends CommandBase {
                 addRequirements(drive);
                 leftjs = Robot.leftjs;
                 rightjs = Robot.rightjs;
+                // BE WARY: MIGHT NOT WORK; PROLY SHOULD DIY
                 wPID.enableContinuousInput(-Math.PI, Math.PI);
+                // WHAT THIS DOES: the integral control output is limited to [min, max]
+                // PROBABLY NOT IDEAL; MIGHT WANT TO HACK LOL
+                // HACK: if error>delta: max=min=0 then calculate
                 wPID.setIntegratorRange(-10/180.*Math.PI, 10/180.*Math.PI);
                 xPID.setIntegratorRange(-0.1, 0.1);
                 yPID.setIntegratorRange(-0.1, 0.1);
