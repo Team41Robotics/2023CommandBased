@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
@@ -21,6 +22,7 @@ public class Robot extends TimedRobot {
         HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
         public boolean FOD;
         OdomSubsystem odom = OdomSubsystem.getInstance();
+        //PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 
         @Override
         public void robotInit() {
@@ -58,7 +60,14 @@ public class Robot extends TimedRobot {
 
         public void configureButtons() {
                 new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-                new JoystickButton(leftjs, 1).onTrue(new GoTo(new Matrix2d()));
-                new JoystickButton(rightjs, 1).onTrue(new GoTo(new Matrix2d(0.5,0.5,Math.PI)));
+                new JoystickButton(leftjs, 1).onTrue(new GoTo(Matrix.create(2,4,0)));
+                //OUTDATED
+                new JoystickButton(rightjs, 1).onTrue(
+                        new SequentialCommandGroup(
+                                new GoTo(Matrix.create(0.5,0.5,Math.PI)),
+                                new GoTo(Matrix.create(-0.5,0.5,Math.PI/2)),
+                                new GoTo(Matrix.create(0,0,0))
+                        ).repeatedly().until(() -> rightjs.getRawButtonPressed(2))
+                );
         }
 }
