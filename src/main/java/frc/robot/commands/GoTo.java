@@ -1,10 +1,10 @@
 package frc.robot.commands;
 
-import frc.robot.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
+import frc.robot.Transform2d;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 
@@ -13,8 +13,8 @@ public class GoTo extends CommandBase {
         HDriveSubsystem drive = HDriveSubsystem.getInstance();
         OdomSubsystem odom = OdomSubsystem.getInstance();
 
-        Matrix target;
-        public GoTo(Matrix target) {
+        Transform2d target;
+        public GoTo(Transform2d target) {
                 this.target = target;
                 addRequirements(drive);
                 leftjs = Robot.leftjs;
@@ -24,7 +24,7 @@ public class GoTo extends CommandBase {
 
         PIDController xPID = new PIDController(7,0,0);
         PIDController yPID = new PIDController(7,0,0);
-        PIDController wPID = new PIDController(7,0,0);
+        PIDController wPID = new PIDController(6,0,1);
 
         @Override
         public void initialize() {
@@ -35,24 +35,22 @@ public class GoTo extends CommandBase {
 
         @Override
         public void execute() {
-                if(Math.abs(xPID.getPositionError()) < 0.1) xPID.setI(0);
-                if(Math.abs(yPID.getPositionError()) < 0.1) yPID.setI(0);
-                if(Math.abs(wPID.getPositionError()) < 10*Math.PI/180) wPID.setI(0);
+                if(Math.abs(xPID.getPositionError()) < 0.1) xPID.setI(0.5);
+                if(Math.abs(yPID.getPositionError()) < 0.1) yPID.setI(0.5);
+                if(Math.abs(wPID.getPositionError()) < 10*Math.PI/180) wPID.setI(0.5);
 
-                double vf = xPID.calculate(odom.now().getX(), target.getX());
-                double vs = yPID.calculate(odom.now().getY(), target.getY());
+                double vx = xPID.calculate(odom.now().getX(), target.getX());
+                double vy = yPID.calculate(odom.now().getY(), target.getY());
                 double w = wPID.calculate(odom.now().getTheta(), target.getTheta());
 
-                double robot_angle = Robot.imu.getYaw();
-                double vx =  Math.cos(robot_angle) * vf + Math.sin(robot_angle) * vs;
-                double vy = -Math.sin(robot_angle) * vf + Math.cos(robot_angle) * vs;
-                drive.drive(vx, vy, w);
-                //System.out.println("x: " + tgt_in_robot.getX() + " y: " + tgt_in_robot.getY() + " theta: " + tgt_in_robot.getTheta()*180/Math.PI);
-                //System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
+                double robot_angle = odom.now().getTheta();
+                double vf =  Math.cos(robot_angle) * vx + Math.sin(robot_angle) * vy;
+                double vs = -Math.sin(robot_angle) * vx + Math.cos(robot_angle) * vy;
+                drive.drive(vf, vs, w);
         }
         public boolean isFinished() {
                 return Math.abs(odom.now().getX() - target.getX())<=0.03
                         && Math.abs(odom.now().getY() - target.getY())<=0.03
-                        && Math.abs(odom.now().getTheta() - target.getTheta())<=10/180.*Math.PI;
+                        && Math.abs(odom.now().getTheta() - target.getTheta())<=4/180.*Math.PI;
         }
 }

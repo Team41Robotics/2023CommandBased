@@ -4,26 +4,6 @@ public class Matrix {
         int n, m;
         double[][] mat;
 
-        public static Matrix create(double x, double y, double theta) {
-                double ct = Math.cos(theta);
-                double st = Math.sin(theta);
-                return new Matrix(new double[][] {
-                        {ct, -st, x},
-                        {st, ct, y},
-                        {0, 0, 1}
-                });
-        }
-
-        public double getX() {
-                return mat[0][2];
-        }
-        public double getY() {
-                return mat[1][2];
-        }
-        public double getTheta() {
-                return Math.atan2(mat[1][0], mat[0][0]);
-        }
-        
         public Matrix(double[][] mat) {
                 this.n = mat.length;
                 this.m = mat[0].length;

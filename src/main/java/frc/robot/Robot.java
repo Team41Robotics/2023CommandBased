@@ -60,13 +60,14 @@ public class Robot extends TimedRobot {
 
         public void configureButtons() {
                 new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-                new JoystickButton(leftjs, 1).onTrue(new GoTo(Matrix.create(2,4,0)));
+                new JoystickButton(leftjs, 1).onTrue(new GoTo(new Transform2d(2,3,Math.PI/2))
+                        .until(() -> rightjs.getRawButtonPressed(2)));
                 //OUTDATED
                 new JoystickButton(rightjs, 1).onTrue(
                         new SequentialCommandGroup(
-                                new GoTo(Matrix.create(0.5,0.5,Math.PI)),
-                                new GoTo(Matrix.create(-0.5,0.5,Math.PI/2)),
-                                new GoTo(Matrix.create(0,0,0))
+                                new GoTo(new Transform2d(0.5,0.5,Math.PI)),
+                                new GoTo(new Transform2d(-0.5,0.5,Math.PI/2)),
+                                new GoTo(new Transform2d(0,0,0))
                         ).repeatedly().until(() -> rightjs.getRawButtonPressed(2))
                 );
         }

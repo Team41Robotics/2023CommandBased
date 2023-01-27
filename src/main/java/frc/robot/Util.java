@@ -5,7 +5,7 @@ public class Util {
                 return Math.abs(joystickAxis) > 0.2 ? joystickAxis : 0;
         }
 
-        public static Matrix interpolate(Matrix a, Matrix b, double alpha) {
+        public static Transform2d interpolate(Transform2d a, Transform2d b, double alpha) {
                 // linear interpolate; (1-alpha) a + alpha b
                 double ra = a.getTheta();
                 double rb = b.getTheta();
@@ -16,7 +16,7 @@ public class Util {
                 //Translation2d to = ta.times(1 - alpha).plus(tb.times(alpha));
                 double tx = a.getX() + b.getX();
                 double ty = a.getY() + b.getY();
-                return Matrix.create(tx,ty,ro);
+                return new Transform2d(tx,ty,ro);
         }
 
         public static double normRot(double rad) {

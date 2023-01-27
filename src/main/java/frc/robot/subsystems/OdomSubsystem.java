@@ -6,13 +6,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Matrix;
 import frc.robot.Robot;
+import frc.robot.Transform2d;
+import frc.robot.Util;
 
 public class OdomSubsystem extends SubsystemBase {
         ArrayList<Double> times = new ArrayList<>();
-        ArrayList<Matrix> odoms = new ArrayList<>();
-        Matrix odom_origin = Matrix.create(2, 3, Math.PI/2);
+        ArrayList<Transform2d> odoms = new ArrayList<>();
+        Transform2d odom_origin = new Transform2d(2, 3, Math.PI/2);
 
         static OdomSubsystem odom;
 
@@ -20,6 +21,8 @@ public class OdomSubsystem extends SubsystemBase {
         HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
 
         public OdomSubsystem() {
+                times.ensureCapacity(7000);
+                odoms.ensureCapacity(7000);
                 odomstab.addNumber("x", () -> now().getX());
                 odomstab.addNumber("y", () -> now().getY());
                 odomstab.addNumber("theta", () -> now().getTheta());
@@ -29,7 +32,7 @@ public class OdomSubsystem extends SubsystemBase {
                 odomstab.addNumber("Mx", () -> odoms.get(odoms.size() - 1).getX());
                 odomstab.addNumber("My", () -> odoms.get(odoms.size() - 1).getY());
                 odomstab.addNumber("Mtheta", () -> odoms.get(odoms.size() - 1).getTheta());
-                odoms.add(Matrix.create(0,0,0));
+                odoms.add(new Transform2d(0,0,0));
                 times.add(Timer.getFPGATimestamp());
         }
 
@@ -43,6 +46,7 @@ public class OdomSubsystem extends SubsystemBase {
         double pl_enc = hdrive.lef_enc.getDistance();
         double pm_enc = hdrive.rgt_enc.getDistance();
         double pr_enc = hdrive.mid_enc.getDistance();
+
         @Override
         public void periodic() {
                 if(!isStarted) return;
@@ -62,7 +66,7 @@ public class OdomSubsystem extends SubsystemBase {
                 double df = (dl + dr) / 2;
 
                 double dx, dy;
-                if(dtheta < 1e9) {
+                if(dtheta < 1e-9) {
                         dx = df; dy = ds;
                 }
                 else {
@@ -70,18 +74,20 @@ public class OdomSubsystem extends SubsystemBase {
                         dy = (1-Math.cos(dtheta))/dtheta * df + Math.sin(dtheta)/dtheta     * ds;
                 }
 
-                Matrix trans = Matrix.create(dx,dy,dtheta);
+                System.out.println("dx " + dx + " dy " + dy);
+
+                Transform2d trans = new Transform2d(dx,dy,dtheta);
                 odoms.add(trans.mul(odoms.get(odoms.size() - 1)));
                 times.add(Timer.getFPGATimestamp());
         }
 
-        public Matrix now() {
+        public Transform2d now() {
                 //return odoms.get(odoms.size() - 1);
                 return odom_origin.mul(odoms.get(odoms.size()-1));
         }
 
-        public Matrix get(double time) {
-                if(times.size() == 0) return Matrix.create(0,0,0);
+        public Transform2d get(double time) {
+                if(times.size() == 0) return new Transform2d(0,0,0);
                 // binary search on nearest odoms measurement and interpolate
                 int l = 0;
                 int r = times.size()-1;
@@ -93,23 +99,22 @@ public class OdomSubsystem extends SubsystemBase {
                 // r is the index of the odoms measurement that is after time
                 l = r-1;
                 if(l<0) return odoms.get(0);
-                Matrix left = odoms.get(l);
-                Matrix right = odoms.get(r);
+                Transform2d left = odoms.get(l);
+                Transform2d right = odoms.get(r);
                 double ltime = times.get(l);
                 double rtime = times.get(r);
-                return null;
-                //return odom_origin.mul(Util.interpolate(left, right, (time - ltime) / (rtime - ltime)));
+                return odom_origin.mul(Util.interpolate(left, right, (time - ltime) / (rtime - ltime)));
         }
 
-        public Matrix delta(double time) {
+        public Transform2d delta(double time) {
                 // now is Tn... T3 T2 T1 T0
                 // get(x) Tx... T3 T2 T1 T0
                 // we want now * get(x)inv
                 return now().mul(get(time).inv());
         }
 
-        public void update_from(Matrix pose, double time) {
-                //Matrix2d acc = odom_origin.inverse().mul(get(time));
+        public void update_from(Transform2d pose, double time) {
+                //Transform2d2d acc = odom_origin.inverse().mul(get(time));
                 //odom_origin = acc.inverse().mul(pose);
         }
 
