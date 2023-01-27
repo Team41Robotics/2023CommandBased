@@ -7,25 +7,25 @@ import frc.robot.Util;
 import frc.robot.subsystems.HDriveSubsystem;
 
 public class Drive extends CommandBase {
-        Joystick leftjs, rightjs;
-        HDriveSubsystem drive = HDriveSubsystem.getInstance();
+    Joystick leftjs, rightjs;
+    HDriveSubsystem drive = HDriveSubsystem.getInstance();
 
-        public Drive() {
-                addRequirements(drive);
-                leftjs = Robot.leftjs;
-                rightjs = Robot.rightjs;
-        }
+    public Drive() {
+        addRequirements(drive);
+        leftjs = Robot.leftjs;
+        rightjs = Robot.rightjs;
+    }
 
-        @Override
-        public void execute() {
-                double vf = -Util.deadZone(leftjs.getY());
-                double vs = -Util.deadZone(leftjs.getX());
-                double w = -Util.deadZone(rightjs.getX());
-                drive.drive(vf, vs, w);
-        }
+    @Override
+    public void execute() {
+        double vf = -Util.deadZone(leftjs.getY());
+        double vs = -Util.deadZone(leftjs.getX());
+        double w = -Util.deadZone(rightjs.getX());
+        drive.drive(vf, vs, w);
+    }
 
-        @Override
-        public boolean isFinished() {
-                return true;
-        }
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

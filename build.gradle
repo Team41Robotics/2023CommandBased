@@ -122,7 +122,7 @@ spotless {
         googleJavaFormat()
         removeUnusedImports()
         indentWithTabs(2)
-        indentWithSpaces(8)
+        indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }

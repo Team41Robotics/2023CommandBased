@@ -1,45 +1,51 @@
 package frc.robot;
 
-public class Transform2d extends Matrix {
-        public Transform2d() {
-                super(
-                                new double[][] {
-                                        {1, 0, 0},
-                                        {0, 1, 0},
-                                        {0, 0, 1}
-                                });
-        }
+public class Transform2d {
+    Matrix mat;
 
-        public Transform2d(Matrix mat) {
-                super(mat.mat);
-        }
+    public Transform2d() {
+        mat =
+                new Matrix(
+                        new double[][] {
+                            {1, 0, 0},
+                            {0, 1, 0},
+                            {0, 0, 1}
+                        });
+    }
 
-        public Transform2d(double x, double y, double theta) {
-                super(
-                                new double[][] {
-                                        {Math.cos(theta), -Math.sin(theta), x},
-                                        {Math.sin(theta), Math.cos(theta), y},
-                                        {0, 0, 1}
-                                });
-        }
+    public Transform2d(Matrix mat) {
+        this.mat = mat;
+    }
 
-        public Transform2d mul(Transform2d other) {
-                return new Transform2d(super.mul(other));
-        }
+    public Transform2d(double x, double y, double theta) {
+        mat =
+                new Matrix(
+                        new double[][] {
+                            {Math.cos(theta), -Math.sin(theta), x},
+                            {Math.sin(theta), Math.cos(theta), y},
+                            {0, 0, 1}
+                        });
+    }
 
-        public Transform2d inv() {
-                return new Transform2d(super.inv());
-        }
+    public void print() { mat.print(); }
 
-        public double getX() {
-                return mat[0][2];
-        }
+    public Transform2d mul(Transform2d other) {
+        return new Transform2d(mat.mul(other.mat));
+    }
 
-        public double getY() {
-                return mat[1][2];
-        }
+    public Transform2d inv() {
+        return new Transform2d(mat.inv());
+    }
 
-        public double getTheta() {
-                return Math.atan2(mat[1][0], mat[0][0]);
-        }
+    public double getX() {
+        return mat.mat[0][2];
+    }
+
+    public double getY() {
+        return mat.mat[1][2];
+    }
+
+    public double getTheta() {
+        return Math.atan2(mat.mat[1][0], mat.mat[0][0]);
+    }
 }
