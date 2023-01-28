@@ -25,7 +25,7 @@ public class GoTo extends CommandBase {
 
     PIDController xPID = new PIDController(7, 0, 0);
     PIDController yPID = new PIDController(7, 0, 0);
-    PIDController wPID = new PIDController(6, 0, 1);
+    PIDController wPID = new PIDController(5, 0, 1);
 
     @Override
     public void initialize() {

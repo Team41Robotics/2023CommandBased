@@ -66,10 +66,10 @@ public class HDriveSubsystem extends SubsystemBase {
             vm = vy;
         }
 
-        vl/=2; vr/=2; vm/=2; // avoid brownout
-        vl=MathUtil.clamp(vl, -.5, .5);
-        vr=MathUtil.clamp(vr, -.5, .5);
-        vm=MathUtil.clamp(vm, -.5, .5);
+        //vl/=2; vr/=2; vm/=2; // avoid brownout
+        //vl=MathUtil.clamp(vl, -.5, .5);
+        //vr=MathUtil.clamp(vr, -.5, .5);
+        //vm=MathUtil.clamp(vm, -.5, .5);
         bot_lef.set(vl);
         top_lef.set(vl);
         mid.set(vm);

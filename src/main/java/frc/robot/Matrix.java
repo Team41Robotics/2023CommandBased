@@ -20,6 +20,7 @@ public class Matrix {
             }
             System.out.println("");
         }
+        System.out.println("________________________________________________________________");
     }
 
     public static Matrix zero(int n, int m) {
@@ -65,13 +66,17 @@ public class Matrix {
         for (int i = 0; i < n; i++) {
             int piv = i;
             double mx = Math.abs(aug.mat[i][i]);
-            for (int j = i; j < n; j++) { // argmin
+            for (int j = i; j < n; j++) {
                 if (Math.abs(aug.mat[j][i]) > mx) {
                     piv = j;
-                    mx = aug.mat[j][i];
+                    mx = Math.abs(aug.mat[j][i]);
                 }
             }
             double elem = aug.mat[piv][i];
+            if(Math.abs(elem) <= 1e-3){
+                System.out.println("ERROR: piv " + piv + " is zero");
+                aug.print();
+            };
             for (int j = 0; j < n * 2; j++) {
                 // swap aug.mat[i][j], aug.mat[piv][j]
                 double tmp = aug.mat[i][j];

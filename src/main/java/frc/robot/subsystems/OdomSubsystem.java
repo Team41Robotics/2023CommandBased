@@ -116,9 +116,11 @@ public class OdomSubsystem extends SubsystemBase {
     }
 
     public void update_from(Transform2d pose, double time) {
-        System.out.println("update_from");
+        System.out.println("x " + pose.getX() + " y " + pose.getY() + " theta " + pose.getTheta());
         Transform2d acc = odom_origin.inv().mul(get(time));
-        odom_origin = acc.inv().mul(pose);
+        // odom_origin * acc = pose
+        // odom_origin = pose * acc^-1
+        odom_origin = pose.mul(acc.inv());
     }
 
     public static OdomSubsystem getInstance() {

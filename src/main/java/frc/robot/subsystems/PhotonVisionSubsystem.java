@@ -17,7 +17,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     Transform2d cam_to_com = new Transform2d(0, -0.12, 0);
 
     public PhotonVisionSubsystem() {
-        // OUTDATED
         taglocs.put(1, new Transform2d(0, 4, 0));
         taglocs.put(2, new Transform2d(0, 3.25, 0));
     }
@@ -38,10 +37,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
                         new Transform2d(bestt.getX(), bestt.getY(), bestt.getRotation().getZ());
                 Transform2d alt = new Transform2d(altt.getX(), altt.getY(), altt.getRotation().getZ());
                 double ambig = tgt.getPoseAmbiguity();
-                if (ambig > 0.2) {
-                    Transform2d camera_pose = best.mul(taglocs.get(id));
-                    Transform2d com_pose = cam_to_com.mul(camera_pose);
-                    OdomSubsystem.getInstance().update_from(com_pose, last_time);
+                if (ambig < 0.2) {
+                    Transform2d pose = taglocs.get(id).mul(best.mul(cam_to_com));
+
+                    OdomSubsystem.getInstance().update_from(pose, last_time);
                 }
             }
         }
