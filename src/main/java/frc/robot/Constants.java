@@ -27,7 +27,10 @@ public final class Constants {
                 public static final double kI = 0;
                 public static final double kD = 1;
                 
+                public static final double ARM_THETA = 50.0;
+
                 public static final double JOINT_RADIUS;
+                
 
         }
 
