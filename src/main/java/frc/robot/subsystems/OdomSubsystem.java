@@ -12,7 +12,8 @@ import java.util.ArrayList;
 public class OdomSubsystem extends SubsystemBase {
     ArrayList<Double> times = new ArrayList<>();
     ArrayList<Transform2d> odoms = new ArrayList<>();
-    Transform2d odom_origin = new Transform2d(2, 3, Math.PI / 2);
+    Transform2d odom_origin = new Transform2d(14.513, 1.071, 0);
+    // old new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
 
     static OdomSubsystem odom;
 
@@ -96,16 +97,7 @@ public class OdomSubsystem extends SubsystemBase {
             if (times.get(mid) < time) l = mid + 1;
             else r = mid;
         }
-        // r is the index of the odoms measurement that is after time
-        l = r - 1;
-        if (l < 0) return odoms.get(0);
-        System.out.println("l = " + l);
-        Transform2d left = odoms.get(l);
-        Transform2d right = odoms.get(r);
-        double ltime = times.get(l);
-        double rtime = times.get(r);
-        //return odom_origin.mul(Util.interpolate(left, right, (time - ltime) / (rtime - ltime)));
-        return odom_origin.mul(left);
+        return odom_origin.mul(odoms.get(r));
     }
 
     public Transform2d delta(double time) {
@@ -116,7 +108,6 @@ public class OdomSubsystem extends SubsystemBase {
     }
 
     public void update_from(Transform2d pose, double time) {
-        System.out.println("x " + pose.getX() + " y " + pose.getY() + " theta " + pose.getTheta());
         Transform2d acc = odom_origin.inv().mul(get(time));
         // odom_origin * acc = pose
         // odom_origin = pose * acc^-1

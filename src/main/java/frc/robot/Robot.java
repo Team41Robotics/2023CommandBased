@@ -60,9 +60,11 @@ public class Robot extends TimedRobot {
         new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
         new JoystickButton(leftjs, 1)
                 .onTrue(
-                        new GoTo(new Transform2d(2, 3, Math.PI / 2))
+                        new GoTo(new Transform2d(14.513, 1.071-0.559, 0))
+                        //new Transform2d(2, 3, 0 * Math.PI / 2)) // CHANGE WITH COORD SYSTEM
                                 .until(() -> rightjs.getRawButtonPressed(2)));
         // OUTDATED
+        /*
         new JoystickButton(rightjs, 1)
                 .onTrue(
                         new SequentialCommandGroup(
@@ -71,5 +73,6 @@ public class Robot extends TimedRobot {
                                         new GoTo(new Transform2d(0, 0, 0)))
                                 .repeatedly()
                                 .until(() -> rightjs.getRawButtonPressed(2)));
+                                */
     }
 }
