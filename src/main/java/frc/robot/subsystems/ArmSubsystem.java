@@ -2,7 +2,7 @@
 package frc.robot.subsystems;
 
 import java.util.Math;
-import java.util.HashMap;
+import java.util.HashMap; // <3
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -24,6 +24,9 @@ public class ArmSubsystem extends Subsystem{
     private static CANSparkMax motor3;
 
     private static PIDController elevatorPID;
+    private static PIDController armPID1;
+    private static PIDController armPID2;
+
 
     private static final int  length1 = 10;
     private static final int length2 = 5;
@@ -55,11 +58,13 @@ public class ArmSubsystem extends Subsystem{
         originLimit = new DigitalInput(0);
         maximumLimit = new DigitalInput(1);
 
+        /* 
         if(!originLimit.get()){
             motor1Encoder.reset();
             motor2Encoder.reset();
             motor3Encoder.reset();
         }
+        */
 
         motor1.restoreFactoryDefaults();
         motor2.restoreFactoryDefaults();
@@ -73,33 +78,59 @@ public class ArmSubsystem extends Subsystem{
         setPID(motor2PIDController, Constants.kP, Constants.kI, Constants.kD);
         setPID(motor3PIDController, Constants.kP, Constants.kI, Constants.kD);
 
+        /* 
         motor1Encoder.setConversionFactor();
         motor2Encoder.setConversionFactor();
         motor3Encoder.setConversionFactor();
-        
+        */
+
         elevatorPID = new PIDController(1,0,0);
+        armPID1 = new PIDController(1,0,0);
+        armPID2 = new PIDController(1,0,0);
 
         }
 
     }
 
     public void setPID(SparkMaxPIDController controller, double p, double i, double d){
+
         controller.setP(p);
         controller.setI(i);
         controller.setD(d);
+
     }
 
     // WIP
 
     @Override
     public void periodic(){
-        motor1.set(elevatorPID.calculate(motor1Encoder.getDistance()));
+        motor1.set(elevatorPID.calculate(motor1Encoder.getDistance()), );
     }
 
     public void targetSet(double h, double theta1, double theta2){
 
+        double r = ArmConstants.JOINT_LENGTH;
+        double rArmTheta = (ArmConstants.ARM_THETA * Math.PI)/180;
         
-        elevatorPID.setSetpoint(1);
+        double rTheta1 = (theta1*Math.PI())/180;
+        double rTheta2 = (theta2*Math.PI())/180;
+
+        double A = Math.tan(rArmTheta);
+        double B = -1;
+        double C = 0; // we can assume this because jason said we can
+
+        double normAB = sqrt(A*A+B*B);
+
+        double newA = A/normAB;
+        double newB = B/normAB;
+
+        double newC = C/normAB;
+
+        if(r == h){
+            elevatorPID.setPoint();
+        }
+
+        elevatorPID.setSetpoint();
 
     }
 
