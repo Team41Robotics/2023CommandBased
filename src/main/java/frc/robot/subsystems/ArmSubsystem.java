@@ -104,7 +104,7 @@ public class ArmSubsystem extends Subsystem{
 
     @Override
     public void periodic(){
-        motor1.set(elevatorPID.calculate(motor1Encoder.getDistance()), );
+        motor1.set(elevatorPID.calculate(motor1Encoder.getDistance()), elevatorPID.getSetpoint());
     }
 
     public void targetSet(double h, double theta1, double theta2){
@@ -112,25 +112,24 @@ public class ArmSubsystem extends Subsystem{
         double r = ArmConstants.JOINT_LENGTH;
         double rArmTheta = (ArmConstants.ARM_THETA * Math.PI)/180;
         
-        double rTheta1 = (theta1*Math.PI())/180;
-        double rTheta2 = (theta2*Math.PI())/180;
+        double rTheta1 = (theta1*Math.PI())/180; // theta 1 in radians
+        double rTheta2 = (theta2*Math.PI())/180; // theta 2 in radians
 
         double A = Math.tan(rArmTheta);
         double B = -1;
         double C = 0; // we can assume this because jason said we can
 
-        double normAB = sqrt(A*A+B*B);
-
-        double newA = A/normAB;
-        double newB = B/normAB;
-
-        double newC = C/normAB;
+        double normAB = sqrt((A*A)+(B*B));
+        
+        double newH = C/normAB;
+        double abV = (A*B)/normAB;
 
         if(r == h){
+            elevatorPID.setPoint(h*abV);
+        }else if(r > h){
+            // No clue wtf to set these to
             elevatorPID.setPoint();
-        }
-
-        elevatorPID.setSetpoint();
+        }else{}
 
     }
 
