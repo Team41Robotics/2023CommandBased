@@ -17,7 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 
 public class ArmSubsystem extends Subsystem{
 
-    private ArmSubsystem armSubsystem;
+    private static ArmSubsystem armSubsystem;
     
     private static CANSparkMax motor1;
     private static CANSparkMax motor2;
@@ -103,33 +103,48 @@ public class ArmSubsystem extends Subsystem{
     // WIP
 
     @Override
-    public void periodic(){
+    public void periodic(){ // FIXME
         motor1.set(elevatorPID.calculate(motor1Encoder.getDistance()), elevatorPID.getSetpoint());
+    }
+
+    public double[][] getTarget(double x, double y){
+        double theta = ArmConstants.ARM_THETA;
+        double r = ArmConstants.JOINT_LENGTH
+        double tan_theta = Math.tan(theta);
+        
+        double a = (1 + tan_theta*tan_theta);
+        double b = 2*(x + y * tan_theta);
+        double c = y*y - r*r;
+
+        double discriminant = b*b - 4*a*c;
+
+        if(Math.abs(discriminant) < 1e-4){
+            double x = -b/2/a;
+            double y = x * tan_theta;
+            return new double[][]{{x,y}};
+        }
+        if(discriminant < 0) return null
+
+        double x1 = (-b + Math.sqrt(discriminant)) / 2 / a;
+        double x2 = (-b - Math.sqrt(discriminant)) / 2 / a; 
+
+        double y1 = x1*tan_theta;
+        double y2 = x2*tan_theta;
+
+        double xlim = ArmConstants.SHAFT_LENGTH;
+
+        if((x1 < 0 || x1 > xlim) && (x2 < 0 || x2 > xlim)) return null;
+        if(x1 < 0 || x1 > xlim) return double[][] {{x2,y2}};
+        if(x2 < 0 || x2 > xlim) return double[][] {{x1,y1}}; 
+
+        return new double[][] {{x1,y1}, {x2, y2}};
     }
 
     public void targetSet(double h, double theta1, double theta2){
 
-        double r = ArmConstants.JOINT_LENGTH;
-        double rArmTheta = (ArmConstants.ARM_THETA * Math.PI)/180;
-        
-        double rTheta1 = (theta1*Math.PI())/180; // theta 1 in radians
-        double rTheta2 = (theta2*Math.PI())/180; // theta 2 in radians
-
-        double A = Math.tan(rArmTheta);
-        double B = -1;
-        double C = 0; // we can assume this because jason said we can
-
-        double normAB = sqrt((A*A)+(B*B));
-        
-        double newH = C/normAB;
-        double abV = (A*B)/normAB;
-
-        if(r == h){
-            elevatorPID.setPoint(h*abV);
-        }else if(r > h){
-            // No clue wtf to set these to
-            elevatorPID.setPoint();
-        }else{}
+        elevatorPID.setPID();
+        armPID1.setPID();
+        armPID2.setPID();
 
     }
 
@@ -141,5 +156,4 @@ public class ArmSubsystem extends Subsystem{
         return armSubsystem;
 
     } 
-
 }   
