@@ -142,9 +142,13 @@ public class ArmSubsystem extends Subsystem{
 
     public void targetSet(double h, double theta1, double theta2){
 
-        elevatorPID.setPID();
-        armPID1.setPID();
-        armPID2.setPID();
+        double motor1position = motor1Encoder.getPosition();
+        double motor2position = motor2Encoder.getPosition();
+        double motor3position = motor3Encoder.getPosition();
+
+        motor1.set(motor1PIDController.calculate(motor1position, h));
+        motor2.set(motor2PIDController.calculate(motor2position, theta1));
+        motor3.set(motor3PIDController.calculate(motor3position, theta2));
 
     }
 
