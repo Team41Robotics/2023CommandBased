@@ -10,9 +10,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class HDriveSubsystem extends SubsystemBase {
 	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
-	public Encoder lef_enc = new Encoder(0, 1, true);
-	public Encoder mid_enc = new Encoder(2, 3);
-	public Encoder rgt_enc = new Encoder(4, 5);
 
 	static HDriveSubsystem hdrive;
 
