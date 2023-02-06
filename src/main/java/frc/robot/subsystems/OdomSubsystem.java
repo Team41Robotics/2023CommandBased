@@ -43,9 +43,9 @@ public class OdomSubsystem extends SubsystemBase {
 	}
 
 	double ptheta = Robot.imu.getAngle();
-	double pl_enc = hdrive.lef_enc.getDistance();
-	double pm_enc = hdrive.rgt_enc.getDistance();
-	double pr_enc = hdrive.mid_enc.getDistance();
+	double pl_enc = hdrive.getLeftPos();
+	double pm_enc = hdrive.getMid();
+	double pr_enc = hdrive.getRightPos();
 
 	@Override
 	public void periodic() {
@@ -54,9 +54,9 @@ public class OdomSubsystem extends SubsystemBase {
 		double dtheta = theta - ptheta;
 		ptheta = theta;
 
-		double lenc = hdrive.lef_enc.getDistance();
-		double menc = hdrive.mid_enc.getDistance();
-		double renc = hdrive.rgt_enc.getDistance();
+		double lenc = hdrive.getLeftPos();
+		double menc = hdrive.getMid();
+		double renc = hdrive.getRightPos();
 		double dl = lenc - pl_enc;
 		double ds = menc - pm_enc;
 		double dr = renc - pr_enc;

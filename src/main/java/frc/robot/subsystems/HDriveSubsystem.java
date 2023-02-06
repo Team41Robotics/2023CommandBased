@@ -1,21 +1,25 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class HDriveSubsystem extends SubsystemBase {
-	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
+    public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
 
-	static HDriveSubsystem hdrive;
+    static HDriveSubsystem hdrive;
 
     TalonFX bot_lef = new TalonFX(DrivetrainConstants.BOTTOM_LEFT);
     TalonFX top_lef = new TalonFX(DrivetrainConstants.TOP_LEFT);
-    TalonFX mid = new TalonFX(DrivetrainConstants.MID);
+    CANSparkMax mid = new CANSparkMax(DrivetrainConstants.MID, MotorType.kBrushless);
     TalonFX top_rgt = new TalonFX(DrivetrainConstants.TOP_RIGHT);
     TalonFX bot_rgt = new TalonFX(DrivetrainConstants.BOTTOM_RIGHT);
     
@@ -24,6 +28,8 @@ public class HDriveSubsystem extends SubsystemBase {
      public Encoder mid_enc = new Encoder(2, 3);
      public Encoder rgt_enc = new Encoder(4, 5);
     */
+    
+     RelativeEncoder mid_enc = mid.getEncoder();
 
 	double vl, vr, vm;
 	double vx, vy, w;
@@ -79,10 +85,23 @@ public class HDriveSubsystem extends SubsystemBase {
         //vm=MathUtil.clamp(vm, -.5, .5);
         bot_lef.set(ControlMode.Velocity, vl);
         top_lef.set(ControlMode.Velocity, vl);
-        mid.set(ControlMode.Velocity, vm);
+        mid.set(vm); 
         top_rgt.set(ControlMode.Velocity, vr);
         bot_rgt.set(ControlMode.Velocity, vr);
     }
+
+
+        public double getRightPos(){
+                return bot_rgt.getSelectedSensorPosition();
+        }
+
+        public double getLeftPos(){
+                return bot_lef.getSelectedSensorPosition();
+        }
+
+        public double getMid(){
+                return mid_enc.getPosition();
+        }
 
 	public static HDriveSubsystem getInstance() {
 		if (hdrive == null) {
@@ -90,4 +109,7 @@ public class HDriveSubsystem extends SubsystemBase {
 		}
 		return hdrive;
 	}
+
+
+
 }
