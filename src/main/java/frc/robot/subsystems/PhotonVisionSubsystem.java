@@ -21,10 +21,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 	public PhotonVisionSubsystem() {
 		// 16.5 x 8
-		// taglocs.put(1, new Transform2d(0, 4, 0)); // non field
-		// taglocs.put(2, new Transform2d(0, 3.25, 0));
+		taglocs.put(1, new Transform2d(0, 4, 0)); // non field
+		taglocs.put(2, new Transform2d(0, 3.25, 0));
 		// field
-		taglocs.put(1, new Transform2d(15.513, 1.071, Math.PI));
+		// taglocs.put(1, new Transform2d(15.513, 1.071, Math.PI));
 
 		camtab.addNumber("px", () -> last_pose.getX());
 		camtab.addNumber("py", () -> last_pose.getY());

@@ -58,8 +58,9 @@ public class Robot extends TimedRobot {
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 1)
-				.onTrue(new GoTo(new Transform2d(14.513, 1.071 - 0.559, 0))
-						// new Transform2d(2, 3, 0 * Math.PI / 2)) // CHANGE WITH COORD SYSTEM
+				.onTrue(new GoTo(
+                                                // new Transform2d(14.513, 1.071 - 0.559, 0))
+						new Transform2d(2, 3, 0 * Math.PI / 2)) // CHANGE WITH COORD SYSTEM
 						.until(() -> rightjs.getRawButtonPressed(2)));
 		// OUTDATED
 		// /*
