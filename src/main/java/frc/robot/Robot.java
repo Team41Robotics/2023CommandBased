@@ -20,8 +20,9 @@ public class Robot extends TimedRobot {
 	public static Joystick leftjs = new Joystick(0);
 	public static Joystick rightjs = new Joystick(1);
 	public static IMU imu = new IMU();
-	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
+
 	public boolean FOD;
+	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 
@@ -59,11 +60,11 @@ public class Robot extends TimedRobot {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 1)
 				.onTrue(new GoTo(
-                                                // new Transform2d(14.513, 1.071 - 0.559, 0))
-						new Transform2d(2, 3, 0 * Math.PI / 2)) // CHANGE WITH COORD SYSTEM
+								// new Transform2d(14.513, 1.071 - 0.559, 0))
+								new Transform2d(2, 3, 0 * Math.PI / 2)) // CHANGE WITH COORD SYSTEM
 						.until(() -> rightjs.getRawButtonPressed(2)));
 		// OUTDATED
-		// /*
+		// /* spot less:off
 		new JoystickButton(rightjs, 1)
 				.onTrue(new SequentialCommandGroup(
 								new GoTo(new Transform2d(0.5, 0.5, Math.PI)),
@@ -71,6 +72,6 @@ public class Robot extends TimedRobot {
 								new GoTo(new Transform2d(0, 0, 0)))
 						.repeatedly()
 						.until(() -> rightjs.getRawButtonPressed(2)));
-		// */
+		// spotless:on */
 	}
 }

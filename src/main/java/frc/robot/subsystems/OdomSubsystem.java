@@ -112,6 +112,17 @@ public class OdomSubsystem extends SubsystemBase {
 		odom_origin = pose.mul(acc.inv());
 	}
 
+	public void update_origin(Transform2d origin) {
+		odom_origin = origin;
+	}
+
+	public Transform2d origin_if(Transform2d pose, double time) {
+		Transform2d acc = odom_origin.inv().mul(get(time));
+		// odom_origin * acc = pose
+		// odom_origin = pose * acc^-1
+		return pose.mul(acc.inv());
+	}
+
 	public static OdomSubsystem getInstance() {
 		if (odom == null) {
 			odom = new OdomSubsystem();

@@ -12,4 +12,12 @@ public class Util {
 		if (rad > Math.PI) rad -= 2 * Math.PI;
 		return rad;
 	}
+
+	public static double dist(double dx, double dy) {
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
+	public static double dist3(double dx, double dy, double dz) {
+		return Math.sqrt(dx * dx + dy * dy + dz * dz);
+	}
 }
