@@ -11,6 +11,9 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
+	private static final int BRUTE_FORCE_TAG_AMOUNT = 4;
+	private static final int RAND_ROUNDS = 2;
+
 	static PhotonVisionSubsystem pv;
 
 	OdomSubsystem odom = OdomSubsystem.getInstance();
@@ -59,7 +62,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 				TimedPoseEstimate est = new TimedPoseEstimate(pose, altpose, res.getTimestampSeconds());
 				ests.add(est);
-				ids.put(id * cameras.length + ci, est);
+				if (ids.size() < BRUTE_FORCE_TAG_AMOUNT) ids.put(id * cameras.length + ci, est);
 			}
 		}
 	}
@@ -121,19 +124,27 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		return res;
 	}
 
-	public void evaluate() { // FIXME
+	public void evaluate() {
 		System.out.println("EVALUATING size of ids:" + ids.size() + " ests.size: " + ests.size());
 		last_time = Timer.getFPGATimestamp();
 		if (ids.size() > 1 && ests.size() > 5) {
 			EvaluationResult bestscore = evaluateMask(0);
-			for (int mask = 1; mask < 32; mask++) {
-				EvaluationResult score = evaluateMask(mask);
-				if (score.stddev < bestscore.stddev) {
-					bestscore = score;
+			for (int mask = 1; mask < 1 << ids.size(); mask++) {
+				for (int i = 0; i < RAND_ROUNDS; i++) {
+					for (int j = ests.size() - 1; j >= 0; j--) {
+						int ri = Util.randint(0, j);
+						var t = ests.get(j);
+						ests.set(j, ests.get(ri));
+						ests.set(ri, t);
+					}
+					EvaluationResult score = evaluateMask(mask);
+					if (score.stddev < bestscore.stddev) {
+						bestscore = score;
+					}
 				}
 			}
-			// TODO: update odom origin
 			System.out.println("ODOM ORIGIN UPDATED stddev: " + bestscore.stddev);
+			// TODO add threshold
 			odom.update_origin(bestscore.mean);
 		}
 		// done

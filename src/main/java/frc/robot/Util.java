@@ -20,4 +20,8 @@ public class Util {
 	public static double dist3(double dx, double dy, double dz) {
 		return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
+
+	public static int randint(int l, int r) {
+		return (int) (Math.floor(Math.random() * (r - l)) + l);
+	}
 }
