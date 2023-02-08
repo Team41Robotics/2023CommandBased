@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Transform2d;
-import java.util.ArrayList;
+import frc.robot.ds.CircularBuffer;
 
 public class OdomSubsystem extends SubsystemBase {
-	ArrayList<Double> times = new ArrayList<>();
-	ArrayList<Transform2d> odoms = new ArrayList<>();
+	CircularBuffer<Double> times = new CircularBuffer<>(3000 / 20); // buffer for 3 seconds
+	CircularBuffer<Transform2d> odoms = new CircularBuffer<>(3000 / 20);
 	// Transform2d odom_origin = new Transform2d(14.513, 1.071, 0);
 	Transform2d odom_origin = new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
 
@@ -20,8 +20,6 @@ public class OdomSubsystem extends SubsystemBase {
 	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
 
 	public OdomSubsystem() {
-		times.ensureCapacity(7000);
-		odoms.ensureCapacity(7000);
 		odomstab.addNumber("x", () -> now().x);
 		odomstab.addNumber("y", () -> now().y);
 		odomstab.addNumber("theta", () -> now().theta);
