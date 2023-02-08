@@ -70,7 +70,7 @@ I 0  R^-1 -R^-1T
 		return new Transform2d(
                         -cos * x - sin * y,
                         sin * x - cos * y,
-                        -theta, cos, -sin
+                        cos, -sin, -theta
                 );
 	}
 }
