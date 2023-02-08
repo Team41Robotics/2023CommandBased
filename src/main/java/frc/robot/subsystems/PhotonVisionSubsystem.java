@@ -42,12 +42,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 			for (PhotonTrackedTarget tgt : res.getTargets()) {
 				int id = tgt.getFiducialId();
 				if (!taglocs.containsKey(id)) continue;
+
 				var bestt = tgt.getBestCameraToTarget().inverse();
 				var altt = tgt.getAlternateCameraToTarget().inverse();
+
 				Transform2d best = new Transform2d(
 						bestt.getX(), bestt.getY(), bestt.getRotation().getZ());
 				Transform2d alt = new Transform2d(
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
+
 				double ambig = tgt.getPoseAmbiguity();
 				if (ambig < 0.2) {
 					Transform2d pose = taglocs.get(id).mul(best.mul(cam_to_com));
