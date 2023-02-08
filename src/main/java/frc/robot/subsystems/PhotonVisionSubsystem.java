@@ -81,10 +81,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 				TimedPoseEstimate est = (((mask >> i) & 1) == 1) ? alts.get(i) : bests.get(i);
 				Transform2d trans = odom.origin_if(est.pose, est.time);
 
-				xtot += trans.getX();
-				ytot += trans.getY();
-				stot += Math.sin(trans.getTheta());
-				ctot += Math.cos(trans.getTheta());
+				xtot += trans.x;
+				ytot += trans.y;
+				stot += Math.sin(trans.theta);
+				ctot += Math.cos(trans.theta);
 			} else {
 				double xavg = xtot / i;
 				double yavg = ytot / i;
@@ -95,17 +95,17 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 				Transform2d best = odom.origin_if(beste.pose, beste.time);
 				Transform2d alt = odom.origin_if(alte.pose, alte.time);
 
-				double bs = Util.dist3(best.getX() - xavg, best.getY() - yavg, Util.normRot(best.getTheta() - tavg));
-				double as = Util.dist3(alt.getX() - xavg, alt.getY() - yavg, Util.normRot(alt.getTheta() - tavg));
+				double bs = Util.dist3(best.x - xavg, best.y - yavg, Util.normRot(best.theta - tavg));
+				double as = Util.dist3(alt.x - xavg, alt.y - yavg, Util.normRot(alt.theta - tavg));
 				if (as < bs) {
 					best = alt;
 					altmask.add(true);
 				} else altmask.add(false);
 
-				xtot += best.getX();
-				ytot += best.getY();
-				stot += Math.sin(best.getTheta());
-				ctot += Math.cos(best.getTheta());
+				xtot += best.x;
+				ytot += best.y;
+				stot += Math.sin(best.theta);
+				ctot += Math.cos(best.theta);
 			}
 		}
 		EvaluationResult res = new EvaluationResult();
@@ -116,7 +116,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		for (int i = 0; i < bests.size(); i++) {
 			TimedPoseEstimate est = altmask.get(i) ? alts.get(i) : bests.get(i);
 			Transform2d pose = odom.origin_if(est.pose, est.time);
-			double dist = Util.dist3(pose.getX() - xavg, pose.getY() - yavg, Util.normRot(pose.getTheta() - tavg));
+			double dist = Util.dist3(pose.x - xavg, pose.y - yavg, Util.normRot(pose.theta - tavg));
 			res.stddev += dist;
 		}
 		res.stddev /= bests.size();
