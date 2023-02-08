@@ -40,19 +40,19 @@ public class GoTo extends CommandBase {
 		if (Math.abs(yPID.getPositionError()) < 0.1) yPID.setI(0.5);
 		if (Math.abs(wPID.getPositionError()) < 10 * Math.PI / 180) wPID.setI(0.5);
 
-		double vx = xPID.calculate(odom.now().getX(), target.getX());
-		double vy = yPID.calculate(odom.now().getY(), target.getY());
-		double w = wPID.calculate(odom.now().getTheta(), target.getTheta());
+		double vx = xPID.calculate(odom.now().x, target.x);
+		double vy = yPID.calculate(odom.now().y, target.y);
+		double w = wPID.calculate(odom.now().theta, target.theta);
 
-		double robot_angle = odom.now().getTheta();
+		double robot_angle = odom.now().theta;
 		double vf = Math.cos(robot_angle) * vx + Math.sin(robot_angle) * vy;
 		double vs = -Math.sin(robot_angle) * vx + Math.cos(robot_angle) * vy;
 		drive.drive(vf, vs, w);
 	}
 
 	public boolean isFinished() {
-		return Math.abs(odom.now().getX() - target.getX()) <= 0.03
-				&& Math.abs(odom.now().getY() - target.getY()) <= 0.03
-				&& Math.abs(odom.now().getTheta() - target.getTheta()) <= 4 / 180. * Math.PI;
+		return Math.abs(odom.now().x - target.x) <= 0.03
+				&& Math.abs(odom.now().y - target.y) <= 0.03
+				&& Math.abs(odom.now().theta - target.theta) <= 4 / 180. * Math.PI;
 	}
 }
