@@ -6,7 +6,6 @@ import frc.robot.Transform2d;
 import frc.robot.Util;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -33,9 +32,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		camlocs.put(0, new Transform2d(0, -0.12, 0));
 	}
 
-	HashSet<Integer> ids = new HashSet<>();
-	ArrayList<TimedPoseEstimate> bests = new ArrayList<>();
-	ArrayList<TimedPoseEstimate> alts = new ArrayList<>();
+	HashMap<Integer, TimedPoseEstimate> ids = new HashMap<>();
+	ArrayList<TimedPoseEstimate> ests = new ArrayList<>();
 
 	ArrayList<Boolean> altmask = new ArrayList<>();
 
@@ -58,15 +56,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 				Transform2d alt = new Transform2d(
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
 				Transform2d altpose = taglocs.get(id).mul(alt.mul(camlocs.get(ci)));
-				bests.add(new TimedPoseEstimate(pose, res.getTimestampSeconds()));
-				alts.add(new TimedPoseEstimate(altpose, res.getTimestampSeconds()));
-				ids.add(id * cameras.length + ci);
+
+				TimedPoseEstimate est = new TimedPoseEstimate(pose, altpose, res.getTimestampSeconds());
+				ests.add(est);
+				ids.put(id * cameras.length + ci, est);
 			}
 		}
 	}
 
 	public EvaluationResult evaluateMask(int mask) {
-		// TODO Auto-generated method stub
 		double xtot = 0;
 		double ytot = 0;
 		double stot = 0;
@@ -74,12 +72,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 		altmask.clear();
 
-		for (int i = 0; i < bests.size(); i++) {
+		for (int i = 0; i < ests.size(); i++) {
 			if (i < 5) {
 				// use altmask
 				altmask.add(((mask >> i) & 1) == 1);
-				TimedPoseEstimate est = (((mask >> i) & 1) == 1) ? alts.get(i) : bests.get(i);
-				Transform2d trans = odom.origin_if(est.pose, est.time);
+				TimedPoseEstimate est = ests.get(i);
+				Transform2d trans = odom.origin_if(((mask >> i) & 1) == 1 ? est.altpose : est.pose, est.time);
 
 				xtot += trans.x;
 				ytot += trans.y;
@@ -90,10 +88,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 				double yavg = ytot / i;
 				double tavg = Math.atan2(stot, ctot);
 
-				TimedPoseEstimate beste = bests.get(i);
-				TimedPoseEstimate alte = alts.get(i);
-				Transform2d best = odom.origin_if(beste.pose, beste.time);
-				Transform2d alt = odom.origin_if(alte.pose, alte.time);
+				TimedPoseEstimate est = ests.get(i);
+				Transform2d best = odom.origin_if(est.pose, est.time);
+				Transform2d alt = odom.origin_if(est.altpose, est.time);
 
 				double bs = Util.dist3(best.x - xavg, best.y - yavg, Util.normRot(best.theta - tavg));
 				double as = Util.dist3(alt.x - xavg, alt.y - yavg, Util.normRot(alt.theta - tavg));
@@ -109,25 +106,25 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 			}
 		}
 		EvaluationResult res = new EvaluationResult();
-		double xavg = xtot / bests.size();
-		double yavg = ytot / bests.size();
+		double xavg = xtot / ests.size();
+		double yavg = ytot / ests.size();
 		double tavg = Math.atan2(stot, ctot);
 
-		for (int i = 0; i < bests.size(); i++) {
-			TimedPoseEstimate est = altmask.get(i) ? alts.get(i) : bests.get(i);
-			Transform2d pose = odom.origin_if(est.pose, est.time);
+		for (int i = 0; i < ests.size(); i++) {
+			TimedPoseEstimate est = ests.get(i);
+			Transform2d pose = odom.origin_if(altmask.get(i) ? est.altpose : est.pose, est.time);
 			double dist = Util.dist3(pose.x - xavg, pose.y - yavg, Util.normRot(pose.theta - tavg));
 			res.stddev += dist;
 		}
-		res.stddev /= bests.size();
+		res.stddev /= ests.size();
 		res.mean = new Transform2d(xavg, yavg, tavg);
 		return res;
 	}
 
 	public void evaluate() { // FIXME
-		System.out.println("EVALUATING size of ids:" + ids.size() + " bests.size: " + bests.size());
+		System.out.println("EVALUATING size of ids:" + ids.size() + " ests.size: " + ests.size());
 		last_time = Timer.getFPGATimestamp();
-		if (ids.size() > 1 && bests.size() > 5) {
+		if (ids.size() > 1 && ests.size() > 5) {
 			EvaluationResult bestscore = evaluateMask(0);
 			for (int mask = 1; mask < 32; mask++) {
 				EvaluationResult score = evaluateMask(mask);
@@ -140,8 +137,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 			odom.update_origin(bestscore.mean);
 		}
 		// done
-		bests.clear();
-		alts.clear();
+		ests.clear();
 		ids.clear();
 	}
 
@@ -153,9 +149,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 	public static class TimedPoseEstimate {
 		public Transform2d pose;
+		public Transform2d altpose;
 		public double time;
 
-		public TimedPoseEstimate(Transform2d pose, double time) {
+		public TimedPoseEstimate(Transform2d pose, Transform2d altpose, double time) {
 			this.pose = pose;
 			this.time = time;
 		}

@@ -38,15 +38,6 @@ public class Transform2d {
 	}
 
 	public Transform2d mul(Transform2d o) {
-                /* spotless:off
-        c -s  x
-        s  c  y
-        0  0  1
-c -s  x cc-ss cx-sy + x
-s  c  y sc+cs sx+cy + y
-0  0  1 0  0  1
-                 * spotless:on
-                 */
 		return new Transform2d(
                         x + cos * o.x - sin * o.y,
                         y + sin * o.x + cos * o.y,
@@ -56,17 +47,6 @@ s  c  y sc+cs sx+cy + y
 	}
 
 	public Transform2d inv() {
-                /* spotless:off
-R T  1 0
-0 1  0 1
-
-R 0  1 -T
-0 1  0 1
-
-I 0  R^-1 -R^-1T
-0 1  0     1
-                 * spotless:on
-                 */
 		return new Transform2d(
                         -cos * x - sin * y,
                         sin * x - cos * y,
