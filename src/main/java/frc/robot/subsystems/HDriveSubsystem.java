@@ -1,56 +1,52 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Encoder;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 public class HDriveSubsystem extends SubsystemBase {
-    public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
+	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
 
-    static HDriveSubsystem hdrive;
+	static HDriveSubsystem hdrive;
 
-    TalonFX bot_lef = new TalonFX(DrivetrainConstants.BOTTOM_LEFT);
-    TalonFX top_lef = new TalonFX(DrivetrainConstants.TOP_LEFT);
-    CANSparkMax mid = new CANSparkMax(DrivetrainConstants.MID, MotorType.kBrushless);
-    TalonFX top_rgt = new TalonFX(DrivetrainConstants.TOP_RIGHT);
-    TalonFX bot_rgt = new TalonFX(DrivetrainConstants.BOTTOM_RIGHT);
-    
-    /* 
-     public Encoder lef_enc = new Encoder(0, 1, true);
-     public Encoder mid_enc = new Encoder(2, 3);
-     public Encoder rgt_enc = new Encoder(4, 5);
-    */
-    
-     RelativeEncoder mid_enc = mid.getEncoder();
+	TalonFX bot_lef = new TalonFX(DrivetrainConstants.BOTTOM_LEFT);
+	TalonFX top_lef = new TalonFX(DrivetrainConstants.TOP_LEFT);
+	CANSparkMax mid = new CANSparkMax(DrivetrainConstants.MID, MotorType.kBrushless);
+	TalonFX top_rgt = new TalonFX(DrivetrainConstants.TOP_RIGHT);
+	TalonFX bot_rgt = new TalonFX(DrivetrainConstants.BOTTOM_RIGHT);
+
+	/*
+	public Encoder lef_enc = new Encoder(0, 1, true);
+	public Encoder mid_enc = new Encoder(2, 3);
+	public Encoder rgt_enc = new Encoder(4, 5);
+	*/
+
+	RelativeEncoder mid_enc = mid.getEncoder();
 
 	double vl, vr, vm;
 	double vx, vy, w;
 
-    public HDriveSubsystem() {
-        super();
+	public HDriveSubsystem() {
+		super();
 
-        /* 
-        lef_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
-        mid_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
-        rgt_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
+		/*
+		lef_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
+		mid_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
+		rgt_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
 
-        dttab.add(this);
-        dttab.addNumber("le", () -> lef_enc.getDistance());
-        dttab.addNumber("me", () -> mid_enc.getDistance());
-        dttab.addNumber("re", () -> rgt_enc.getDistance());
-        */
-        
-        dttab.addNumber("vl", () -> vl);
-        dttab.addNumber("vr", () -> vr);
-        dttab.addNumber("vm", () -> vm);
+		dttab.add(this);
+		dttab.addNumber("le", () -> lef_enc.getDistance());
+		dttab.addNumber("me", () -> mid_enc.getDistance());
+		dttab.addNumber("re", () -> rgt_enc.getDistance());
+		*/
+
+		dttab.addNumber("vl", () -> vl);
+		dttab.addNumber("vr", () -> vr);
+		dttab.addNumber("vm", () -> vm);
 
 		dttab.addNumber("vx", () -> vx);
 		dttab.addNumber("vy", () -> vy);
@@ -79,29 +75,28 @@ public class HDriveSubsystem extends SubsystemBase {
 			vm = vy;
 		}
 
-        //vl/=2; vr/=2; vm/=2; // avoid brownout
-        //vl=MathUtil.clamp(vl, -.5, .5);
-        //vr=MathUtil.clamp(vr, -.5, .5);
-        //vm=MathUtil.clamp(vm, -.5, .5);
-        bot_lef.set(ControlMode.Velocity, vl);
-        top_lef.set(ControlMode.Velocity, vl);
-        mid.set(vm); 
-        top_rgt.set(ControlMode.Velocity, vr);
-        bot_rgt.set(ControlMode.Velocity, vr);
-    }
+		// vl/=2; vr/=2; vm/=2; // avoid brownout
+		// vl=MathUtil.clamp(vl, -.5, .5);
+		// vr=MathUtil.clamp(vr, -.5, .5);
+		// vm=MathUtil.clamp(vm, -.5, .5);
+		bot_lef.set(ControlMode.Velocity, vl);
+		top_lef.set(ControlMode.Velocity, vl);
+		mid.set(vm);
+		top_rgt.set(ControlMode.Velocity, vr);
+		bot_rgt.set(ControlMode.Velocity, vr);
+	}
 
+	public double getRightPos() {
+		return bot_rgt.getSelectedSensorPosition();
+	}
 
-        public double getRightPos(){
-                return bot_rgt.getSelectedSensorPosition();
-        }
+	public double getLeftPos() {
+		return bot_lef.getSelectedSensorPosition();
+	}
 
-        public double getLeftPos(){
-                return bot_lef.getSelectedSensorPosition();
-        }
-
-        public double getMid(){
-                return mid_enc.getPosition();
-        }
+	public double getMid() {
+		return mid_enc.getPosition();
+	}
 
 	public static HDriveSubsystem getInstance() {
 		if (hdrive == null) {
@@ -109,7 +104,4 @@ public class HDriveSubsystem extends SubsystemBase {
 		}
 		return hdrive;
 	}
-
-
-
 }
