@@ -26,9 +26,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		// field
 		taglocs.put(1, new Transform2d(15.513, 1.071, Math.PI));
 
-		camtab.addNumber("px", () -> last_pose.getX());
-		camtab.addNumber("py", () -> last_pose.getY());
-		camtab.addNumber("ptheta", () -> last_pose.getTheta());
+		camtab.addNumber("px", () -> last_pose.x);
+		camtab.addNumber("py", () -> last_pose.y);
+		camtab.addNumber("ptheta", () -> last_pose.theta);
 	}
 
 	double last_time = Timer.getFPGATimestamp();
