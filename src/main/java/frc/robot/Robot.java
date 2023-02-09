@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		hdrive.dttab.addBoolean("FOD", () -> FOD);
+		// hdrive.dttab.addBoolean("FOD", () -> FOD);
 		configureButtons();
 	}
 

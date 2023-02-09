@@ -22,15 +22,15 @@ public class OdomSubsystem extends SubsystemBase {
 	public OdomSubsystem() {
 		times.ensureCapacity(7000);
 		odoms.ensureCapacity(7000);
-		odomstab.addNumber("x", () -> now().x);
-		odomstab.addNumber("y", () -> now().y);
-		odomstab.addNumber("theta", () -> now().theta);
-		odomstab.addNumber("ox", () -> odom_origin.x);
-		odomstab.addNumber("oy", () -> odom_origin.y);
-		odomstab.addNumber("otheta", () -> odom_origin.theta);
-		odomstab.addNumber("Mx", () -> odoms.get(odoms.size() - 1).x);
-		odomstab.addNumber("My", () -> odoms.get(odoms.size() - 1).y);
-		odomstab.addNumber("Mtheta", () -> odoms.get(odoms.size() - 1).theta);
+		// odomstab.addNumber("x", () -> now().x);
+		// odomstab.addNumber("y", () -> now().y);
+		// odomstab.addNumber("theta", () -> now().theta);
+		// odomstab.addNumber("ox", () -> odom_origin.x);
+		// odomstab.addNumber("oy", () -> odom_origin.y);
+		// odomstab.addNumber("otheta", () -> odom_origin.theta);
+		// odomstab.addNumber("Mx", () -> odoms.get(odoms.size() - 1).x);
+		// odomstab.addNumber("My", () -> odoms.get(odoms.size() - 1).y);
+		// odomstab.addNumber("Mtheta", () -> odoms.get(odoms.size() - 1).theta);
 		odoms.add(new Transform2d(0, 0, 0));
 		times.add(Timer.getFPGATimestamp());
 	}

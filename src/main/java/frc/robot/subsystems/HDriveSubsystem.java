@@ -29,18 +29,18 @@ public class HDriveSubsystem extends SubsystemBase {
 		mid_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
 		rgt_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
 
-		dttab.add(this);
-		dttab.addNumber("le", () -> lef_enc.getDistance());
-		dttab.addNumber("me", () -> mid_enc.getDistance());
-		dttab.addNumber("re", () -> rgt_enc.getDistance());
+		// dttab.add(this);
+		// dttab.addNumber("le", () -> lef_enc.getDistance());
+		// dttab.addNumber("me", () -> mid_enc.getDistance());
+		// dttab.addNumber("re", () -> rgt_enc.getDistance());
 
-		dttab.addNumber("vl", () -> vl);
-		dttab.addNumber("vr", () -> vr);
-		dttab.addNumber("vm", () -> vm);
+		// dttab.addNumber("vl", () -> vl);
+		// dttab.addNumber("vr", () -> vr);
+		// dttab.addNumber("vm", () -> vm);
 
-		dttab.addNumber("vx", () -> vx);
-		dttab.addNumber("vy", () -> vy);
-		dttab.addNumber("w", () -> w);
+		// dttab.addNumber("vx", () -> vx);
+		// dttab.addNumber("vy", () -> vy);
+		// dttab.addNumber("w", () -> w);
 	}
 
 	public void drive(double vx, double vy, double w) {
