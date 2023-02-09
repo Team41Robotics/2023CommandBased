@@ -35,8 +35,12 @@ public class Transform2d {
 		this.sin = sin;
 	}
 
-	public void print() {
+	public void printmat() {
 		new DMatrix3x3(cos, -sin, x, sin, cos, y, 0, 0, 1).print();
+	}
+
+	public void print() {
+		System.out.printf("x = %f y = %f theta = %f\n", x, y, theta);
 	}
 
 	public Transform2d mul(Transform2d o) {
