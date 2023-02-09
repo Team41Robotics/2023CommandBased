@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 
 import java.util.Math;
 import java.util.HashMap; // <3
+import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Position;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -45,6 +48,8 @@ public class ArmSubsystem extends Subsystem{
     SparkMaxPIDController motor2PIDController;
     SparkMaxPIDController motor3PIDController;
 
+    HashMap<Position, Integer> posMap;
+
     public void initArm(){
 
         motor1 = new CANSparkMax(Constants.NEO_ONE_DEVICE_ID, MotorType.kBrushless);
@@ -57,6 +62,8 @@ public class ArmSubsystem extends Subsystem{
 
         originLimit = new DigitalInput(0);
         maximumLimit = new DigitalInput(1);
+
+        posMap = new HashMap<>();
 
         /* 
         if(!originLimit.get()){
@@ -109,7 +116,7 @@ public class ArmSubsystem extends Subsystem{
 
     public double[][] getTarget(double x, double y){
         double theta = ArmConstants.ARM_THETA;
-        double r = ArmConstants.JOINT_LENGTH
+        double r = ArmConstants.JOINT_LENGTH;
         double tan_theta = Math.tan(theta);
         
         double a = (1 + tan_theta*tan_theta);
@@ -123,7 +130,7 @@ public class ArmSubsystem extends Subsystem{
             double y = x * tan_theta;
             return new double[][]{{x,y}};
         }
-        if(discriminant < 0) return null
+        if(discriminant < 0) return null;
 
         double x1 = (-b + Math.sqrt(discriminant)) / 2 / a;
         double x2 = (-b - Math.sqrt(discriminant)) / 2 / a; 
@@ -154,7 +161,7 @@ public class ArmSubsystem extends Subsystem{
 
     public static ArmSubsystem getInstance() {
         if(armSubsystem == null){
-            this.armSubsystem = new ArmSubsystem();
+            armSubsystem = new ArmSubsystem();
         }
 
         return armSubsystem;
