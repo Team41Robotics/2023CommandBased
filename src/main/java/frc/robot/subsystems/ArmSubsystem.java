@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 
 import java.util.Math;
 import java.util.HashMap; // <3
+import java.lang.reflect.Array;
+import java.util.ArrayList; 
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Position;
@@ -17,6 +19,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class ArmSubsystem extends Subsystem{
 
@@ -48,7 +53,12 @@ public class ArmSubsystem extends Subsystem{
     SparkMaxPIDController motor2PIDController;
     SparkMaxPIDController motor3PIDController;
 
-    HashMap<Position, Integer> posMap;
+    ArrayList<Position> POSITION_REGISTRY;
+
+    public static final ShuffleboardTab ARM_TAB = Shuffleboard.getTab("Arm Position");
+    public static final SendableChooser<Position> POS_CHOOSER = new SendableChooser<>();
+
+
 
     public void initArm(){
 
@@ -63,7 +73,7 @@ public class ArmSubsystem extends Subsystem{
         originLimit = new DigitalInput(0);
         maximumLimit = new DigitalInput(1);
 
-        posMap = new HashMap<>();
+        POSITION_REGISTRY = new ArrayList<>();
 
         /* 
         if(!originLimit.get()){
@@ -109,10 +119,10 @@ public class ArmSubsystem extends Subsystem{
 
     // WIP
 
-    @Override
     public void periodic(){ // FIXME
-        motor1.set(elevatorPID.calculate(motor1Encoder.getDistance()), elevatorPID.getSetpoint());
+        motor1.set(elevatorPID.calculate(motor1Encoder.getPosition()), elevatorPID.getSetpoint());
     }
+
 
     public double[][] getTarget(double x, double y){
         double theta = ArmConstants.ARM_THETA;
@@ -147,7 +157,7 @@ public class ArmSubsystem extends Subsystem{
         return new double[][] {{x1,y1}, {x2, y2}};
     }
 
-    public void targetSet(double h, double theta1, double theta2){
+    public void targetSet(double h, double theta1, double theta2){ 
 
         double motor1position = motor1Encoder.getPosition();
         double motor2position = motor2Encoder.getPosition();
@@ -157,6 +167,19 @@ public class ArmSubsystem extends Subsystem{
         motor2.set(motor2PIDController.calculate(motor2position, theta1));
         motor3.set(motor3PIDController.calculate(motor3position, theta2));
 
+    }
+
+    public void addPositionsToShuffleboard(){
+        for(Position POS : POSITION_REGISTRY){
+            POS_CHOOSER.addOption(POS.getName(), POS);
+        }
+
+        ARM_TAB.add("https://www.youtube.com/watch?v=dQw4w9WgXcQ", POS_CHOOSER);
+
+    }
+
+    public void initShuffleboard(){
+        // cant rly do much with this we have no positions ._.
     }
 
     public static ArmSubsystem getInstance() {
