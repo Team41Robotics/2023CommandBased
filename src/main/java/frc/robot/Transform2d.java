@@ -35,14 +35,24 @@ public class Transform2d {
 		this.sin = sin;
 	}
 
+	/**
+	 * Print in matrix format
+	 */
 	public void printmat() {
 		new DMatrix3x3(cos, -sin, x, sin, cos, y, 0, 0, 1).print();
 	}
 
+	/**
+	 * Print transform
+	 */
 	public void print() {
 		System.out.printf("x = %f y = %f theta = %f\n", x, y, theta);
 	}
 
+	/**
+	 * @param o - other matrix to multiply by
+	 * @return product of matrix multiplication
+	 */
 	public Transform2d mul(Transform2d o) {
 		return new Transform2d(
 				x + cos * o.x - sin * o.y,
@@ -52,6 +62,9 @@ public class Transform2d {
 				theta + o.theta);
 	}
 
+	/**
+	 * @return inverse of the transform
+	 */
 	public Transform2d inv() {
 		return new Transform2d(-cos * x - sin * y, sin * x - cos * y, cos, -sin, -theta);
 	}
