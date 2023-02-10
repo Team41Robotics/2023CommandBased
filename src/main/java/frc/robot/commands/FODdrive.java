@@ -6,6 +6,7 @@ import frc.robot.Robot;
 import frc.robot.Util;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
+import frc.robot.Constants.OperatorConstants;;
 
 public class FODdrive extends CommandBase {
 	Joystick leftjs, rightjs;
@@ -19,13 +20,16 @@ public class FODdrive extends CommandBase {
 	}
 
 	public void execute() {
-		double vf = -Util.deadZone(leftjs.getY());
-		double vs = -Util.deadZone(leftjs.getX());
-		double w = -Util.deadZone(rightjs.getX());
+
+		double vf = -Util.deadZone(leftjs.getY()*OperatorConstants.DRIVE_VELOCITY);
+		double vs = -Util.deadZone(leftjs.getX()*OperatorConstants.DRIVE_VELOCITY);
+		double w = -Util.deadZone(rightjs.getX()*OperatorConstants.DRIVE_VELOCITY);
+		
 		double robot_angle = odom.now().getTheta();
 		double vx = Math.cos(robot_angle) * vf + Math.sin(robot_angle) * vs;
 		double vy = -Math.sin(robot_angle) * vf + Math.cos(robot_angle) * vs;
 		drive.drive(vx, vy, w);
+
 	}
 
 	@Override

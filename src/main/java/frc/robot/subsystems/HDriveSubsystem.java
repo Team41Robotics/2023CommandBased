@@ -1,12 +1,13 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Encoder;
+//import edu.wpi.first.wpilibj.Encoder;
+import frc.robot.Constants.DrivetrainConstants;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import com.revrobotics.CANSparkMax;
@@ -29,7 +30,7 @@ public class HDriveSubsystem extends SubsystemBase {
      public Encoder rgt_enc = new Encoder(4, 5);
     */
     
-     RelativeEncoder mid_enc = mid.getEncoder();
+    
 
 	double vl, vr, vm;
 	double vx, vy, w;
@@ -92,15 +93,15 @@ public class HDriveSubsystem extends SubsystemBase {
 
 
         public double getRightPos(){
-                return bot_rgt.getSelectedSensorPosition();
+                return (bot_rgt.getSelectedSensorPosition()/2048)/DrivetrainConstants.FORWARD_RATIO*2*Math.PI*DrivetrainConstants.WHEEL_RADIUS;
         }
 
         public double getLeftPos(){
-                return bot_lef.getSelectedSensorPosition();
+                return bot_lef.getSelectedSensorPosition()/2048/DrivetrainConstants.FORWARD_RATIO*2*Math.PI*DrivetrainConstants.WHEEL_RADIUS;
         }
 
         public double getMid(){
-                return mid_enc.getPosition();
+                return (mid.getEncoder()).getPosition()/2048/DrivetrainConstants.FORWARD_RATIO*2*Math.PI*DrivetrainConstants.WHEEL_RADIUS;
         }
 
 	public static HDriveSubsystem getInstance() {

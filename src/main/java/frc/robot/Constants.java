@@ -6,6 +6,9 @@ public final class Constants {
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		public static final int LEFT_JOYSTICK_PORT = 1;
 		public static final int RIGHT_JOYSTICK_PORT = 0;
+		public static final double DRIVE_VELOCITY = 6380; 
+
+
 	}
 
     public static class DrivetrainConstants {
@@ -21,5 +24,14 @@ public final class Constants {
 		public static final int FRONT_LEFT_MOTOR_CHANNEL = 1;
 		public static final int FRONT_RIGHT_MOTOR_CHANNEL = 3;
 		public static final int MID_MOTOR_CHANNEL = 2;
+
+		public static final double FORWARD_RATIO = 9.75;
+		public static final double H_RATIO = 10.65;
+
+		public static final double WHEEL_RADIUS = 0.1524/2;
+
 	}
+
+
+
 }
