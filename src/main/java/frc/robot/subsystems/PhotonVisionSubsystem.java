@@ -25,6 +25,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 	Transform2d[] camlocs = new Transform2d[] {new Transform2d(0, -0.12, 0)};
 	double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
+	Transform2d[] poses = new Transform2d[32];
+	double[] times = new double[32];
+	int ptr = 0;
+
 	public void update(int ci) {
 		PhotonCamera cam = cameras[ci];
 		PhotonPipelineResult res = cam.getLatestResult();
@@ -46,9 +50,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
 				if (Math.abs(pose.theta - odom.now().theta) < THETA_THRESHOLD) {
-					odom.update_from(pose, time);
+					// mod 32; overwrites first estimate if ovf; 99% not needed or used
+					poses[ptr % 32] = pose;
+					times[ptr % 32] = time;
+					ptr++;
 				} else if (Math.abs(altpose.theta - odom.now().theta) < THETA_THRESHOLD) {
-					odom.update_from(pose, time);
+					poses[ptr % 32] = altpose;
+					times[ptr % 32] = time;
+					ptr++;
 				}
 			}
 		}
@@ -56,9 +65,30 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 	double last_eval_time = Timer.getFPGATimestamp();
 
+	public void evaluate() { // assume all tags are correct and then unweighted avg
+		last_eval_time = Timer.getFPGATimestamp();
+		double tx = 0;
+		double ty = 0;
+		double tsin = 0; // orz
+		double tcos = 0;
+
+		int sz = Math.min(32, ptr);
+		for (int i = 0; i < 32 && i < ptr; i++) {
+			Transform2d o = odom.origin_if(poses[i], times[i]);
+			tx += o.x;
+			ty += o.y;
+			tsin += o.sin;
+			tcos += o.cos;
+		}
+		ptr = 0;
+		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos, tsin);
+		odom.update_origin(avg);
+	}
+
 	@Override
 	public void periodic() {
 		for (int i = 0; i < cameras.length; i++) update(i);
+		if (Timer.getFPGATimestamp() > last_eval_time + 0.2) evaluate();
 	}
 
 	public static PhotonVisionSubsystem getInstance() {
