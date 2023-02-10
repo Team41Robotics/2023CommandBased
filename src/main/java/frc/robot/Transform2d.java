@@ -1,49 +1,54 @@
 package frc.robot;
 
+import org.ejml.data.DMatrix3x3;
+
 public class Transform2d {
-	Matrix mat;
+	public double theta, cos, sin, x, y;
 
 	public Transform2d() {
-		mat = new Matrix(new double[][] {
-			{1, 0, 0},
-			{0, 1, 0},
-			{0, 0, 1}
-		});
-	}
-
-	public Transform2d(Matrix mat) {
-		this.mat = mat;
+		cos = 1;
+		sin = 0;
+		x = y = 0;
 	}
 
 	public Transform2d(double x, double y, double theta) {
-		mat = new Matrix(new double[][] {
-			{Math.cos(theta), -Math.sin(theta), x},
-			{Math.sin(theta), Math.cos(theta), y},
-			{0, 0, 1}
-		});
+		this.x = x;
+		this.y = y;
+		this.theta = theta;
+		this.cos = Math.cos(theta);
+		this.sin = Math.sin(theta);
+	}
+
+	public Transform2d(double x, double y, double cos, double sin) {
+		this.x = x;
+		this.y = y;
+		this.theta = Math.atan2(sin, cos);
+		this.cos = cos;
+		this.sin = sin;
+	}
+
+	public Transform2d(double x, double y, double cos, double sin, double theta) {
+		this.x = x;
+		this.y = y;
+		this.theta = theta;
+		this.cos = cos;
+		this.sin = sin;
 	}
 
 	public void print() {
-		mat.print();
+		new DMatrix3x3(cos, -sin, x, sin, cos, y, 0, 0, 1).print();
 	}
 
-	public Transform2d mul(Transform2d other) {
-		return new Transform2d(mat.mul(other.mat));
+	public Transform2d mul(Transform2d o) {
+		return new Transform2d(
+				x + cos * o.x - sin * o.y,
+				y + sin * o.x + cos * o.y,
+				cos * o.cos - sin * o.sin,
+				cos * o.sin + sin * o.cos,
+				theta + o.theta);
 	}
 
 	public Transform2d inv() {
-		return new Transform2d(mat.inv());
-	}
-
-	public double getX() {
-		return mat.mat[0][2];
-	}
-
-	public double getY() {
-		return mat.mat[1][2];
-	}
-
-	public double getTheta() {
-		return Math.atan2(mat.mat[1][0], mat.mat[0][0]);
+		return new Transform2d(-cos * x - sin * y, sin * x - cos * y, cos, -sin, -theta);
 	}
 }

@@ -26,9 +26,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		// field
 		taglocs.put(1, new Transform2d(15.513, 1.071, Math.PI));
 
-		camtab.addNumber("px", () -> last_pose.getX());
-		camtab.addNumber("py", () -> last_pose.getY());
-		camtab.addNumber("ptheta", () -> last_pose.getTheta());
+		camtab.addNumber("px", () -> last_pose.x);
+		camtab.addNumber("py", () -> last_pose.y);
+		camtab.addNumber("ptheta", () -> last_pose.theta);
 	}
 
 	double last_time = Timer.getFPGATimestamp();
@@ -42,12 +42,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 			for (PhotonTrackedTarget tgt : res.getTargets()) {
 				int id = tgt.getFiducialId();
 				if (!taglocs.containsKey(id)) continue;
+
 				var bestt = tgt.getBestCameraToTarget().inverse();
 				var altt = tgt.getAlternateCameraToTarget().inverse();
+
 				Transform2d best = new Transform2d(
 						bestt.getX(), bestt.getY(), bestt.getRotation().getZ());
 				Transform2d alt = new Transform2d(
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
+
 				double ambig = tgt.getPoseAmbiguity();
 				if (ambig < 0.2) {
 					Transform2d pose = taglocs.get(id).mul(best.mul(cam_to_com));

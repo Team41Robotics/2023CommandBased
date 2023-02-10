@@ -14,9 +14,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class HDriveSubsystem extends SubsystemBase {
-    public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
+	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
 
-    static HDriveSubsystem hdrive;
+	static HDriveSubsystem hdrive;
 
     TalonFX bot_lef = new TalonFX(DrivetrainConstants.BOTTOM_LEFT);
     TalonFX top_lef = new TalonFX(DrivetrainConstants.TOP_LEFT);
@@ -35,23 +35,23 @@ public class HDriveSubsystem extends SubsystemBase {
 	double vl, vr, vm;
 	double vx, vy, w;
 
-    public HDriveSubsystem() {
-        super();
+	public HDriveSubsystem() {
+		super();
 
-        /* 
-        lef_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
-        mid_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
-        rgt_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
+		/*
+		lef_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
+		mid_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
+		rgt_enc.setDistancePerPulse(0.05 * 2 * Math.PI / 90);
 
-        dttab.add(this);
-        dttab.addNumber("le", () -> lef_enc.getDistance());
-        dttab.addNumber("me", () -> mid_enc.getDistance());
-        dttab.addNumber("re", () -> rgt_enc.getDistance());
-        */
-        
-        dttab.addNumber("vl", () -> vl);
-        dttab.addNumber("vr", () -> vr);
-        dttab.addNumber("vm", () -> vm);
+		dttab.add(this);
+		dttab.addNumber("le", () -> lef_enc.getDistance());
+		dttab.addNumber("me", () -> mid_enc.getDistance());
+		dttab.addNumber("re", () -> rgt_enc.getDistance());
+		*/
+
+		dttab.addNumber("vl", () -> vl);
+		dttab.addNumber("vr", () -> vr);
+		dttab.addNumber("vm", () -> vm);
 
 		dttab.addNumber("vx", () -> vx);
 		dttab.addNumber("vy", () -> vy);
@@ -80,17 +80,16 @@ public class HDriveSubsystem extends SubsystemBase {
 			vm = vy;
 		}
 
-        //vl/=2; vr/=2; vm/=2; // avoid brownout
-        //vl=MathUtil.clamp(vl, -.5, .5);
-        //vr=MathUtil.clamp(vr, -.5, .5);
-        //vm=MathUtil.clamp(vm, -.5, .5);
-        bot_lef.set(ControlMode.Velocity, vl);
-        top_lef.set(ControlMode.Velocity, vl);
-        mid.set(vm); 
-        top_rgt.set(ControlMode.Velocity, vr);
-        bot_rgt.set(ControlMode.Velocity, vr);
-    }
-
+		// vl/=2; vr/=2; vm/=2; // avoid brownout
+		// vl=MathUtil.clamp(vl, -.5, .5);
+		// vr=MathUtil.clamp(vr, -.5, .5);
+		// vm=MathUtil.clamp(vm, -.5, .5);
+		bot_lef.set(ControlMode.Velocity, vl);
+		top_lef.set(ControlMode.Velocity, vl);
+		mid.set(vm);
+		top_rgt.set(ControlMode.Velocity, vr);
+		bot_rgt.set(ControlMode.Velocity, vr);
+	}
 
         public double getRightPos(){
                 return (bot_rgt.getSelectedSensorPosition()/2048)/DrivetrainConstants.FORWARD_RATIO*2*Math.PI*DrivetrainConstants.WHEEL_RADIUS;
@@ -110,7 +109,4 @@ public class HDriveSubsystem extends SubsystemBase {
 		}
 		return hdrive;
 	}
-
-
-
 }
