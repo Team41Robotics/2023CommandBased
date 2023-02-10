@@ -23,6 +23,7 @@ public class FODdrive extends CommandBase {
 		double vs = -Util.deadZone(leftjs.getX());
 		double w = -Util.deadZone(rightjs.getX());
 		double robot_angle = odom.now().theta;
+
 		double vx = Math.cos(robot_angle) * vf + Math.sin(robot_angle) * vs;
 		double vy = -Math.sin(robot_angle) * vf + Math.cos(robot_angle) * vs;
 		drive.drive(vx, vy, w);

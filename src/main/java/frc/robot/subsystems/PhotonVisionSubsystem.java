@@ -40,17 +40,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 						bestt.getX(), bestt.getY(), bestt.getRotation().getZ());
 				Transform2d pose = taglocs[id].mul(best.mul(camlocs[ci]));
 
-                                var altt = tgt.getAlternateCameraToTarget().inverse();
-                                Transform2d alt = new Transform2d(
-                                                altt.getX(), altt.getY(), altt.getRotation().getZ());
-                                Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
+				var altt = tgt.getAlternateCameraToTarget().inverse();
+				Transform2d alt = new Transform2d(
+						altt.getX(), altt.getY(), altt.getRotation().getZ());
+				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
 				if (Math.abs(pose.theta - odom.now().theta) < THETA_THRESHOLD) {
 					odom.update_from(pose, time);
-				} else {
-					if (Math.abs(altpose.theta - odom.now().theta) < THETA_THRESHOLD) {
-						odom.update_from(pose, time);
-					}
+				} else if (Math.abs(altpose.theta - odom.now().theta) < THETA_THRESHOLD) {
+					odom.update_from(pose, time);
 				}
 			}
 		}

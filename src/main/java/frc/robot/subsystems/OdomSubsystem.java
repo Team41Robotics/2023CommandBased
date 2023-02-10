@@ -78,9 +78,6 @@ public class OdomSubsystem extends SubsystemBase {
 		Transform2d acc = odoms.get(odoms.size() - 1);
 		odoms.add(acc.mul(trans));
 		times.add(Timer.getFPGATimestamp());
-		long st = System.nanoTime();
-		get(Timer.getFPGATimestamp());
-		System.out.println("ODOM TIME:  sz = " + times.size() + " " + ((System.nanoTime() - st) / 1e6));
 	}
 
 	public Transform2d now() {

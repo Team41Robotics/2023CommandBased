@@ -1,15 +1,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
 import frc.robot.Transform2d;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 
+// TODO refactor constants
+
 public class GoTo extends CommandBase {
-	Joystick leftjs, rightjs;
 	HDriveSubsystem drive = HDriveSubsystem.getInstance();
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 
@@ -18,8 +17,6 @@ public class GoTo extends CommandBase {
 	public GoTo(Transform2d target) {
 		this.target = target;
 		addRequirements(drive);
-		leftjs = Robot.leftjs;
-		rightjs = Robot.rightjs;
 		wPID.enableContinuousInput(-Math.PI, Math.PI);
 	}
 

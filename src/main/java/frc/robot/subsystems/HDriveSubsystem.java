@@ -57,12 +57,9 @@ public class HDriveSubsystem extends SubsystemBase {
 
 		double max = Math.max(Math.max(Math.abs(vl), Math.abs(vm)), Math.abs(vr));
 		if (max > 1) {
-			vx /= max;
-			vy /= max;
-			w /= max;
-			vl = -vx + w;
-			vr = -vx - w;
-			vm = vy;
+			vl /= max;
+			vr /= max;
+			vm /= max;
 		}
 
 		// vl/=2; vr/=2; vm/=2; // avoid brownout
