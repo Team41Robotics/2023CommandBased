@@ -75,17 +75,19 @@ public class OdomSubsystem extends SubsystemBase {
 		}
 
 		Transform2d trans = new Transform2d(dx, dy, dtheta);
-		Transform2d acc = odoms.get(odoms.size() - 1);
-		odoms.add(acc.mul(trans));
+		odoms.add(acc().mul(trans));
 		times.add(Timer.getFPGATimestamp());
 	}
 
-	public Transform2d now() {
-		// return odoms.get(odoms.size() - 1);
-		return odom_origin.mul(odoms.get(odoms.size() - 1));
+	public Transform2d acc() {
+		return odoms.get(odoms.size() - 1);
 	}
 
-	public Transform2d get(double time) {
+	public Transform2d now() {
+		return odom_origin.mul(acc());
+	}
+
+	public Transform2d raw_get(double time) {
 		if (times.size() == 0) return new Transform2d(0, 0, 0);
 		// binary search on nearest odoms measurement and interpolate
 		int l = 0;
@@ -95,14 +97,18 @@ public class OdomSubsystem extends SubsystemBase {
 			if (times.get(mid) < time) l = mid + 1;
 			else r = mid;
 		}
-		return odom_origin.mul(odoms.get(r));
+		return odoms.get(r);
+	}
+
+	public Transform2d get(double time) {
+		return odom_origin.mul(get(time));
 	}
 
 	public Transform2d delta(double time) {
 		// now is Tn... T3 T2 T1 T0
 		// get(x) Tx... T3 T2 T1 T0
 		// we want now * get(x)inv
-		return now().mul(get(time).inv());
+		return acc().mul(raw_get(time).inv());
 	}
 
 	public void update_from(Transform2d pose, double time) {
