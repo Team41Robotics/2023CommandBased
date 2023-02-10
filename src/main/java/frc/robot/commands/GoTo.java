@@ -8,7 +8,7 @@ import frc.robot.Transform2d;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 
-public class GoTo extends CommandBase {
+public class GoTo extends CommandBase { // TODO
 	Joystick leftjs, rightjs;
 	HDriveSubsystem drive = HDriveSubsystem.getInstance();
 	OdomSubsystem odom = OdomSubsystem.getInstance();

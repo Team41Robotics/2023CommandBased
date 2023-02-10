@@ -33,7 +33,7 @@ public class IMU {
 	}
 
 	public double getYaw() {
-		return ((-ahrs.getYaw() - yawOffset) * Math.PI / 180);
+		return (-ahrs.getYaw() - yawOffset) * Math.PI / 180;
 	}
 
 	public double getAngle() {

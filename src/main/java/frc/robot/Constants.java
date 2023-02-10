@@ -6,9 +6,10 @@ public final class Constants {
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		public static final int LEFT_JOYSTICK_PORT = 1;
 		public static final int RIGHT_JOYSTICK_PORT = 0;
-		public static final double DRIVE_VELOCITY = 6380; 
 
-
+		public static final double FWD_DRIVE_VELOCITY = 6380 / DrivetrainConstants.FWD_ROTS_PER_METER; // TODO
+		public static final double H_DRIVE_VELOCITY = 5676 / DrivetrainConstants.H_ROTS_PER_METER;
+                public static final double TURN_VELOCITY = FWD_DRIVE_VELOCITY / DrivetrainConstants.RADIUS; // TODO FIXME TODO FIXME
 	}
 
 	public static class DrivetrainConstants {
@@ -25,13 +26,18 @@ public final class Constants {
 		public static final int FRONT_RIGHT_MOTOR_CHANNEL = 3;
 		public static final int MID_MOTOR_CHANNEL = 2;
 
-		public static final double FORWARD_RATIO = 9.75;
+		public static final double FWD_RATIO = 9.75;
 		public static final double H_RATIO = 10.65;
 
-		public static final double WHEEL_RADIUS = 0.1524/2;
+		public static final double FWD_WHEEL_RADIUS = 3 * 2.54 / 100;
+		public static final double H_WHEEL_RADIUS = 2 * 2.54 / 100;
 
+		public static final double FWD_WHEEL_TRACK = 2 * Math.PI * FWD_WHEEL_RADIUS;
+		public static final double H_WHEEL_TRACK = 2 * Math.PI * H_WHEEL_RADIUS;
+
+		public static final double FWD_ROTS_PER_METER = FWD_WHEEL_TRACK * FWD_RATIO;
+		public static final double H_ROTS_PER_METER = H_WHEEL_TRACK * H_RATIO;
+
+                public static final double RADIUS = 1; // TODO
 	}
-
-
-
 }

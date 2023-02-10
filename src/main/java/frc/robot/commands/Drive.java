@@ -2,9 +2,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Robot;
 import frc.robot.Util;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.HDriveSubsystem;
 
 public class Drive extends CommandBase {
@@ -19,9 +19,9 @@ public class Drive extends CommandBase {
 
 	@Override
 	public void execute() {
-		double vf = -Util.deadZone(leftjs.getY()*OperatorConstants.DRIVE_VELOCITY);
-		double vs = -Util.deadZone(leftjs.getX()*OperatorConstants.DRIVE_VELOCITY);
-		double w = -Util.deadZone(rightjs.getX()*OperatorConstants.DRIVE_VELOCITY);
+		double vf = -Util.deadZone(leftjs.getY()) * OperatorConstants.FWD_DRIVE_VELOCITY;
+		double vs = -Util.deadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
+		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
 		drive.drive(vf, vs, w);
 	}
 
