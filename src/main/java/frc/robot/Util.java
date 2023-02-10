@@ -5,7 +5,7 @@ import frc.robot.Constants.OperatorConstants;
 public class Util {
 	/**
 	 * @param joystickAxis joystick axis input
-         * @param deadZone dead zone
+	 * @param deadZone dead zone
 	 * @return applied deadzone
 	 */
 	public static double deadZone(double joystickAxis, double deadZone) {

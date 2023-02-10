@@ -49,7 +49,6 @@ public class OdomSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		if (!isStarted) return;
 		double theta = Robot.imu.getAngle();
 		double dtheta = theta - ptheta;
 		ptheta = theta;
@@ -64,6 +63,7 @@ public class OdomSubsystem extends SubsystemBase {
 		pm_enc = menc;
 		pr_enc = renc;
 		double df = (dl + dr) / 2;
+		if (!isStarted) return;
 
 		double dx, dy;
 		if (dtheta < 1e-9) {
@@ -78,6 +78,9 @@ public class OdomSubsystem extends SubsystemBase {
 		Transform2d acc = odoms.get(odoms.size() - 1);
 		odoms.add(acc.mul(trans));
 		times.add(Timer.getFPGATimestamp());
+		long st = System.nanoTime();
+		get(Timer.getFPGATimestamp());
+		System.out.println("ODOM TIME:  sz = " + times.size() + " " + ((System.nanoTime() - st) / 1e6));
 	}
 
 	public Transform2d now() {
