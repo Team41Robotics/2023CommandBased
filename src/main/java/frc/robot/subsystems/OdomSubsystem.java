@@ -88,7 +88,6 @@ public class OdomSubsystem extends SubsystemBase {
 	}
 
 	public Transform2d raw_get(double time) {
-		if (times.size() == 0) return new Transform2d(0, 0, 0);
 		// binary search on nearest odoms measurement and interpolate
 		int l = 0;
 		int r = times.size() - 1;
@@ -105,17 +104,16 @@ public class OdomSubsystem extends SubsystemBase {
 	}
 
 	public Transform2d delta(double time) {
-		// now is Tn... T3 T2 T1 T0
-		// get(x) Tx... T3 T2 T1 T0
-		// we want now * get(x)inv
 		return acc().mul(raw_get(time).inv());
 	}
 
-	public void update_from(Transform2d pose, double time) {
+	public void update_origin(Transform2d origin) {
+		odom_origin = origin;
+	}
+
+	public Transform2d origin_if(Transform2d pose, double time) {
 		Transform2d acc = odom_origin.inv().mul(get(time));
-		// odom_origin * acc = pose
-		// odom_origin = pose * acc^-1
-		odom_origin = pose.mul(acc.inv());
+		return pose.mul(acc.inv());
 	}
 
 	public static OdomSubsystem getInstance() {
