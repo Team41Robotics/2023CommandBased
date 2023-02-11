@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Transform2d;
+import frc.robot.Util;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -49,12 +50,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
 				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
-				if (Math.abs(pose.theta - odom.now().theta) < THETA_THRESHOLD) {
+				if (Math.abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
 					// mod 32; overwrites first estimate if ovf; 99% not needed or used
 					poses[ptr % 32] = pose;
 					times[ptr % 32] = time;
 					ptr++;
-				} else if (Math.abs(altpose.theta - odom.now().theta) < THETA_THRESHOLD) {
+				} else if (Math.abs(Util.normRot(altpose.theta - odom.now().theta)) < THETA_THRESHOLD) {
 					poses[ptr % 32] = altpose;
 					times[ptr % 32] = time;
 					ptr++;
@@ -73,15 +74,23 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		double tcos = 0;
 
 		int sz = Math.min(32, ptr);
+		if (sz == 0) return;
 		for (int i = 0; i < 32 && i < ptr; i++) {
+			// System.out.println("t = " + times[i] + " current = " + Timer.getFPGATimestamp());
+			// poses[i].print();
 			Transform2d o = odom.origin_if(poses[i], times[i]);
+			// o.print();
 			tx += o.x;
 			ty += o.y;
 			tsin += o.sin;
 			tcos += o.cos;
 		}
 		ptr = 0;
-		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos, tsin);
+		// System.out.println("tx = " + tx + " ty = " + ty + " tcos = " + tcos + " tsin = " + tsin + " sz = " + sz);
+		double norm = Math.sqrt(tsin * tsin + tcos * tcos);
+		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos / norm, tsin / norm);
+		// System.out.println("average pose: ");
+		// avg.print();
 		odom.update_origin(avg);
 	}
 

@@ -46,7 +46,6 @@ public class Transform2d {
 	 * Print transform
 	 */
 	public void print() {
-		// System.out.printf("x = %f y = %f theta = %f\n", x, y, theta);
 		System.out.println("x = " + x + " y = " + y + " theta = " + theta);
 	}
 

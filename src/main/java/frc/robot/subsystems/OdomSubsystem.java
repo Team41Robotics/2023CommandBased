@@ -11,8 +11,7 @@ import java.util.ArrayList;
 public class OdomSubsystem extends SubsystemBase {
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
-	Transform2d odom_origin = new Transform2d(14.513, 1.071, 0);
-	// old new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
+	Transform2d origin = new Transform2d(2, 3, Math.PI); // CHANGE WITH COORD SYSTEM
 
 	static OdomSubsystem odom;
 
@@ -22,15 +21,15 @@ public class OdomSubsystem extends SubsystemBase {
 	public OdomSubsystem() {
 		times.ensureCapacity(7000);
 		odoms.ensureCapacity(7000);
-		// odomstab.addNumber("x", () -> now().x);
-		// odomstab.addNumber("y", () -> now().y);
-		// odomstab.addNumber("theta", () -> now().theta);
-		// odomstab.addNumber("ox", () -> odom_origin.x);
-		// odomstab.addNumber("oy", () -> odom_origin.y);
-		// odomstab.addNumber("otheta", () -> odom_origin.theta);
-		// odomstab.addNumber("Mx", () -> odoms.get(odoms.size() - 1).x);
-		// odomstab.addNumber("My", () -> odoms.get(odoms.size() - 1).y);
-		// odomstab.addNumber("Mtheta", () -> odoms.get(odoms.size() - 1).theta);
+		odomstab.addNumber("x", () -> now().x);
+		odomstab.addNumber("y", () -> now().y);
+		odomstab.addNumber("theta", () -> now().theta);
+		odomstab.addNumber("Ox", () -> origin.x);
+		odomstab.addNumber("Oy", () -> origin.y);
+		odomstab.addNumber("Otheta", () -> origin.theta);
+		odomstab.addNumber("Ax", () -> acc().x);
+		odomstab.addNumber("Ay", () -> acc().y);
+		odomstab.addNumber("Atheta", () -> acc().theta);
 		odoms.add(new Transform2d(0, 0, 0));
 		times.add(Timer.getFPGATimestamp());
 	}
@@ -84,11 +83,15 @@ public class OdomSubsystem extends SubsystemBase {
 	}
 
 	public Transform2d now() {
-		return odom_origin.mul(acc());
+		// System.out.println("-\n-\nNOW\n");
+		// origin.printmat();
+		// acc().printmat();
+		// origin.mul(acc()).printmat();
+		return origin.mul(acc());
 	}
 
 	public Transform2d raw_get(double time) {
-		// binary search on nearest odoms measurement and interpolate
+		// binary search on nearest odoms measurement and TODO interpolate
 		int l = 0;
 		int r = times.size() - 1;
 		while (l < r) {
@@ -100,20 +103,31 @@ public class OdomSubsystem extends SubsystemBase {
 	}
 
 	public Transform2d get(double time) {
-		return odom_origin.mul(get(time));
+		return origin.mul(raw_get(time));
 	}
 
 	public Transform2d delta(double time) {
-		return acc().mul(raw_get(time).inv());
+		return raw_get(time).inv().mul(acc());
 	}
 
 	public void update_origin(Transform2d origin) {
-		odom_origin = origin;
+		this.origin = origin;
 	}
 
 	public Transform2d origin_if(Transform2d pose, double time) {
-		Transform2d acc = odom_origin.inv().mul(get(time));
-		return pose.mul(acc.inv());
+		// Transform2d acc = origin.inv().mul(get(time));
+		// origin * acc = pose
+		// origin = pose acc^-1
+		// raw_get(time).printmat();
+		// System.out.println("inv");
+		// raw_get(time).inv().printmat();
+		// System.out.println("pose");
+		// pose.printmat();
+		// System.out.println("prod");
+		// pose.mul(raw_get(time).inv()).printmat();
+		// System.out.println("prodprod");
+		// pose.mul(raw_get(time).inv()).mul(acc()).printmat();
+		return pose.mul(raw_get(time).inv());
 	}
 
 	public static OdomSubsystem getInstance() {
