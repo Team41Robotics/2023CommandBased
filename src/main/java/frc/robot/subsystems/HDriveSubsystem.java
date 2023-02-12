@@ -50,7 +50,7 @@ public class HDriveSubsystem extends SubsystemBase {
 		drive(vx, vy, w, true);
 	}
 
-	public void drive(double vx, double vy, double w, boolean preserve) {
+	public void drive(double vx, double vy, double w, boolean preserve) { // TODO directions
 		this.vx = vx;
 		this.vy = vy;
 		this.w = w;
@@ -58,20 +58,20 @@ public class HDriveSubsystem extends SubsystemBase {
 		vr = -vx - w * DrivetrainConstants.RADIUS;
 		vm = vy;
 
-		double max = Math.max(Math.max(Math.abs(vl), Math.abs(vm)), Math.abs(vr));
-		if (false && max > 1) { // FIXME FWD &
+		/*double max = Math.max(Math.max(Math.abs(vl), Math.abs(vm)), Math.abs(vr));
+		if (max > 1) { // FIXME FWD &
 			vx /= max;
 			vy /= max;
 			w /= max;
 			vl = -vx + w;
 			vr = -vx - w;
 			vm = vy;
-		}
+		}*/
 
 		// v = omega r = 2 pi r * rpm = 2 pi r * gratio * raw speed
-		lef.set(ControlMode.PercentOutput, Constants.FALCON_MAX_SPEED * vl / DrivetrainConstants.FWD_ROTS_PER_METER);
-		rgt.set(ControlMode.PercentOutput, Constants.FALCON_MAX_SPEED * vr / DrivetrainConstants.FWD_ROTS_PER_METER);
-		mid.set(Constants.NEO_MAX_SPEED * DrivetrainConstants.H_ROTS_PER_METER);
+		lef.set(ControlMode.PercentOutput, vl / DrivetrainConstants.FWD_ROTS_PER_METER / Constants.FALCON_MAX_SPEED);
+		rgt.set(ControlMode.PercentOutput, vr / DrivetrainConstants.FWD_ROTS_PER_METER / Constants.FALCON_MAX_SPEED);
+		mid.set(DrivetrainConstants.H_ROTS_PER_METER / Constants.NEO_MAX_SPEED);
 	}
 
 	public double getRightPos() {

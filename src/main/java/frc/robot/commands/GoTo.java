@@ -3,12 +3,13 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Transform2d;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 
-public class GoTo extends CommandBase { // TODO tuning
+public class GoTo extends CommandBase { // TODO tuning profiling
 	Joystick leftjs, rightjs;
 	HDriveSubsystem drive = HDriveSubsystem.getInstance();
 	OdomSubsystem odom = OdomSubsystem.getInstance();
@@ -51,8 +52,8 @@ public class GoTo extends CommandBase { // TODO tuning
 	}
 
 	public boolean isFinished() {
-		return Math.abs(odom.now().x - target.x) <= 0.03
-				&& Math.abs(odom.now().y - target.y) <= 0.03
-				&& Math.abs(odom.now().theta - target.theta) <= 4 / 180. * Math.PI;
+		return Math.abs(odom.now().x - target.x) <= Constants.GOTO_XY_THRESHOLD
+				&& Math.abs(odom.now().y - target.y) <= Constants.GOTO_XY_THRESHOLD
+				&& Math.abs(odom.now().theta - target.theta) <= Constants.GOTO_TURN_THRESHOLD;
 	}
 }
