@@ -21,7 +21,7 @@ public class Drive extends CommandBase {
 	public void execute() {
 		double vf = -Util.deadZone(leftjs.getY()) * OperatorConstants.FWD_DRIVE_VELOCITY;
 		double vs = -Util.deadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
-		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
+		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
 		drive.drive(vf, vs, w);
 	}
 

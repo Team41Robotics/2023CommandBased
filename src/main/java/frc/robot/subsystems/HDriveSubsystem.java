@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 
 public class HDriveSubsystem extends SubsystemBase {
@@ -14,17 +15,22 @@ public class HDriveSubsystem extends SubsystemBase {
 
 	static HDriveSubsystem hdrive;
 
-	TalonFX bot_lef = new TalonFX(DrivetrainConstants.BOTTOM_LEFT); // TODO MOTOR GROUPS?
-	TalonFX top_lef = new TalonFX(DrivetrainConstants.TOP_LEFT);
-	CANSparkMax mid = new CANSparkMax(DrivetrainConstants.MID, MotorType.kBrushless);
-	TalonFX top_rgt = new TalonFX(DrivetrainConstants.TOP_RIGHT);
-	TalonFX bot_rgt = new TalonFX(DrivetrainConstants.BOTTOM_RIGHT);
+	TalonFX lef = new TalonFX(DrivetrainConstants.PORT_L1);
+	TalonFX lef1 = new TalonFX(DrivetrainConstants.PORT_L2);
+	CANSparkMax mid = new CANSparkMax(DrivetrainConstants.PORT_M1, MotorType.kBrushless);
+	CANSparkMax mid1 = new CANSparkMax(DrivetrainConstants.PORT_M2, MotorType.kBrushless);
+	TalonFX rgt = new TalonFX(DrivetrainConstants.PORT_R1);
+	TalonFX rgt1 = new TalonFX(DrivetrainConstants.PORT_R2);
 
 	double vl, vr, vm;
 	double vx, vy, w;
 
 	public HDriveSubsystem() {
 		super();
+
+		lef1.follow(lef);
+		mid1.follow(mid);
+		rgt1.follow(rgt);
 
 		dttab.add(this);
 		dttab.addNumber("le", () -> getLeftPos());
@@ -63,19 +69,17 @@ public class HDriveSubsystem extends SubsystemBase {
 		}
 
 		// v = omega r = 2 pi r * rpm = 2 pi r * gratio * raw speed
-		bot_lef.set(ControlMode.Velocity, vl / DrivetrainConstants.FWD_ROTS_PER_METER);
-		top_lef.set(ControlMode.Velocity, vl / DrivetrainConstants.FWD_ROTS_PER_METER);
-		top_rgt.set(ControlMode.Velocity, vr / DrivetrainConstants.FWD_ROTS_PER_METER);
-		bot_rgt.set(ControlMode.Velocity, vr / DrivetrainConstants.FWD_ROTS_PER_METER);
-		mid.set(vm * DrivetrainConstants.H_ROTS_PER_METER);
+		lef.set(ControlMode.PercentOutput, Constants.FALCON_MAX_SPEED * vl / DrivetrainConstants.FWD_ROTS_PER_METER);
+		rgt.set(ControlMode.PercentOutput, Constants.FALCON_MAX_SPEED * vr / DrivetrainConstants.FWD_ROTS_PER_METER);
+		mid.set(Constants.NEO_MAX_SPEED * DrivetrainConstants.H_ROTS_PER_METER);
 	}
 
 	public double getRightPos() {
-		return bot_rgt.getSelectedSensorPosition() / 2048 / DrivetrainConstants.FWD_ROTS_PER_METER;
+		return rgt.getSelectedSensorPosition() / 2048 / DrivetrainConstants.FWD_ROTS_PER_METER;
 	}
 
 	public double getLeftPos() {
-		return bot_lef.getSelectedSensorPosition() / 2048 / DrivetrainConstants.FWD_ROTS_PER_METER;
+		return lef.getSelectedSensorPosition() / 2048 / DrivetrainConstants.FWD_ROTS_PER_METER;
 	}
 
 	public double getMid() {
