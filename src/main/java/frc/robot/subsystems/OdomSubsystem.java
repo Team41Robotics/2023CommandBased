@@ -83,10 +83,6 @@ public class OdomSubsystem extends SubsystemBase {
 	}
 
 	public Transform2d now() {
-		// System.out.println("-\n-\nNOW\n");
-		// origin.printmat();
-		// acc().printmat();
-		// origin.mul(acc()).printmat();
 		return origin.mul(acc());
 	}
 
@@ -118,15 +114,6 @@ public class OdomSubsystem extends SubsystemBase {
 		// Transform2d acc = origin.inv().mul(get(time));
 		// origin * acc = pose
 		// origin = pose acc^-1
-		// raw_get(time).printmat();
-		// System.out.println("inv");
-		// raw_get(time).inv().printmat();
-		// System.out.println("pose");
-		// pose.printmat();
-		// System.out.println("prod");
-		// pose.mul(raw_get(time).inv()).printmat();
-		// System.out.println("prodprod");
-		// pose.mul(raw_get(time).inv()).mul(acc()).printmat();
 		return pose.mul(raw_get(time).inv());
 	}
 

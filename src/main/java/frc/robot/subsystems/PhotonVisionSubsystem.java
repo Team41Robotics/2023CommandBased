@@ -76,17 +76,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		int sz = Math.min(32, ptr);
 		if (sz == 0) return;
 		for (int i = 0; i < 32 && i < ptr; i++) {
-			// System.out.println("t = " + times[i] + " current = " + Timer.getFPGATimestamp());
-			// poses[i].print();
 			Transform2d o = odom.origin_if(poses[i], times[i]);
-			// o.print();
 			tx += o.x;
 			ty += o.y;
 			tsin += o.sin;
 			tcos += o.cos;
 		}
 		ptr = 0;
-		// System.out.println("tx = " + tx + " ty = " + ty + " tcos = " + tcos + " tsin = " + tsin + " sz = " + sz);
 		double norm = Math.sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos / norm, tsin / norm);
 		// System.out.println("average pose: ");
