@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Transform2d;
+import frc.robot.Util;
+
 import java.util.ArrayList;
 
 public class OdomSubsystem extends SubsystemBase {
@@ -95,7 +97,11 @@ public class OdomSubsystem extends SubsystemBase {
 			if (times.get(mid) < time) l = mid + 1;
 			else r = mid;
 		}
-		return odoms.get(r);
+                if(r == 0) return new Transform2d();
+                double tl = times.get(r-1);
+                double tr = times.get(r);
+                return Util.lerp(odoms.get(r-1), odoms.get(r), (time-tl)/(tr-tl));
+		// return odoms.get(r);
 	}
 
 	public Transform2d get(double time) {
