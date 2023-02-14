@@ -10,7 +10,7 @@ public final class Constants {
 		public static final int LEFT_JOYSTICK_PORT = 1;
 		public static final int RIGHT_JOYSTICK_PORT = 0;
 
-                // TODO tuning; variable drive speed?
+		// TODO tuning; variable drive speed?
 		public static final double FWD_DRIVE_VELOCITY = FALCON_MAX_SPEED / DrivetrainConstants.FWD_ROTS_PER_METER;
 		public static final double H_DRIVE_VELOCITY = NEO_MAX_SPEED / DrivetrainConstants.H_ROTS_PER_METER;
 		public static final double TURN_VELOCITY = FWD_DRIVE_VELOCITY / DrivetrainConstants.RADIUS;
@@ -40,6 +40,6 @@ public final class Constants {
 		public static final double RADIUS = 1; // TODO make this useful
 	}
 
-        public static final double GOTO_XY_THRESHOLD = 0.03;
-        public static final double GOTO_TURN_THRESHOLD = 4 / 180. * Math.PI;
+	public static final double GOTO_XY_THRESHOLD = 0.03;
+	public static final double GOTO_TURN_THRESHOLD = 4 / 180. * Math.PI;
 }
