@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguity2/3 interpolation
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
-	Transform2d odom_origin = new Transform2d(14.513, 1.071, 0);
+	Transform2d odom_origin = new Transform2d(0, 0, 0);
 	// old new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
 
 	static OdomSubsystem odom;

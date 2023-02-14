@@ -68,22 +68,21 @@ public class HDriveSubsystem extends SubsystemBase {
 			vm = vy;
 		}*/
 
-		// v = omega r = 2 pi r * rpm = 2 pi r * gratio * raw speed
-		lef.set(ControlMode.PercentOutput, vl / DrivetrainConstants.FWD_ROTS_PER_METER / Constants.FALCON_MAX_SPEED);
-		rgt.set(ControlMode.PercentOutput, vr / DrivetrainConstants.FWD_ROTS_PER_METER / Constants.FALCON_MAX_SPEED);
-		mid.set(DrivetrainConstants.H_ROTS_PER_METER / Constants.NEO_MAX_SPEED);
+		lef.set(ControlMode.PercentOutput, vl * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
+		rgt.set(ControlMode.PercentOutput, -vr * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
+		mid.set(vm * DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED);
 	}
 
 	public double getRightPos() {
-		return rgt.getSelectedSensorPosition() / 2048 / DrivetrainConstants.FWD_ROTS_PER_METER;
+		return rgt.getSelectedSensorPosition() / 2048. / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getLeftPos() {
-		return lef.getSelectedSensorPosition() / 2048 / DrivetrainConstants.FWD_ROTS_PER_METER;
+		return lef.getSelectedSensorPosition() / 2048. / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getMid() {
-		return mid.getEncoder().getPosition() / 2048 / DrivetrainConstants.H_ROTS_PER_METER;
+		return mid.getEncoder().getPosition() / 2048. / DrivetrainConstants.H_RAD_PER_METER;
 	}
 
 	public static HDriveSubsystem getInstance() {

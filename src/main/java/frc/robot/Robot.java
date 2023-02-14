@@ -4,11 +4,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
-import frc.robot.commands.FODdrive;
+import frc.robot.commands.GoTo;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 
@@ -31,7 +30,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic() {
 		CommandScheduler.getInstance().run();
-		HDriveSubsystem.getInstance().setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
+		HDriveSubsystem.getInstance().setDefaultCommand(new Drive());
 	}
 
 	@Override
@@ -54,6 +53,7 @@ public class Robot extends TimedRobot {
 
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
+		new JoystickButton(leftjs, 1).onTrue(new GoTo(new Transform2d(0, 0, 0)));
 		/*
 		new JoystickButton(leftjs, 1)
 				.onTrue(new GoTo(new Transform2d(14.513, 1.071 - 0.559, 0))

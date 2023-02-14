@@ -22,7 +22,7 @@ public class Drive extends CommandBase {
 		double vf = -Util.deadZone(leftjs.getY()) * OperatorConstants.FWD_DRIVE_VELOCITY;
 		double vs = -Util.deadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
 		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
-		drive.drive(vf, vs, w);
+		drive.drive(vf, 0*vs, w / 2);
 	}
 
 	@Override
