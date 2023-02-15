@@ -50,12 +50,12 @@ public class HDriveSubsystem extends SubsystemBase {
 		drive(vx, vy, w, true);
 	}
 
-	public void drive(double vx, double vy, double w, boolean preserve) { // TODO directions
+	public void drive(double vx, double vy, double w, boolean preserve) { // TODO directions (test)
 		this.vx = vx;
 		this.vy = vy;
 		this.w = w;
 		vl = -vx + w * DrivetrainConstants.RADIUS;
-		vr = -vx - w * DrivetrainConstants.RADIUS;
+		vr =  vx + w * DrivetrainConstants.RADIUS;
 		vm = -vy;
 
 		/*double max = Math.max(Math.max(Math.abs(vl), Math.abs(vm)), Math.abs(vr));
@@ -69,16 +69,16 @@ public class HDriveSubsystem extends SubsystemBase {
 		}*/
 
 		lef.set(ControlMode.PercentOutput, vl * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
-		rgt.set(ControlMode.PercentOutput, -vr * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
+		rgt.set(ControlMode.PercentOutput, vr * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
 		mid.set(vm * DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED);
 	}
 
 	public double getRightPos() {
-		return -rgt.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return rgt.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getLeftPos() {
-		return lef.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return -lef.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getMid() {
