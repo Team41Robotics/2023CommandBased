@@ -1,8 +1,8 @@
 package frc.robot;
 
 public final class Constants {
-	public static final double FALCON_MAX_SPEED = 6380 * 2 * Math.PI * 60;
-	public static final double NEO_MAX_SPEED = 5676 * 2 * Math.PI * 60;
+	public static final double FALCON_MAX_SPEED = 6380 * 2 * Math.PI / 60;
+	public static final double NEO_MAX_SPEED = 5676 * 2 * Math.PI / 60;
 
 	public static class OperatorConstants {
 

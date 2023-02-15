@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguity2/3 interpolation
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
-	Transform2d odom_origin = new Transform2d(0, 0, 0);
+	Transform2d odom_origin = new Transform2d(0, 0, Math.PI);
 	// old new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
 
 	static OdomSubsystem odom;
@@ -49,7 +49,6 @@ public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguit
 
 	@Override
 	public void periodic() {
-		if (!isStarted) return;
 		double theta = Robot.imu.getAngle();
 		double dtheta = theta - ptheta;
 		ptheta = theta;
@@ -64,6 +63,7 @@ public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguit
 		pm_enc = menc;
 		pr_enc = renc;
 		double df = (dl + dr) / 2;
+		if (!isStarted) return;
 
 		double dx, dy;
 		if (dtheta < 1e-9) {

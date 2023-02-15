@@ -56,7 +56,7 @@ public class HDriveSubsystem extends SubsystemBase {
 		this.w = w;
 		vl = -vx + w * DrivetrainConstants.RADIUS;
 		vr = -vx - w * DrivetrainConstants.RADIUS;
-		vm = vy;
+		vm = -vy;
 
 		/*double max = Math.max(Math.max(Math.abs(vl), Math.abs(vm)), Math.abs(vr));
 		if (max > 1) { // FIXME FWD &
@@ -74,15 +74,15 @@ public class HDriveSubsystem extends SubsystemBase {
 	}
 
 	public double getRightPos() {
-		return rgt.getSelectedSensorPosition() / 2048. / DrivetrainConstants.FWD_RAD_PER_METER;
+		return -rgt.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getLeftPos() {
-		return lef.getSelectedSensorPosition() / 2048. / DrivetrainConstants.FWD_RAD_PER_METER;
+		return lef.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getMid() {
-		return mid.getEncoder().getPosition() / 2048. / DrivetrainConstants.H_RAD_PER_METER;
+		return mid.getEncoder().getPosition() * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
 	}
 
 	public static HDriveSubsystem getInstance() {
