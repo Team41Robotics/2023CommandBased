@@ -5,61 +5,95 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Transform2d;
-import java.util.HashMap;
+import frc.robot.Util;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot FIXME positions TODO merge resolveAmbiguity2/3
+public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot FIXME positions
+	private static final double THETA_THRESHOLD = 10 / 180. * Math.PI;
+
 	static PhotonVisionSubsystem pv;
 
-	PhotonCamera cam = new PhotonCamera("TopCamera");
+	OdomSubsystem odom = OdomSubsystem.getInstance();
 	ShuffleboardTab camtab = Shuffleboard.getTab("Camera");
 
-	HashMap<Integer, Transform2d> taglocs = new HashMap<>(); // CHANGE WITH COORD SYSTEM
-	Transform2d cam_to_com = new Transform2d(0, -0.12, 0);
+	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
+		null, new Transform2d(0, 4, 0), new Transform2d(0, 2.25, 0)
+	};
 
-	public PhotonVisionSubsystem() {
-		// 16.5 x 8
-		// taglocs.put(1, new Transform2d(0, 4, 0)); // non field
-		// taglocs.put(2, new Transform2d(0, 3.25, 0));
-		// field
-		taglocs.put(1, new Transform2d(15.513, 1.071, Math.PI));
+	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("TopCamera")};
+	Transform2d[] camlocs = new Transform2d[] {new Transform2d(0, -0.12, 0)};
+	double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
-		camtab.addNumber("px", () -> last_pose.x);
-		camtab.addNumber("py", () -> last_pose.y);
-		camtab.addNumber("ptheta", () -> last_pose.theta);
-	}
+	Transform2d[] poses = new Transform2d[32];
+	double[] times = new double[32];
+	int ptr = 0;
 
-	double last_time = Timer.getFPGATimestamp();
-	Transform2d last_pose = new Transform2d();
-
-	@Override
-	public void periodic() {
+	public void update(int ci) {
+		PhotonCamera cam = cameras[ci];
 		PhotonPipelineResult res = cam.getLatestResult();
-		if (res.getTimestampSeconds() > last_time) {
-			last_time = res.getTimestampSeconds();
+		double time = res.getTimestampSeconds();
+		if (time > last_time[ci] && res.hasTargets()) {
+			last_time[ci] = time;
 			for (PhotonTrackedTarget tgt : res.getTargets()) {
 				int id = tgt.getFiducialId();
-				if (!taglocs.containsKey(id)) continue;
+				if (id == 0 || id > taglocs.length) continue;
 
 				var bestt = tgt.getBestCameraToTarget().inverse();
-				var altt = tgt.getAlternateCameraToTarget().inverse();
-
 				Transform2d best = new Transform2d(
 						bestt.getX(), bestt.getY(), bestt.getRotation().getZ());
+				Transform2d pose = taglocs[id].mul(best.mul(camlocs[ci]));
+
+				var altt = tgt.getAlternateCameraToTarget().inverse();
 				Transform2d alt = new Transform2d(
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
+				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
-				double ambig = tgt.getPoseAmbiguity();
-				if (ambig < 0.2) {
-					Transform2d pose = taglocs.get(id).mul(best.mul(cam_to_com));
-					last_pose = pose;
-
-					OdomSubsystem.getInstance().update_from(pose, last_time);
+				if (Math.abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
+					// mod 32; overwrites first estimate if ovf; 99% not needed or used
+					poses[ptr % 32] = pose;
+					times[ptr % 32] = time;
+					ptr++;
+				} else if (Math.abs(Util.normRot(altpose.theta - odom.now().theta)) < THETA_THRESHOLD) {
+					poses[ptr % 32] = altpose;
+					times[ptr % 32] = time;
+					ptr++;
 				}
 			}
 		}
+	}
+
+	double last_eval_time = Timer.getFPGATimestamp();
+
+	public void evaluate() { // assume all tags are correct and then unweighted avg
+		last_eval_time = Timer.getFPGATimestamp();
+		double tx = 0;
+		double ty = 0;
+		double tsin = 0; // orz
+		double tcos = 0;
+
+		int sz = Math.min(32, ptr);
+		if (sz == 0) return;
+		for (int i = 0; i < 32 && i < ptr; i++) {
+			Transform2d o = odom.origin_if(poses[i], times[i]);
+			tx += o.x;
+			ty += o.y;
+			tsin += o.sin;
+			tcos += o.cos;
+		}
+		ptr = 0;
+		double norm = Math.sqrt(tsin * tsin + tcos * tcos);
+		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos / norm, tsin / norm);
+		// System.out.println("average pose: ");
+		// avg.print();
+		odom.update_origin(avg);
+	}
+
+	@Override
+	public void periodic() {
+		for (int i = 0; i < cameras.length; i++) update(i);
+		if (Timer.getFPGATimestamp() > last_eval_time + 0.2) evaluate();
 	}
 
 	public static PhotonVisionSubsystem getInstance() {

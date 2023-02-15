@@ -6,12 +6,13 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Transform2d;
+import frc.robot.Util;
 import java.util.ArrayList;
 
-public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguity2/3 interpolation
+public class OdomSubsystem extends SubsystemBase {
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
-	Transform2d odom_origin = new Transform2d(0, 0, Math.PI);
+	Transform2d origin = new Transform2d(0, 0, Math.PI);
 	// old new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
 
 	static OdomSubsystem odom;
@@ -25,12 +26,12 @@ public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguit
 		odomstab.addNumber("x", () -> now().x);
 		odomstab.addNumber("y", () -> now().y);
 		odomstab.addNumber("theta", () -> now().theta);
-		odomstab.addNumber("ox", () -> odom_origin.x);
-		odomstab.addNumber("oy", () -> odom_origin.y);
-		odomstab.addNumber("otheta", () -> odom_origin.theta);
-		odomstab.addNumber("Mx", () -> odoms.get(odoms.size() - 1).x);
-		odomstab.addNumber("My", () -> odoms.get(odoms.size() - 1).y);
-		odomstab.addNumber("Mtheta", () -> odoms.get(odoms.size() - 1).theta);
+		odomstab.addNumber("Ox", () -> origin.x);
+		odomstab.addNumber("Oy", () -> origin.y);
+		odomstab.addNumber("Otheta", () -> origin.theta);
+		odomstab.addNumber("Ax", () -> acc().x);
+		odomstab.addNumber("Ay", () -> acc().y);
+		odomstab.addNumber("Atheta", () -> acc().theta);
 		odoms.add(new Transform2d(0, 0, 0));
 		times.add(Timer.getFPGATimestamp());
 	}
@@ -75,18 +76,19 @@ public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguit
 		}
 
 		Transform2d trans = new Transform2d(dx, dy, dtheta);
-		Transform2d acc = odoms.get(odoms.size() - 1);
-		odoms.add(acc.mul(trans));
+		odoms.add(acc().mul(trans));
 		times.add(Timer.getFPGATimestamp());
 	}
 
-	public Transform2d now() {
-		// return odoms.get(odoms.size() - 1);
-		return odom_origin.mul(odoms.get(odoms.size() - 1));
+	public Transform2d acc() {
+		return odoms.get(odoms.size() - 1);
 	}
 
-	public Transform2d get(double time) {
-		if (times.size() == 0) return new Transform2d(0, 0, 0);
+	public Transform2d now() {
+		return origin.mul(acc());
+	}
+
+	public Transform2d raw_get(double time) {
 		// binary search on nearest odoms measurement and TODO interpolate
 		int l = 0;
 		int r = times.size() - 1;
@@ -95,21 +97,26 @@ public class OdomSubsystem extends SubsystemBase { // TODO merge resolveambiguit
 			if (times.get(mid) < time) l = mid + 1;
 			else r = mid;
 		}
-		return odom_origin.mul(odoms.get(r));
+		if (r == 0) return new Transform2d();
+		double tl = times.get(r - 1);
+		double tr = times.get(r);
+		return Util.lerp(odoms.get(r - 1), odoms.get(r), (time - tl) / (tr - tl));
+	}
+
+	public Transform2d get(double time) {
+		return origin.mul(raw_get(time));
 	}
 
 	public Transform2d delta(double time) {
-		// now is Tn... T3 T2 T1 T0
-		// get(x) Tx... T3 T2 T1 T0
-		// we want now * get(x)inv
-		return now().mul(get(time).inv());
+		return raw_get(time).inv().mul(acc());
 	}
 
-	public void update_from(Transform2d pose, double time) {
-		Transform2d acc = odom_origin.inv().mul(get(time));
-		// odom_origin * acc = pose
-		// odom_origin = pose * acc^-1
-		odom_origin = pose.mul(acc.inv());
+	public void update_origin(Transform2d origin) {
+		this.origin = origin;
+	}
+
+	public Transform2d origin_if(Transform2d pose, double time) {
+		return pose.mul(raw_get(time).inv());
 	}
 
 	public static OdomSubsystem getInstance() {

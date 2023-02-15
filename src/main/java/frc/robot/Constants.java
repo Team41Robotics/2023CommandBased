@@ -10,6 +10,8 @@ public final class Constants {
 		public static final int LEFT_JOYSTICK_PORT = 1;
 		public static final int RIGHT_JOYSTICK_PORT = 0;
 
+		public static final double JOYSTICK_DEADZONE = 0.2;
+
 		// TODO tuning; variable drive speed?
 		public static final double FWD_DRIVE_VELOCITY = FALCON_MAX_SPEED / DrivetrainConstants.FWD_RAD_PER_METER;
 		public static final double H_DRIVE_VELOCITY = NEO_MAX_SPEED / DrivetrainConstants.H_RAD_PER_METER;

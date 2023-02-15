@@ -37,25 +37,25 @@ public class HDriveSubsystem extends SubsystemBase {
 		dttab.addNumber("me", () -> getMid());
 		dttab.addNumber("re", () -> getRightPos());
 
-		dttab.addNumber("vl", () -> vl);
-		dttab.addNumber("vr", () -> vr);
-		dttab.addNumber("vm", () -> vm);
+		// dttab.addNumber("vl", () -> vl);
+		// dttab.addNumber("vr", () -> vr);
+		// dttab.addNumber("vm", () -> vm);
 
-		dttab.addNumber("vx", () -> vx);
-		dttab.addNumber("vy", () -> vy);
-		dttab.addNumber("w", () -> w);
+		// dttab.addNumber("vx", () -> vx);
+		// dttab.addNumber("vy", () -> vy);
+		// dttab.addNumber("w", () -> w);
 	}
 
 	public void drive(double vx, double vy, double w) {
 		drive(vx, vy, w, true);
 	}
 
-	public void drive(double vx, double vy, double w, boolean preserve) { // TODO directions (test)
+	public void drive(double vx, double vy, double w, boolean preserve) { // TODO directions (testing)
 		this.vx = vx;
 		this.vy = vy;
 		this.w = w;
 		vl = -vx + w * DrivetrainConstants.RADIUS;
-		vr =  vx + w * DrivetrainConstants.RADIUS;
+		vr = vx + w * DrivetrainConstants.RADIUS;
 		vm = -vy;
 
 		/*double max = Math.max(Math.max(Math.abs(vl), Math.abs(vm)), Math.abs(vr));
