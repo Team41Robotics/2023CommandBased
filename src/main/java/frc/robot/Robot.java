@@ -7,9 +7,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
-import frc.robot.commands.GoTo;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 
@@ -23,8 +24,11 @@ public class Robot extends TimedRobot {
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 	// PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 
+	public static Robot r;
+
 	@Override
 	public void robotInit() {
+		r = this;
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		configureButtons();
 	}
@@ -32,7 +36,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic() {
 		CommandScheduler.getInstance().run();
-		HDriveSubsystem.getInstance().setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
+		// HDriveSubsystem.getInstance().setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
 	}
 
 	@Override
@@ -51,11 +55,14 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void teleopPeriodic() {}
+	public void teleopPeriodic() {
+		if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY, 0, 0);
+		else hdrive.drive(0, 0, 0);
+	}
 
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-		new JoystickButton(leftjs, 1).onTrue(new GoTo(new Transform2d(0, 0, 0)));
+		// new JoystickButton(leftjs, 1).onTrue(new GoTo(new Transform2d(0, 0, 0)));
 		/*
 		new JoystickButton(leftjs, 1)
 				.onTrue(new GoTo(new Transform2d(14.513, 1.071 - 0.559, 0))

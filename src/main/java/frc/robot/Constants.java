@@ -36,6 +36,10 @@ public final class Constants {
 		public static final double FWD_RAD_PER_METER = 1 / FWD_WHEEL_RADIUS * FWD_RATIO;
 		public static final double H_RAD_PER_METER = 1 / H_WHEEL_RADIUS * H_RATIO;
 
+		public static final double FWD_SPEED_TO_ONE =
+				DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
+		public static final double H_SPEED_TO_ONE = DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED;
+
 		public static final double RADIUS = 0.6512;
 	}
 

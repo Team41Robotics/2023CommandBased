@@ -45,7 +45,7 @@ public class OdomSubsystem extends SubsystemBase {
 
 	double ptheta = Robot.imu.getAngle();
 	double pl_enc = hdrive.getLeftPos();
-	double pm_enc = hdrive.getMid();
+	double pm_enc = hdrive.getMidPos();
 	double pr_enc = hdrive.getRightPos();
 
 	@Override
@@ -55,7 +55,7 @@ public class OdomSubsystem extends SubsystemBase {
 		ptheta = theta;
 
 		double lenc = hdrive.getLeftPos();
-		double menc = hdrive.getMid();
+		double menc = hdrive.getMidPos();
 		double renc = hdrive.getRightPos();
 		double dl = lenc - pl_enc;
 		double ds = menc - pm_enc;

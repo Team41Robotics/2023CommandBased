@@ -4,11 +4,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Robot;
 
 public class HDriveSubsystem extends SubsystemBase {
 	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
@@ -22,8 +23,11 @@ public class HDriveSubsystem extends SubsystemBase {
 	TalonFX rgt = new TalonFX(DrivetrainConstants.PORT_R1);
 	TalonFX rgt1 = new TalonFX(DrivetrainConstants.PORT_R2);
 
+	PIDController lpid = new PIDController(0.8, 0.02, 0.004);
+	PIDController mpid = new PIDController(0, 0, 0);
+	PIDController rpid = new PIDController(0.8, 0.02, 0.004);
+
 	double vl, vr, vm;
-	double vx, vy, w;
 
 	public HDriveSubsystem() {
 		super();
@@ -34,16 +38,15 @@ public class HDriveSubsystem extends SubsystemBase {
 
 		dttab.add(this);
 		dttab.addNumber("le", () -> getLeftPos());
-		dttab.addNumber("me", () -> getMid());
+		dttab.addNumber("me", () -> getMidPos());
 		dttab.addNumber("re", () -> getRightPos());
+		dttab.addNumber("lv", () -> getLeftVel());
+		dttab.addNumber("mv", () -> getMidVel());
+		dttab.addNumber("rv", () -> getRightVel());
 
-		// dttab.addNumber("vl", () -> vl);
-		// dttab.addNumber("vr", () -> vr);
-		// dttab.addNumber("vm", () -> vm);
-
-		// dttab.addNumber("vx", () -> vx);
-		// dttab.addNumber("vy", () -> vy);
-		// dttab.addNumber("w", () -> w);
+		dttab.addNumber("vl", () -> vl);
+		dttab.addNumber("vr", () -> vr);
+		dttab.addNumber("vm", () -> vm);
 	}
 
 	public void drive(double vx, double vy, double w) {
@@ -51,9 +54,6 @@ public class HDriveSubsystem extends SubsystemBase {
 	}
 
 	public void drive(double vx, double vy, double w, boolean preserve) { // TODO directions (testing)
-		this.vx = vx;
-		this.vy = vy;
-		this.w = w;
 		vl = -vx + w * DrivetrainConstants.RADIUS;
 		vr = vx + w * DrivetrainConstants.RADIUS;
 		vm = -vy;
@@ -68,9 +68,25 @@ public class HDriveSubsystem extends SubsystemBase {
 			vm = vy;
 		}*/
 
-		lef.set(ControlMode.PercentOutput, vl * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
-		rgt.set(ControlMode.PercentOutput, vr * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
-		mid.set(vm * DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED);
+		// lef.set(ControlMode.PercentOutput, vl * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
+		// rgt.set(ControlMode.PercentOutput, vr * DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED);
+		// mid.set(vm * DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED);
+	}
+
+	@Override
+	public void periodic() {
+		if (Robot.r.isEnabled()) {
+			ControlMode PO = ControlMode.PercentOutput;
+			System.out.println("vl " + lpid.calculate(getLeftVel(), vl));
+			System.out.println("vv________________ " +getLeftVel() + " vl " + vl);
+			lef.set(PO, vl + lpid.calculate(-getLeftVel(), vl) * DrivetrainConstants.FWD_SPEED_TO_ONE);
+			mid.set(vm + mpid.calculate(getMidVel(), vm) * DrivetrainConstants.H_SPEED_TO_ONE);
+			rgt.set(PO, vr + rpid.calculate(getRightVel(), vr) * DrivetrainConstants.FWD_SPEED_TO_ONE);
+		} else {
+			lpid.reset();
+			mpid.reset();
+			rpid.reset();
+		}
 	}
 
 	public double getRightPos() {
@@ -81,8 +97,20 @@ public class HDriveSubsystem extends SubsystemBase {
 		return -lef.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
-	public double getMid() {
+	public double getMidPos() {
 		return mid.getEncoder().getPosition() * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
+	}
+
+	public double getRightVel() {
+		return rgt.getSelectedSensorVelocity() *10/ 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+	}
+
+	public double getLeftVel() {
+		return -lef.getSelectedSensorVelocity() *10/ 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+	}
+
+	public double getMidVel() {
+		return mid.getEncoder().getVelocity() /60. * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
 	}
 
 	public static HDriveSubsystem getInstance() {
