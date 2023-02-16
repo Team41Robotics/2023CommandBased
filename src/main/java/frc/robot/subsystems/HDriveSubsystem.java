@@ -37,6 +37,13 @@ public class HDriveSubsystem extends SubsystemBase {
 		mid1.follow(mid);
 		rgt1.follow(rgt);
 
+		lef.configFactoryDefault();
+		lef1.configFactoryDefault();
+		rgt.configFactoryDefault();
+		rgt1.configFactoryDefault();
+		mid.restoreFactoryDefaults();
+		mid1.restoreFactoryDefaults();
+
 		lef.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
 		lef.configVelocityMeasurementWindow(8);
 		lef1.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
