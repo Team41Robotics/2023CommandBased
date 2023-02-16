@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
@@ -23,9 +24,9 @@ public class HDriveSubsystem extends SubsystemBase {
 	TalonFX rgt = new TalonFX(DrivetrainConstants.PORT_R1);
 	TalonFX rgt1 = new TalonFX(DrivetrainConstants.PORT_R2);
 
-	PIDController lpid = new PIDController(0.8, 0.02, 0.004);
+	PIDController lpid = new PIDController(1, 0, 0);
 	PIDController mpid = new PIDController(0, 0, 0);
-	PIDController rpid = new PIDController(0.8, 0.02, 0.004);
+	PIDController rpid = new PIDController(1, 0, 0);
 
 	double vl, vr, vm;
 
@@ -36,10 +37,24 @@ public class HDriveSubsystem extends SubsystemBase {
 		mid1.follow(mid);
 		rgt1.follow(rgt);
 
+		lef.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
+		lef.configVelocityMeasurementWindow(8);
+		lef1.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
+		lef1.configVelocityMeasurementWindow(8);
+		mid.getEncoder().setMeasurementPeriod(10);
+		mid.getEncoder().setAverageDepth(8);
+		mid1.getEncoder().setMeasurementPeriod(10);
+		mid1.getEncoder().setAverageDepth(8);
+		rgt.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
+		rgt.configVelocityMeasurementWindow(8);
+		rgt1.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
+		rgt1.configVelocityMeasurementWindow(8);
+
 		dttab.add(this);
 		dttab.addNumber("le", () -> getLeftPos());
 		dttab.addNumber("me", () -> getMidPos());
 		dttab.addNumber("re", () -> getRightPos());
+
 		dttab.addNumber("lv", () -> getLeftVel());
 		dttab.addNumber("mv", () -> getMidVel());
 		dttab.addNumber("rv", () -> getRightVel());
@@ -78,7 +93,7 @@ public class HDriveSubsystem extends SubsystemBase {
 		if (Robot.r.isEnabled()) {
 			ControlMode PO = ControlMode.PercentOutput;
 			System.out.println("vl " + lpid.calculate(getLeftVel(), vl));
-			System.out.println("vv________________ " +getLeftVel() + " vl " + vl);
+			System.out.println("vv________________ " + getLeftVel() + " vl " + vl);
 			lef.set(PO, vl + lpid.calculate(-getLeftVel(), vl) * DrivetrainConstants.FWD_SPEED_TO_ONE);
 			mid.set(vm + mpid.calculate(getMidVel(), vm) * DrivetrainConstants.H_SPEED_TO_ONE);
 			rgt.set(PO, vr + rpid.calculate(getRightVel(), vr) * DrivetrainConstants.FWD_SPEED_TO_ONE);
@@ -102,15 +117,15 @@ public class HDriveSubsystem extends SubsystemBase {
 	}
 
 	public double getRightVel() {
-		return rgt.getSelectedSensorVelocity() *10/ 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return rgt.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getLeftVel() {
-		return -lef.getSelectedSensorVelocity() *10/ 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return -lef.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
 	}
 
 	public double getMidVel() {
-		return mid.getEncoder().getVelocity() /60. * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
+		return mid.getEncoder().getVelocity() / 60. * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
 	}
 
 	public static HDriveSubsystem getInstance() {
