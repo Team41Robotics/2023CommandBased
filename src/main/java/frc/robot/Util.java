@@ -9,7 +9,9 @@ public class Util {
 	 * @return applied deadzone
 	 */
 	public static double deadZone(double joystickAxis, double deadZone) {
-		return Math.abs(joystickAxis) > deadZone ? joystickAxis : 0;
+		return Math.abs(joystickAxis) > deadZone
+				? Math.signum(joystickAxis) * (Math.abs(joystickAxis) - deadZone) / (1 - deadZone)
+				: 0;
 	}
 
 	/**

@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
 import frc.robot.subsystems.HDriveSubsystem;
@@ -23,11 +22,8 @@ public class Robot extends TimedRobot {
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 	// PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 
-	public static Robot r;
-
 	@Override
 	public void robotInit() {
-		r = this;
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		configureButtons();
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
@@ -55,8 +51,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY, 0, 0);
-		else hdrive.drive(0, 0, 0);
+		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 5, 0, 0);
+		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 5, 0, 0);
+		// else hdrive.drive(0, 0, 0);
 	}
 
 	public void configureButtons() {
