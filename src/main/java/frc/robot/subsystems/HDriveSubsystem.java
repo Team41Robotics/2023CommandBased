@@ -26,11 +26,11 @@ public class HDriveSubsystem extends SubsystemBase {
 	TalonFX rgt1 = new TalonFX(DrivetrainConstants.PORT_R2);
 
 	PIDController lpid = new PIDController(.5, 0, 0);
-	PIDController mpid = new PIDController(0, 0, 0);
+	PIDController mpid = new PIDController(.5, 0, 0);
 	PIDController rpid = new PIDController(.5, 0, 0);
 
 	SendableDouble lff = new SendableDouble(1.5);
-	SendableDouble mff = new SendableDouble(1);
+	SendableDouble mff = new SendableDouble(1.5);
 	SendableDouble rff = new SendableDouble(1.5);
 
 	double vl, vr, vm;
@@ -61,14 +61,17 @@ public class HDriveSubsystem extends SubsystemBase {
 		dttab.addNumber("l Encoder", () -> getLeftPos());
 		dttab.addNumber("m Encoder", () -> getMidPos());
 		dttab.addNumber("r Encoder", () -> getRightPos());
-		dttab.add(lpid);
-		dttab.add(rpid);
+		dttab.add("l", lpid);
+		dttab.add("m", mpid);
+		dttab.add("r", rpid);
 
 		dttab.add("lff", lff);
 		dttab.add("mff", mff);
 		dttab.add("rff", rff);
 
 		dttab.addNumber("l PID err", () -> lpid.getPositionError());
+		dttab.addNumber("m PID err", () -> mpid.getPositionError());
+		dttab.addNumber("r PID err", () -> rpid.getPositionError());
 
 		dttab.addNumber("l Encoder Velocity", () -> getLeftVel());
 		dttab.addNumber("m Encoder Velocity", () -> getMidVel());
@@ -84,27 +87,30 @@ public class HDriveSubsystem extends SubsystemBase {
 	}
 
 	public void drive(double vx, double vy, double w) {
-		System.out.println(vx);
 		drive(vx, vy, w, true);
 	}
 
-	public void drive(double vx, double vy, double w, boolean preserve) { // TODO directions (testing)
-		if (Math.abs(vl) > 1e-9 && Math.abs(vx) < 1e-9) new Throwable().printStackTrace();
+	public void drive(double vx, double vy, double w, boolean preserve) {
 		vl = vx - w * DrivetrainConstants.RADIUS;
-		// System.out.println(vl);
 		vr = vx + w * DrivetrainConstants.RADIUS;
-		// System.out.println(vx);
-		vm = -vy;
+		vm = vy;
 
-		/*double max = Math.max(Math.max(Math.abs(vl), Math.abs(vm)), Math.abs(vr));
-		if (max > 1) { // FIXME FWD &
+		double max = 0;
+		if (max < Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE))
+			max = Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE);
+		if (max < Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE))
+			max = Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
+		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE*3))
+			max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE*3);
+
+		if (max > 1) {
 			vx /= max;
 			vy /= max;
 			w /= max;
 			vl = -vx + w;
 			vr = -vx - w;
 			vm = vy;
-		}*/
+		}
 	}
 
 	@Override
@@ -122,37 +128,37 @@ public class HDriveSubsystem extends SubsystemBase {
 
 	public void setLeft(double vel) {
 		lo = lff.x * vel + lpid.calculate(getLeftVel(), vel);
-		lef.set(ControlMode.PercentOutput, -lo * DrivetrainConstants.FWD_SPEED_TO_ONE);
+		lef.set(ControlMode.PercentOutput, -lo * DrivetrainConstants.LEFT_SPEED_TO_ONE);
 	}
 
 	public void setRight(double vel) {
 		ro = rff.x * vel + rpid.calculate(getRightVel(), vel);
-		rgt.set(ControlMode.PercentOutput, ro * DrivetrainConstants.FWD_SPEED_TO_ONE);
+		rgt.set(ControlMode.PercentOutput, ro * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
 	}
 
 	public void setMid(double vel) {
-		// mo = vel + mpid.calculate(getMidVel(), vel);
-		// mid.set(mo * DrivetrainConstants.H_SPEED_TO_ONE);
+		mo = mff.x * vel + mpid.calculate(getMidVel(), vel);
+		mid.set(-mo * DrivetrainConstants.H_SPEED_TO_ONE);
 	}
 
 	public double getRightPos() {
-		return rgt.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return rgt.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.RIGHT_RAD_PER_METER;
 	}
 
 	public double getLeftPos() {
-		return -lef.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return -lef.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.LEFT_RAD_PER_METER;
 	}
 
 	public double getMidPos() {
-		return mid.getEncoder().getPosition() * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
+		return -mid.getEncoder().getPosition() * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
 	}
 
 	public double getRightVel() {
-		return rgt.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return rgt.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.RIGHT_RAD_PER_METER;
 	}
 
 	public double getLeftVel() {
-		return -lef.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.FWD_RAD_PER_METER;
+		return -lef.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.LEFT_RAD_PER_METER;
 	}
 
 	public double getMidVel() {

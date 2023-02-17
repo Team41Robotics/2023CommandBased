@@ -10,10 +10,10 @@ public class IMU {
 	double yawOffset = 0;
 
 	public IMU() {
-		// imutab.addNumber("roll", () -> getRoll() * 180 / Math.PI);
-		// imutab.addNumber("pitch", () -> getPitch() * 180 / Math.PI);
-		// imutab.addNumber("yaw", () -> getYaw() * 180 / Math.PI);
-		// imutab.addNumber("angle", () -> getAngle() * 180 / Math.PI);
+		imutab.addNumber("roll", () -> getRoll() * 180 / Math.PI);
+		imutab.addNumber("pitch", () -> getPitch() * 180 / Math.PI);
+		imutab.addNumber("yaw", () -> getYaw() * 180 / Math.PI);
+		imutab.addNumber("angle", () -> getAngle() * 180 / Math.PI);
 	}
 
 	public boolean isCalibrating() {

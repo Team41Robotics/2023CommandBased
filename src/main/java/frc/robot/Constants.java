@@ -13,8 +13,7 @@ public final class Constants {
 		public static final double JOYSTICK_DEADZONE = 0.2;
 
 		// TODO tuning; variable drive speed?
-		public static final double FWD_DRIVE_VELOCITY = FALCON_MAX_SPEED / DrivetrainConstants.FWD_RAD_PER_METER;
-		public static final double H_DRIVE_VELOCITY = NEO_MAX_SPEED / DrivetrainConstants.H_RAD_PER_METER;
+		public static final double FWD_DRIVE_VELOCITY = FALCON_MAX_SPEED / DrivetrainConstants.LEFT_RAD_PER_METER;
 		public static final double TURN_VELOCITY = FWD_DRIVE_VELOCITY / DrivetrainConstants.RADIUS;
 	}
 
@@ -27,22 +26,27 @@ public final class Constants {
 		public static final int PORT_R1 = 3;
 		public static final int PORT_R2 = 4;
 
-		public static final double FWD_RATIO = 9.75;
+		private static final double MECHANICAL_DRIFT_COMP = 0.95; // TODO: figure out cause of this
+		public static final double LEFT_RATIO = 9.75;
+		public static final double RIGHT_RATIO = LEFT_RATIO * 14.0 / 12.0 * MECHANICAL_DRIFT_COMP;
 		public static final double H_RATIO = 10.65;
 
 		public static final double FWD_WHEEL_RADIUS = 3 * 2.54 / 100;
 		public static final double H_WHEEL_RADIUS = 2 * 2.54 / 100;
 
-		public static final double FWD_RAD_PER_METER = 1 / FWD_WHEEL_RADIUS * FWD_RATIO;
+		public static final double LEFT_RAD_PER_METER = 1 / FWD_WHEEL_RADIUS * LEFT_RATIO;
+		public static final double RIGHT_RAD_PER_METER = 1 / FWD_WHEEL_RADIUS * RIGHT_RATIO;
 		public static final double H_RAD_PER_METER = 1 / H_WHEEL_RADIUS * H_RATIO;
 
-		public static final double FWD_SPEED_TO_ONE =
-				DrivetrainConstants.FWD_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
+		public static final double LEFT_SPEED_TO_ONE =
+				DrivetrainConstants.LEFT_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
+		public static final double RIGHT_SPEED_TO_ONE =
+				DrivetrainConstants.RIGHT_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
 		public static final double H_SPEED_TO_ONE = DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED;
 
 		public static final double RADIUS = 0.6512;
 	}
 
 	public static final double GOTO_XY_THRESHOLD = 0.03;
-	public static final double GOTO_TURN_THRESHOLD = 4 / 180. * Math.PI;
+	public static final double GOTO_TURN_THRESHOLD = .5 / 180. * Math.PI;
 }

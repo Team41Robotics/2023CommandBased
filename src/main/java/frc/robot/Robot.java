@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
+import frc.robot.commands.GoTo;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 
@@ -58,7 +60,9 @@ public class Robot extends TimedRobot {
 
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-		// new JoystickButton(leftjs, 1).onTrue(new GoTo(new Transform2d(0, 0, 0)));
+		// new JoystickButton(leftjs, 1)
+				// .onTrue(new GoTo(new Transform2d(0, 0, 0)).until(() -> rightjs.getRawButtonPressed(2)));
+                new JoystickButton(leftjs, 1).onTrue(new Balance().until(() -> rightjs.getRawButtonPressed(2)));
 		/*
 		new JoystickButton(leftjs, 1)
 				.onTrue(new GoTo(new Transform2d(14.513, 1.071 - 0.559, 0))
