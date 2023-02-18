@@ -13,6 +13,7 @@ import frc.robot.commands.FODdrive;
 import frc.robot.commands.GoTo;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 public class Robot extends TimedRobot {
 	private Command autonomousCommand;
@@ -22,7 +23,7 @@ public class Robot extends TimedRobot {
 	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
 	public boolean FOD;
 	OdomSubsystem odom = OdomSubsystem.getInstance();
-	// PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
+	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 
 	@Override
 	public void robotInit() {
