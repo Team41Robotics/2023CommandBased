@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class OdomSubsystem extends SubsystemBase {
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
-	Transform2d origin = new Transform2d(0, 0, Math.PI);
-	// old new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
+	Transform2d origin =
+			new Transform2d(0, 0.6, Math.PI); // new Transform2d(2, 3, Math.PI / 2); // CHANGE WITH COORD SYSTEM
 
 	static OdomSubsystem odom;
 

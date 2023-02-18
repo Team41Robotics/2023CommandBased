@@ -6,7 +6,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
@@ -30,6 +33,8 @@ public class Robot extends TimedRobot {
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		configureButtons();
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
+
+		AutonomousRoutine.initShuffleboard();
 	}
 
 	@Override
@@ -38,7 +43,13 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void autonomousInit() {}
+	public void autonomousInit() {
+		CommandScheduler.getInstance()
+				.schedule(new SequentialCommandGroup(
+						// new GoTo(new Transform2d(6, 0, Math.PI)),
+						// new GoTo(new Transform2d(4, 0, Math.PI)),
+						new GoTo(new Transform2d(2, 0, Math.PI)), new Balance()));
+	}
 
 	@Override
 	public void autonomousPeriodic() {}
@@ -54,30 +65,13 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 5, 0, 0);
-		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 5, 0, 0);
-		// else hdrive.drive(0, 0, 0);
+		if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
+		else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
+		else hdrive.drive(0, 0, 0);
 	}
 
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-		// new JoystickButton(leftjs, 1)
-				// .onTrue(new GoTo(new Transform2d(0, 0, 0)).until(() -> rightjs.getRawButtonPressed(2)));
-                new JoystickButton(leftjs, 1).onTrue(new Balance().until(() -> rightjs.getRawButtonPressed(2)));
-		/*
-		new JoystickButton(leftjs, 1)
-				.onTrue(new GoTo(new Transform2d(14.513, 1.071 - 0.559, 0))
-						// new Transform2d(2, 3, 0 * Math.PI / 2)) // CHANGE WITH COORD SYSTEM
-						.until(() -> rightjs.getRawButtonPressed(2)));
-		// OUTDATED
-		// /*
-		new JoystickButton(rightjs, 1)
-				.onTrue(new SequentialCommandGroup(
-								new GoTo(new Transform2d(0.5, 0.5, Math.PI)),
-								new GoTo(new Transform2d(-0.5, 0.5, Math.PI / 2)),
-								new GoTo(new Transform2d(0, 0, 0)))
-						.repeatedly()
-						.until(() -> rightjs.getRawButtonPressed(2)));
-		// */
+		new JoystickButton(leftjs, 1).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
 	}
 }

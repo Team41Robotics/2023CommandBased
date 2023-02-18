@@ -19,11 +19,11 @@ public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot FIXME p
 	ShuffleboardTab camtab = Shuffleboard.getTab("Camera");
 
 	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
-		null, new Transform2d(0, 4, 0), new Transform2d(0, 2.25, 0)
+		null, new Transform2d(0, 0, 0), new Transform2d(0, 2.25, 0)
 	};
 
 	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("TopCamera")};
-	Transform2d[] camlocs = new Transform2d[] {new Transform2d(0, -0.12, 0)};
+	Transform2d[] camlocs = new Transform2d[] {new Transform2d(0, 0, 0)};
 	double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
 	Transform2d[] poses = new Transform2d[32];
