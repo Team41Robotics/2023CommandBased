@@ -101,7 +101,7 @@ public class HDriveSubsystem extends SubsystemBase {
 		if (max < Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE))
 			max = Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
 		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 3)) // TODO remove l8r
-			max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 3);
+		max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 3);
 
 		if (max > 1) {
 			vx /= max;
