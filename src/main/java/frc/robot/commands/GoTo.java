@@ -40,19 +40,22 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 		if (Math.abs(wPID.getPositionError()) < 10 * Math.PI / 180) wPID.setI(1);
 		else wPID.setI(0);
 
-		double vx = xPID.calculate(odom.now().x, target.x) / 5; // TODO l8r
-		double vy = yPID.calculate(odom.now().y, target.y) / 5;
-		double w = wPID.calculate(odom.now().theta, target.theta) / 5;
+		double vx = xPID.calculate(odom.now().x, target.x);
+		double vy = yPID.calculate(odom.now().y, target.y);
+		double w = wPID.calculate(odom.now().theta, target.theta);
 
 		double robot_angle = odom.now().theta;
 		double vf = Math.cos(robot_angle) * vx + Math.sin(robot_angle) * vy;
 		double vs = -Math.sin(robot_angle) * vx + Math.cos(robot_angle) * vy;
-		drive.drive(vf, vs, w);
+		drive.drive(vf, vs * 0, w);
 	}
 
 	public boolean isFinished() {
 		return Math.abs(odom.now().x - target.x) <= Constants.GOTO_XY_THRESHOLD
-				&& Math.abs(odom.now().y - target.y) <= Constants.GOTO_XY_THRESHOLD
-				&& Math.abs(Util.normRot(odom.now().theta - target.theta)) <= Constants.GOTO_TURN_THRESHOLD;
+				// && Math.abs(odom.now().y - target.y) <= Constants.GOTO_XY_THRESHOLD
+				&& Math.abs(Util.normRot(odom.now().theta - target.theta)) <= Constants.GOTO_TURN_THRESHOLD
+				&& drive.getLeftVel() < Constants.GOTO_VEL_THRES
+				&& drive.getRightVel() < Constants.GOTO_VEL_THRES;
+		// && drive.getMidVel() < Constants.GOTO_VEL_THRES;
 	}
 }

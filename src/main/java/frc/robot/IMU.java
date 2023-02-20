@@ -1,11 +1,13 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class IMU {
-	private AHRS ahrs = new AHRS();
+	private AHRS ahrs = new AHRS(SPI.Port.kMXP, (byte) 66);
 	ShuffleboardTab imutab = Shuffleboard.getTab("Inertial");
 	double yawOffset = 0;
 

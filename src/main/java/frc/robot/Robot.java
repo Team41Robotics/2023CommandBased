@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
@@ -46,9 +45,9 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		CommandScheduler.getInstance()
 				.schedule(new SequentialCommandGroup(
-						// new GoTo(new Transform2d(6, 0, Math.PI)),
-						// new GoTo(new Transform2d(4, 0, Math.PI)),
-						new GoTo(new Transform2d(2, 0, Math.PI)), new Balance()));
+						new GoTo(new Transform2d(1.02690 + 3, 2.73981, Math.PI)),
+						new GoTo(new Transform2d(1.02690 + 2.4, 2.73981, Math.PI))));
+
 	}
 
 	@Override
@@ -65,9 +64,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
-		else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
-		else hdrive.drive(0, 0, 0);
+		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
+		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
+		// else hdrive.drive(0, 0, 0);
 	}
 
 	public void configureButtons() {

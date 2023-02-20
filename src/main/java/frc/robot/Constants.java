@@ -49,4 +49,5 @@ public final class Constants {
 
 	public static final double GOTO_XY_THRESHOLD = 0.03;
 	public static final double GOTO_TURN_THRESHOLD = .5 / 180. * Math.PI;
+	public static final double GOTO_VEL_THRES = 0.2;
 }

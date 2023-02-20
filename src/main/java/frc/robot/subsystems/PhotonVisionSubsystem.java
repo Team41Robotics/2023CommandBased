@@ -10,7 +10,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot FIXME positions
+public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot
 	private static final double THETA_THRESHOLD = 10 / 180. * Math.PI;
 
 	static PhotonVisionSubsystem pv;
@@ -31,7 +31,7 @@ public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot FIXME p
 	};
 
 	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("TopCamera")};
-	Transform2d[] camlocs = new Transform2d[] {new Transform2d(0, 0, 0)}; // FIXME
+	Transform2d[] camlocs = new Transform2d[] {new Transform2d(-0.42, 0, 0)}; // FIXME
 	double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
 	Transform2d[] poses = new Transform2d[32];
@@ -93,8 +93,6 @@ public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot FIXME p
 		ptr = 0;
 		double norm = Math.sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos / norm, tsin / norm);
-		// System.out.println("average pose: ");
-		// avg.print();
 		odom.update_origin(avg);
 	}
 
