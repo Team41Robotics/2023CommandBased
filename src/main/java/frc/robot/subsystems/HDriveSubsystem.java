@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -18,12 +18,12 @@ public class HDriveSubsystem extends SubsystemBase {
 
 	static HDriveSubsystem hdrive;
 
-	TalonFX lef = new TalonFX(DrivetrainConstants.PORT_L1);
-	TalonFX lef1 = new TalonFX(DrivetrainConstants.PORT_L2);
+	WPI_TalonFX lef = new WPI_TalonFX(DrivetrainConstants.PORT_L1);
+	WPI_TalonFX lef1 = new WPI_TalonFX(DrivetrainConstants.PORT_L2);
 	CANSparkMax mid = new CANSparkMax(DrivetrainConstants.PORT_M1, MotorType.kBrushless);
 	CANSparkMax mid1 = new CANSparkMax(DrivetrainConstants.PORT_M2, MotorType.kBrushless);
-	TalonFX rgt = new TalonFX(DrivetrainConstants.PORT_R1);
-	TalonFX rgt1 = new TalonFX(DrivetrainConstants.PORT_R2);
+	WPI_TalonFX rgt = new WPI_TalonFX(DrivetrainConstants.PORT_R1);
+	WPI_TalonFX rgt1 = new WPI_TalonFX(DrivetrainConstants.PORT_R2);
 
 	PIDController lpid = new PIDController(.5, 0, 0);
 	PIDController mpid = new PIDController(.5, 0, 0);
@@ -36,9 +36,7 @@ public class HDriveSubsystem extends SubsystemBase {
 	double vl, vr, vm;
 	double lo, mo, ro;
 
-	public HDriveSubsystem() {
-		super();
-
+	private void configureMotors() {
 		lef1.follow(lef);
 		mid1.follow(mid);
 		rgt1.follow(rgt);
@@ -56,6 +54,12 @@ public class HDriveSubsystem extends SubsystemBase {
 		mid.getEncoder().setAverageDepth(8);
 		rgt.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
 		rgt.configVelocityMeasurementWindow(8);
+	}
+
+	public HDriveSubsystem() {
+		super();
+
+		configureMotors();
 
 		dttab.add(this);
 		dttab.addNumber("l Encoder", () -> getLeftPos());
@@ -100,8 +104,8 @@ public class HDriveSubsystem extends SubsystemBase {
 			max = Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE);
 		if (max < Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE))
 			max = Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
-		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 8)) // TODO remove l8r
-		max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 8);
+		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 8))
+                        max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 8); // TODO remove l8r
 
 		if (max > 1) {
 			vx /= max;
@@ -128,12 +132,12 @@ public class HDriveSubsystem extends SubsystemBase {
 
 	public void setLeft(double vel) { // TODO when SYSID
 		lo = lff.x * vel + lpid.calculate(getLeftVel(), vel);
-		lef.set(ControlMode.PercentOutput, -lo * DrivetrainConstants.LEFT_SPEED_TO_ONE);
+		lef.set(-lo * DrivetrainConstants.LEFT_SPEED_TO_ONE);
 	}
 
 	public void setRight(double vel) {
 		ro = rff.x * vel + rpid.calculate(getRightVel(), vel);
-		rgt.set(ControlMode.PercentOutput, ro * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
+		rgt.set(ro * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
 	}
 
 	public void setMid(double vel) {
@@ -141,21 +145,21 @@ public class HDriveSubsystem extends SubsystemBase {
 		mid.set(-mo * DrivetrainConstants.H_SPEED_TO_ONE);
 	}
 
-        private double talonToRad(TalonFX talon) {
-                return talon.getSelectedSensorPosition() / 2048. * 2 * Math.PI;
-        }
+	private double talonToRad(TalonFX talon) {
+		return talon.getSelectedSensorPosition() / 2048. * 2 * Math.PI;
+	}
 
-        private double talonToRadPerSecond(TalonFX talon) {
-                return talon.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI;
-        }
+	private double talonToRadPerSecond(TalonFX talon) {
+		return talon.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI;
+	}
 
-        private double neoToRad(CANSparkMax neo) {
-                return neo.getEncoder().getPosition() * 2 * Math.PI;
-        }
+	private double neoToRad(CANSparkMax neo) {
+		return neo.getEncoder().getPosition() * 2 * Math.PI;
+	}
 
-        private double neoToRadPerSecond(CANSparkMax neo) {
-                return neo.getEncoder().getPosition() * 2 * Math.PI / 60.;
-        }
+	private double neoToRadPerSecond(CANSparkMax neo) {
+		return neo.getEncoder().getPosition() * 2 * Math.PI / 60.;
+	}
 
 	public double getRightPos() {
 		return talonToRad(rgt) / DrivetrainConstants.RIGHT_RAD_PER_METER;

@@ -27,7 +27,7 @@ public class FODdrive extends CommandBase {
 		double robot_angle = odom.now().theta;
 		double vx = Math.cos(robot_angle) * vf + Math.sin(robot_angle) * vs;
 		double vy = -Math.sin(robot_angle) * vf + Math.cos(robot_angle) * vs;
-		drive.drive(vx / 4, vy / 4, w / 2);
+		drive.drive(vx / 4, vy / 4, w / 2); // FIXME
 	}
 
 	@Override
