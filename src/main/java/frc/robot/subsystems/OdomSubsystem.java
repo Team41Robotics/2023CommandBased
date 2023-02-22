@@ -23,15 +23,19 @@ public class OdomSubsystem extends SubsystemBase {
 	public OdomSubsystem() {
 		times.ensureCapacity(7000);
 		odoms.ensureCapacity(7000);
+
 		odomstab.addNumber("x", () -> now().x);
 		odomstab.addNumber("y", () -> now().y);
 		odomstab.addNumber("theta", () -> now().theta);
+
 		odomstab.addNumber("Ox", () -> origin.x);
 		odomstab.addNumber("Oy", () -> origin.y);
 		odomstab.addNumber("Otheta", () -> origin.theta);
+
 		odomstab.addNumber("Ax", () -> acc().x);
 		odomstab.addNumber("Ay", () -> acc().y);
 		odomstab.addNumber("Atheta", () -> acc().theta);
+
 		odoms.add(new Transform2d(0, 0, 0));
 		times.add(Timer.getFPGATimestamp());
 	}

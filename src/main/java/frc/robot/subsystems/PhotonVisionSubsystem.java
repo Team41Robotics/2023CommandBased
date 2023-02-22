@@ -10,7 +10,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot
+public class PhotonVisionSubsystem extends SubsystemBase {
 	private static final double THETA_THRESHOLD = 10 / 180. * Math.PI;
 
 	static PhotonVisionSubsystem pv;
@@ -42,6 +42,7 @@ public class PhotonVisionSubsystem extends SubsystemBase { // TODO a lot
 		PhotonCamera cam = cameras[ci];
 		PhotonPipelineResult res = cam.getLatestResult();
 		double time = res.getTimestampSeconds();
+
 		if (time > last_time[ci] && res.hasTargets()) {
 			last_time[ci] = time;
 			for (PhotonTrackedTarget tgt : res.getTargets()) {

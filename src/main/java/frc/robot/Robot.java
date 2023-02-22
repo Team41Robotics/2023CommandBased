@@ -7,30 +7,33 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
-import frc.robot.commands.GoTo;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
 public class Robot extends TimedRobot {
-	private Command autonomousCommand;
 	public static Joystick leftjs = new Joystick(0);
 	public static Joystick rightjs = new Joystick(1);
 	public static IMU imu = new IMU();
+
 	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
 	public boolean FOD;
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 
+	private Command autonomousCommand;
+
 	@Override
 	public void robotInit() {
-		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		configureButtons();
+
+		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
 
 		AutonomousRoutine.initShuffleboard();
@@ -43,11 +46,13 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		CommandScheduler.getInstance()
-				.schedule(new SequentialCommandGroup(
-						new GoTo(new Transform2d(1.02690 + 3, 2.73981, Math.PI)),
-						new GoTo(new Transform2d(1.02690 + 2.4, 2.73981, Math.PI))));
+		autonomousCommand = AutonomousRoutine.AUTO_CHOOSER.getSelected().construct();
+		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
 
+		if (autonomousCommand != null) {
+			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
+			CommandScheduler.getInstance().schedule(cmd);
+		}
 	}
 
 	@Override
@@ -55,7 +60,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		imu.zeroYaw();
+		imu.zeroYaw(); // TODO move
 		odom.start();
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();

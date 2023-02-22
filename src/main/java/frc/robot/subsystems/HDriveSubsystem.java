@@ -126,7 +126,7 @@ public class HDriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void setLeft(double vel) {
+	public void setLeft(double vel) { // TODO when SYSID
 		lo = lff.x * vel + lpid.calculate(getLeftVel(), vel);
 		lef.set(ControlMode.PercentOutput, -lo * DrivetrainConstants.LEFT_SPEED_TO_ONE);
 	}
@@ -141,28 +141,44 @@ public class HDriveSubsystem extends SubsystemBase {
 		mid.set(-mo * DrivetrainConstants.H_SPEED_TO_ONE);
 	}
 
+        private double talonToRad(TalonFX talon) {
+                return talon.getSelectedSensorPosition() / 2048. * 2 * Math.PI;
+        }
+
+        private double talonToRadPerSecond(TalonFX talon) {
+                return talon.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI;
+        }
+
+        private double neoToRad(CANSparkMax neo) {
+                return neo.getEncoder().getPosition() * 2 * Math.PI;
+        }
+
+        private double neoToRadPerSecond(CANSparkMax neo) {
+                return neo.getEncoder().getPosition() * 2 * Math.PI / 60.;
+        }
+
 	public double getRightPos() {
-		return rgt.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.RIGHT_RAD_PER_METER;
+		return talonToRad(rgt) / DrivetrainConstants.RIGHT_RAD_PER_METER;
 	}
 
 	public double getLeftPos() {
-		return -lef.getSelectedSensorPosition() / 2048. * 2 * Math.PI / DrivetrainConstants.LEFT_RAD_PER_METER;
+		return -talonToRad(lef) / DrivetrainConstants.LEFT_RAD_PER_METER;
 	}
 
 	public double getMidPos() {
-		return -mid.getEncoder().getPosition() * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
+		return -neoToRad(mid) / DrivetrainConstants.H_RAD_PER_METER;
 	}
 
 	public double getRightVel() {
-		return rgt.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.RIGHT_RAD_PER_METER;
+		return talonToRadPerSecond(rgt) / DrivetrainConstants.RIGHT_RAD_PER_METER;
 	}
 
 	public double getLeftVel() {
-		return -lef.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI / DrivetrainConstants.LEFT_RAD_PER_METER;
+		return -talonToRadPerSecond(lef) / DrivetrainConstants.LEFT_RAD_PER_METER;
 	}
 
 	public double getMidVel() {
-		return mid.getEncoder().getVelocity() / 60. * 2 * Math.PI / DrivetrainConstants.H_RAD_PER_METER;
+		return -neoToRadPerSecond(mid) / DrivetrainConstants.H_RAD_PER_METER;
 	}
 
 	public static HDriveSubsystem getInstance() {
