@@ -20,14 +20,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
 		null,
-		new Transform2d(15.51310, 1.06341, Math.PI),
-		new Transform2d(15.51310, 2.73981, Math.PI),
-		new Transform2d(15.51310, 4.41621, Math.PI),
-		new Transform2d(16.17832, 6.74161, Math.PI),
-		new Transform2d(0.36168, 6.74161, 0),
-		new Transform2d(1.02690, 4.41621, 0),
-		new Transform2d(1.02690, 2.73981, 0),
-		new Transform2d(1.02690, 1.06341, 0),
+		new Transform2d(0,0,0),
 	};
 
 	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("TopCamera")};
@@ -47,7 +40,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 			last_time[ci] = time;
 			for (PhotonTrackedTarget tgt : res.getTargets()) {
 				int id = tgt.getFiducialId();
-				if (id == 0 || id > taglocs.length) continue;
+				if (id == 0 || id >= taglocs.length) continue;
 
 				var bestt = tgt.getBestCameraToTarget().inverse();
 				Transform2d best = new Transform2d(
@@ -59,6 +52,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
 				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
+                                poses[ptr % 32] = pose;
+                                times[ptr % 32] = time;
+                                ptr++;
+    /*
 				if (Math.abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
 					// mod 32; overwrites first estimate if ovf; 99% not needed or used
 					poses[ptr % 32] = pose;
@@ -69,6 +66,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 					times[ptr % 32] = time;
 					ptr++;
 				}
+                                */
 			}
 		}
 	}

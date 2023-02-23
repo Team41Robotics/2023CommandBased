@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class OdomSubsystem extends SubsystemBase {
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
-	Transform2d origin = new Transform2d(1.02690 + 0.84, 2.73981, Math.PI); // CHANGE WITH COORD SYSTEM
+	Transform2d origin = new Transform2d(1,0,Math.PI); // CHANGE WITH COORD SYSTEM
 	// TODO ORIGIN; we can likely just use apriltags lol
 
 	static OdomSubsystem odom;

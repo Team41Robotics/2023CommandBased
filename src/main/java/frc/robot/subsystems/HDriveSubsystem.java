@@ -100,12 +100,12 @@ public class HDriveSubsystem extends SubsystemBase {
 		vm = vy;
 
 		double max = 0;
-		if (max < Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE))
+		if (max < Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE))// FIXME FIXME idt this works
 			max = Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE);
 		if (max < Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE))
 			max = Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
-		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 8))
-                        max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE * 8); // TODO remove l8r
+		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE))
+                        max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE); // TODO remove l8r
 
 		if (max > 1) {
 			vx /= max;

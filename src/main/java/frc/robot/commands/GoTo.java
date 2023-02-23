@@ -20,8 +20,8 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 		wPID.enableContinuousInput(-Math.PI, Math.PI);
 	}
 
-	PIDController xPID = new PIDController(1.5, 0, 0);
-	PIDController yPID = new PIDController(1.5, 0, 0);
+	PIDController xPID = new PIDController(2, 0, 0);
+	PIDController yPID = new PIDController(2, 0, 0);
 	PIDController wPID = new PIDController(1.3, 0, 0);
 
 	@Override
@@ -47,7 +47,7 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 		double robot_angle = odom.now().theta;
 		double vf = Math.cos(robot_angle) * vx + Math.sin(robot_angle) * vy;
 		double vs = -Math.sin(robot_angle) * vx + Math.cos(robot_angle) * vy;
-		drive.drive(vf, vs * 0, w);
+		drive.drive(vf, vs, w);
 	}
 
 	public boolean isFinished() {
