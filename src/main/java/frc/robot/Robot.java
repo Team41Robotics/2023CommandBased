@@ -13,7 +13,6 @@ import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
-import frc.robot.commands.GoTo;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
@@ -29,6 +28,10 @@ public class Robot extends TimedRobot {
 	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 
 	private Command autonomousCommand;
+
+	private void schedule(Command cmd) {
+		CommandScheduler.getInstance().schedule(cmd);
+	}
 
 	@Override
 	public void robotInit() {
@@ -52,7 +55,7 @@ public class Robot extends TimedRobot {
 
 		if (autonomousCommand != null) {
 			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
-			CommandScheduler.getInstance().schedule(cmd);
+			schedule(cmd);
 		}
 	}
 
@@ -73,7 +76,7 @@ public class Robot extends TimedRobot {
 		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else hdrive.drive(0, 0, 0);
-		if (leftjs.getRawButton(1)) CommandScheduler.getInstance().schedule(new GoTo(new Transform2d(1, 0, Math.PI)));
+		// if (leftjs.getRawButton(1)) schedule(new GoTo(new Transform2d(1, 0, Math.PI)));
 	}
 
 	public void configureButtons() {
