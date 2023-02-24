@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
 		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else hdrive.drive(0, 0, 0);
-                if (leftjs.getRawButton(1)) CommandScheduler.getInstance().schedule(new GoTo(new Transform2d(1,0,Math.PI)));
+		if (leftjs.getRawButton(1)) CommandScheduler.getInstance().schedule(new GoTo(new Transform2d(1, 0, Math.PI)));
 	}
 
 	public void configureButtons() {
