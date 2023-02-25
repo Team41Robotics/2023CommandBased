@@ -8,10 +8,12 @@ import frc.robot.Robot;
 import frc.robot.Transform2d;
 import frc.robot.Util;
 import java.util.ArrayList;
-
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 public class OdomSubsystem extends SubsystemBase {
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
+	Field2d field = new Field2d();
 	Transform2d origin = new Transform2d(1.02690 + 0.84, 2.73981, Math.PI);// CHANGE WITH COORD SYSTEM
 	// TODO ORIGIN; we can likely just use apriltags lol
 
@@ -35,6 +37,7 @@ public class OdomSubsystem extends SubsystemBase {
 		odomstab.addNumber("Ax", () -> acc().x);
 		odomstab.addNumber("Ay", () -> acc().y);
 		odomstab.addNumber("Atheta", () -> acc().theta);
+		odomstab.add("Field",field);
 
 		odoms.add(new Transform2d(0, 0, 0));
 		times.add(Timer.getFPGATimestamp());
@@ -54,6 +57,7 @@ public class OdomSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		
 		double theta = Robot.imu.getAngle();
 		double dtheta = theta - ptheta;
 		ptheta = theta;
@@ -82,6 +86,7 @@ public class OdomSubsystem extends SubsystemBase {
 		Transform2d trans = new Transform2d(dx, dy, dtheta);
 		odoms.add(acc().mul(trans));
 		times.add(Timer.getFPGATimestamp());
+		field.setRobotPose(now().x, now().y, Rotation2d.fromRadians( now().theta));
 	}
 
 	public Transform2d acc() {
