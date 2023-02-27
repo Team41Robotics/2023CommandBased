@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		imu.zeroYaw(); // TODO move
+		imu.zeroYaw(); // TODO move to auton
 		odom.start();
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();

@@ -12,7 +12,7 @@ public final class Constants {
 
 		public static final double JOYSTICK_DEADZONE = 0.2;
 
-		// TODO tuning; variable drive speed?
+		// TODO tuning; variable drive speed? after sysid
 		public static final double FWD_DRIVE_VELOCITY = FALCON_MAX_SPEED / DrivetrainConstants.LEFT_RAD_PER_METER;
 		public static final double TURN_VELOCITY = FWD_DRIVE_VELOCITY / DrivetrainConstants.RADIUS;
 	}
@@ -26,7 +26,7 @@ public final class Constants {
 		public static final int PORT_R1 = 3;
 		public static final int PORT_R2 = 4;
 
-		private static final double MECHANICAL_DRIFT_COMP = 0.95; // TODO: figure out cause of this
+		private static final double MECHANICAL_DRIFT_COMP = 0.95; // TODO: figure out cause of this // sysid may fix
 		public static final double LEFT_RATIO = 9.75;
 		public static final double RIGHT_RATIO = LEFT_RATIO * 14.0 / 12.0 * MECHANICAL_DRIFT_COMP;
 		public static final double H_RATIO = 10.65;

@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.SendableDouble;
 
-public class HDriveSubsystem extends SubsystemBase {
+public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current if touching ground
 	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
 
 	static HDriveSubsystem hdrive;
@@ -99,20 +99,21 @@ public class HDriveSubsystem extends SubsystemBase {
 		vr = vx + w * DrivetrainConstants.RADIUS;
 		vm = vy;
 
-		double max = 0; // FIXME FIXME idt this works
-		if (max < Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE))
-			max = Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE);
-		if (max < Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE))
-			max = Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
+		double max = 0;
+		if (max < Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE * 8))
+			max = Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE * 8);
+		if (max < Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE * 8))
+			max = Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE * 8);
 		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE))
 			max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE);
 
+		System.out.println("max = " + max);
 		if (max > 1) {
 			vx /= max;
 			vy /= max;
 			w /= max;
-			vl = -vx + w;
-			vr = -vx - w;
+			vl = vx - w * DrivetrainConstants.RADIUS;
+			vr = vx + w * DrivetrainConstants.RADIUS;
 			vm = vy;
 		}
 	}
