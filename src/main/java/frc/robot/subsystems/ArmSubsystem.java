@@ -1,32 +1,24 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.ArmConstants.*;
 import static java.lang.Math.PI;
+import static java.lang.Math.signum;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
-	CANSparkMax elev = new CANSparkMax(ArmConstants.ELEV_ID, MotorType.kBrushless);
-	CANSparkMax joint1 = new CANSparkMax(ArmConstants.JOINT1_ID, MotorType.kBrushless);
-	CANSparkMax joint2 = new CANSparkMax(ArmConstants.JOINT2_ID, MotorType.kBrushless);
+	CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
+	CANSparkMax joint1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
+	CANSparkMax joint2 = new CANSparkMax(JOINT2_ID, MotorType.kBrushless);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();
 	SparkMaxPIDController joint1_vpid = joint1.getPIDController();
 	SparkMaxPIDController joint2_vpid = joint2.getPIDController();
-
-	PIDController elev_ppid = new PIDController(1, 0, 0);
-	PIDController joint1_ppid = new PIDController(1, 0, 0);
-	PIDController joint2_ppid = new PIDController(1, 0, 0);
-
-        TrapezoidProfile elev_prof;
-        TrapezoidProfile joint1_prof;
-        TrapezoidProfile joint2_prof;
-	ArmPosition setpoint;
 
 	public ArmSubsystem() {
 		zero();
@@ -43,9 +35,9 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public void zero() {
-		elev.getEncoder().setPosition(ArmConstants.ELEV_PACKAGED_POSITION / 2 / PI / ArmConstants.ELEV_METERS_PER_RAD);
-		joint1.getEncoder().setPosition(ArmConstants.JOINT1_PACKAGED_POSITION / 2 / PI / ArmConstants.JOINT1_RATIO);
-		joint2.getEncoder().setPosition(ArmConstants.JOINT2_PACKAGED_POSITION / 2 / PI / ArmConstants.JOINT2_RATIO);
+		elev.getEncoder().setPosition(ELEV_PACKAGED_POSITION / 2 / PI / ELEV_METERS_PER_RAD);
+		joint1.getEncoder().setPosition(JOINT1_PACKAGED_POSITION / 2 / PI / JOINT1_RATIO);
+		joint2.getEncoder().setPosition(JOINT2_PACKAGED_POSITION / 2 / PI / JOINT2_RATIO);
 
 		elev.restoreFactoryDefaults();
 		joint1.restoreFactoryDefaults();
@@ -53,8 +45,35 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 	// TODO dynamic zeroing of encoder based on limit switches on elevator
 
-	public void set(ArmPosition pos) {
-		this.setpoint = pos;
+	public void set(double elev_vel, double joint1_vel, double joint2_vel) {
+		set(elev_vel, joint1_vel, joint2_vel, 0, 0, 0);
+	}
+
+	public void set(
+			double elev_vel,
+			double joint1_vel,
+			double joint2_vel,
+			double elev_acc,
+			double joint1_acc,
+			double joint2_acc) {
+		elev_vpid.setReference(
+				elev_vel / ELEV_METERS_PER_RAD / 2 / PI,
+				ControlType.kVelocity,
+				0,
+				ELEV_kS * signum(elev_vel) + ELEV_kV * elev_vel + ELEV_kA * elev_acc,
+				ArbFFUnits.kVoltage);
+		joint1_vpid.setReference(
+				joint1_vel * JOINT1_RATIO / 2 / PI,
+				ControlType.kVelocity,
+				0,
+				JOINT1_kS * signum(joint1_vel) + JOINT1_kV * joint1_vel + JOINT1_kA * joint1_acc,
+				ArbFFUnits.kVoltage);
+		joint2_vpid.setReference(
+				joint2_vel * JOINT2_RATIO / 2 / PI,
+				ControlType.kVelocity,
+				0,
+				JOINT2_kS * signum(joint2_vel) + JOINT2_kV * joint2_vel + JOINT2_kA * joint2_acc,
+				ArbFFUnits.kVoltage);
 	}
 
 	@Override
@@ -63,14 +82,14 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public double getElevPos() {
-		return elev.getEncoder().getPosition() * 2 * PI * ArmConstants.ELEV_METERS_PER_RAD;
+		return elev.getEncoder().getPosition() * 2 * PI * ELEV_METERS_PER_RAD;
 	}
 
 	public double getJoint1Pos() {
-		return joint1.getEncoder().getPosition() * 2 * PI / ArmConstants.JOINT1_RATIO;
+		return joint1.getEncoder().getPosition() * 2 * PI / JOINT1_RATIO;
 	}
 
 	public double getJoint2Pos() {
-		return joint2.getEncoder().getPosition() * 2 * PI / ArmConstants.JOINT2_RATIO;
+		return joint2.getEncoder().getPosition() * 2 * PI / JOINT2_RATIO;
 	}
 }

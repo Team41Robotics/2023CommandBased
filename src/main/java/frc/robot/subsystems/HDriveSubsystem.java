@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.DrivetrainConstants.*;
 import static java.lang.Math.PI;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -12,7 +13,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.SendableDouble;
 
 public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current if touching ground
@@ -20,12 +20,12 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 
 	static HDriveSubsystem hdrive;
 
-	WPI_TalonFX lef = new WPI_TalonFX(DrivetrainConstants.PORT_L1);
-	WPI_TalonFX lef1 = new WPI_TalonFX(DrivetrainConstants.PORT_L2);
-	CANSparkMax mid = new CANSparkMax(DrivetrainConstants.PORT_M1, MotorType.kBrushless);
-	CANSparkMax mid1 = new CANSparkMax(DrivetrainConstants.PORT_M2, MotorType.kBrushless);
-	WPI_TalonFX rgt = new WPI_TalonFX(DrivetrainConstants.PORT_R1);
-	WPI_TalonFX rgt1 = new WPI_TalonFX(DrivetrainConstants.PORT_R2);
+	WPI_TalonFX lef = new WPI_TalonFX(PORT_L1);
+	WPI_TalonFX lef1 = new WPI_TalonFX(PORT_L2);
+	CANSparkMax mid = new CANSparkMax(PORT_M1, MotorType.kBrushless);
+	CANSparkMax mid1 = new CANSparkMax(PORT_M2, MotorType.kBrushless);
+	WPI_TalonFX rgt = new WPI_TalonFX(PORT_R1);
+	WPI_TalonFX rgt1 = new WPI_TalonFX(PORT_R2);
 
 	PIDController lpid = new PIDController(.5, 0, 0);
 	PIDController mpid = new PIDController(.5, 0, 0);
@@ -96,26 +96,23 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 		drive(vx, vy, w, true);
 	}
 
-	public void drive(double vx, double vy, double w, boolean preserve) {
-		vl = vx - w * DrivetrainConstants.RADIUS;
-		vr = vx + w * DrivetrainConstants.RADIUS;
+	public void drive(double vx, double vy, double w, boolean preserve) { // TODO add accel
+		vl = vx - w * RADIUS;
+		vr = vx + w * RADIUS;
 		vm = vy;
 
 		double max = 0;
-		if (max < Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE * 8))
-			max = Math.abs(vl * DrivetrainConstants.LEFT_SPEED_TO_ONE * 8);
-		if (max < Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE * 8))
-			max = Math.abs(vr * DrivetrainConstants.RIGHT_SPEED_TO_ONE * 8);
-		if (max < Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE))
-			max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE);
+		if (max < Math.abs(vl * LEFT_SPEED_TO_ONE * 8)) max = Math.abs(vl * LEFT_SPEED_TO_ONE * 8);
+		if (max < Math.abs(vr * RIGHT_SPEED_TO_ONE * 8)) max = Math.abs(vr * RIGHT_SPEED_TO_ONE * 8);
+		if (max < Math.abs(vm * H_SPEED_TO_ONE)) max = Math.abs(vm * H_SPEED_TO_ONE);
 
 		System.out.println("max = " + max);
 		if (max > 1) {
 			vx /= max;
 			vy /= max;
 			w /= max;
-			vl = vx - w * DrivetrainConstants.RADIUS;
-			vr = vx + w * DrivetrainConstants.RADIUS;
+			vl = vx - w * RADIUS;
+			vr = vx + w * RADIUS;
 			vm = vy;
 		}
 	}
@@ -135,17 +132,17 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 
 	public void setLeft(double vel) { // TODO when SYSID
 		lo = lff.x * vel + lpid.calculate(getLeftVel(), vel);
-		lef.set(-lo * DrivetrainConstants.LEFT_SPEED_TO_ONE);
+		lef.set(-lo * LEFT_SPEED_TO_ONE);
 	}
 
 	public void setRight(double vel) {
 		ro = rff.x * vel + rpid.calculate(getRightVel(), vel);
-		rgt.set(ro * DrivetrainConstants.RIGHT_SPEED_TO_ONE);
+		rgt.set(ro * RIGHT_SPEED_TO_ONE);
 	}
 
 	public void setMid(double vel) {
 		mo = mff.x * vel + mpid.calculate(getMidVel(), vel);
-		mid.set(-mo * DrivetrainConstants.H_SPEED_TO_ONE);
+		mid.set(-mo * H_SPEED_TO_ONE);
 	}
 
 	private double talonToRad(TalonFX talon) {
@@ -165,27 +162,27 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 	}
 
 	public double getRightPos() {
-		return talonToRad(rgt) / DrivetrainConstants.RIGHT_RAD_PER_METER;
+		return talonToRad(rgt) / RIGHT_RAD_PER_METER;
 	}
 
 	public double getLeftPos() {
-		return -talonToRad(lef) / DrivetrainConstants.LEFT_RAD_PER_METER;
+		return -talonToRad(lef) / LEFT_RAD_PER_METER;
 	}
 
 	public double getMidPos() {
-		return -neoToRad(mid) / DrivetrainConstants.H_RAD_PER_METER;
+		return -neoToRad(mid) / H_RAD_PER_METER;
 	}
 
 	public double getRightVel() {
-		return talonToRadPerSecond(rgt) / DrivetrainConstants.RIGHT_RAD_PER_METER;
+		return talonToRadPerSecond(rgt) / RIGHT_RAD_PER_METER;
 	}
 
 	public double getLeftVel() {
-		return -talonToRadPerSecond(lef) / DrivetrainConstants.LEFT_RAD_PER_METER;
+		return -talonToRadPerSecond(lef) / LEFT_RAD_PER_METER;
 	}
 
 	public double getMidVel() {
-		return -neoToRadPerSecond(mid) / DrivetrainConstants.H_RAD_PER_METER;
+		return -neoToRadPerSecond(mid) / H_RAD_PER_METER;
 	}
 
 	public static HDriveSubsystem getInstance() {

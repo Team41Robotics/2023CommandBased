@@ -1,10 +1,10 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.GoToConstants.*;
 import static java.lang.Math.PI;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.Transform2d;
 import frc.robot.Util;
 import frc.robot.subsystems.HDriveSubsystem;
@@ -53,11 +53,11 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 	}
 
 	public boolean isFinished() {
-		return Math.abs(odom.now().x - target.x) <= Constants.GOTO_XY_THRESHOLD
-				// && Math.abs(odom.now().y - target.y) <= Constants.GOTO_XY_THRESHOLD
-				&& Math.abs(Util.normRot(odom.now().theta - target.theta)) <= Constants.GOTO_TURN_THRESHOLD
-				&& drive.getLeftVel() < Constants.GOTO_VEL_THRES
-				&& drive.getRightVel() < Constants.GOTO_VEL_THRES;
-		// && drive.getMidVel() < Constants.GOTO_VEL_THRES;
+		return Math.abs(odom.now().x - target.x) <= GOTO_XY_THRESHOLD
+				// && Math.abs(odom.now().y - target.y) <= GOTO_XY_THRESHOLD
+				&& Math.abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_THRESHOLD
+				&& drive.getLeftVel() < GOTO_VEL_THRES
+				&& drive.getRightVel() < GOTO_VEL_THRES;
+		// && drive.getMidVel() < GOTO_VEL_THRES;
 	}
 }

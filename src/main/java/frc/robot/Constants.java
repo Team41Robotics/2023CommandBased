@@ -41,7 +41,7 @@ public final class Constants {
 		public static final double H_RAD_PER_METER = 1 / H_WHEEL_RADIUS * H_RATIO;
 
 		public static final double LEFT_SPEED_TO_ONE =
-				DrivetrainConstants.LEFT_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
+				DrivetrainConstants.LEFT_RAD_PER_METER / Constants.FALCON_MAX_SPEED; // TODO SYSID
 		public static final double RIGHT_SPEED_TO_ONE =
 				DrivetrainConstants.RIGHT_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
 		public static final double H_SPEED_TO_ONE = DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED;
@@ -71,9 +71,23 @@ public final class Constants {
 		public static final double JOINT1_MAX_ACCEL = 0;
 		public static final double JOINT2_MAX_SPEED = 0;
 		public static final double JOINT2_MAX_ACCEL = 0;
+
+		public static final double ELEV_kV = 0;
+		public static final double JOINT1_kV = 0;
+		public static final double JOINT2_kV = 0;
+
+		public static final double ELEV_kS = 0;
+		public static final double JOINT1_kS = 0;
+		public static final double JOINT2_kS = 0;
+
+		public static final double ELEV_kA = 0;
+		public static final double JOINT1_kA = 0;
+		public static final double JOINT2_kA = 0;
 	}
 
-	public static final double GOTO_XY_THRESHOLD = 0.03;
-	public static final double GOTO_TURN_THRESHOLD = .5 / 180. * PI;
-	public static final double GOTO_VEL_THRES = 0.2;
+	public static class GoToConstants {
+		public static final double GOTO_XY_THRESHOLD = 0.03;
+		public static final double GOTO_TURN_THRESHOLD = .5 / 180. * PI;
+		public static final double GOTO_VEL_THRES = 0.2;
+	}
 }
