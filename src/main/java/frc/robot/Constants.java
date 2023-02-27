@@ -64,6 +64,13 @@ public final class Constants {
 		public static final double ELEV_PACKAGED_POSITION = 0;
 		public static final double JOINT1_PACKAGED_POSITION = 0;
 		public static final double JOINT2_PACKAGED_POSITION = 0;
+
+		public static final double ELEV_MAX_SPEED = 0; // todo calc using sysid
+		public static final double ELEV_MAX_ACCEL = 0;
+		public static final double JOINT1_MAX_SPEED = 0;
+		public static final double JOINT1_MAX_ACCEL = 0;
+		public static final double JOINT2_MAX_SPEED = 0;
+		public static final double JOINT2_MAX_ACCEL = 0;
 	}
 
 	public static final double GOTO_XY_THRESHOLD = 0.03;
