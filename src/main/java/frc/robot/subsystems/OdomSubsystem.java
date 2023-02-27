@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static java.lang.Math.PI;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -15,7 +17,7 @@ public class OdomSubsystem extends SubsystemBase {
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
 	Field2d field = new Field2d();
-	Transform2d origin = new Transform2d(1.02690 + 0.84, 2.73981, Math.PI); // CHANGE WITH COORD SYSTEM
+	Transform2d origin = new Transform2d(1.02690 + 0.84, 2.73981, PI); // CHANGE WITH COORD SYSTEM
 	// TODO ORIGIN; we can likely just use apriltags lol
 
 	static OdomSubsystem odom;

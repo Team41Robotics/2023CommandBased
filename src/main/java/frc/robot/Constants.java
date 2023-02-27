@@ -1,8 +1,10 @@
 package frc.robot;
 
+import static java.lang.Math.PI;
+
 public final class Constants {
-	public static final double FALCON_MAX_SPEED = 6380 * 2 * Math.PI / 60;
-	public static final double NEO_MAX_SPEED = 5676 * 2 * Math.PI / 60;
+	public static final double FALCON_MAX_SPEED = 6380 * 2 * PI / 60;
+	public static final double NEO_MAX_SPEED = 5676 * 2 * PI / 60;
 
 	public static class OperatorConstants {
 
@@ -47,7 +49,24 @@ public final class Constants {
 		public static final double RADIUS = 0.6512;
 	}
 
+	public static class ArmConstants {
+		public static final int ELEV_ID = 0;
+		public static final int JOINT1_ID = 0;
+		public static final int JOINT2_ID = 0;
+
+		public static final double ELEV_RATIO = 0;
+		public static final double JOINT1_RATIO = 0;
+		public static final double JOINT2_RATIO = 0;
+
+		public static final double ELEV_METERS_PER_RAD = 0;
+		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_RAD;
+
+		public static final double ELEV_PACKAGED_POSITION = 0;
+		public static final double JOINT1_PACKAGED_POSITION = 0;
+		public static final double JOINT2_PACKAGED_POSITION = 0;
+	}
+
 	public static final double GOTO_XY_THRESHOLD = 0.03;
-	public static final double GOTO_TURN_THRESHOLD = .5 / 180. * Math.PI;
+	public static final double GOTO_TURN_THRESHOLD = .5 / 180. * PI;
 	public static final double GOTO_VEL_THRES = 0.2;
 }

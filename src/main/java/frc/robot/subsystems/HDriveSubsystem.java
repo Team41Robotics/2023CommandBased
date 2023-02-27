@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static java.lang.Math.PI;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -147,19 +149,19 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 	}
 
 	private double talonToRad(TalonFX talon) {
-		return talon.getSelectedSensorPosition() / 2048. * 2 * Math.PI;
+		return talon.getSelectedSensorPosition() / 2048. * 2 * PI;
 	}
 
 	private double talonToRadPerSecond(TalonFX talon) {
-		return talon.getSelectedSensorVelocity() * 10 / 2048. * 2 * Math.PI;
+		return talon.getSelectedSensorVelocity() * 10 / 2048. * 2 * PI;
 	}
 
 	private double neoToRad(CANSparkMax neo) {
-		return neo.getEncoder().getPosition() * 2 * Math.PI;
+		return neo.getEncoder().getPosition() * 2 * PI;
 	}
 
 	private double neoToRadPerSecond(CANSparkMax neo) {
-		return neo.getEncoder().getPosition() * 2 * Math.PI / 60.;
+		return neo.getEncoder().getPosition() * 2 * PI / 60.;
 	}
 
 	public double getRightPos() {

@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static java.lang.Math.PI;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -23,7 +25,7 @@ public class Balance extends CommandBase {
 		else bal_pid.setI(0);
 		drive.drive(bal_pid.calculate(Robot.imu.getPitch(), 0), 0, 0);
 
-		if (Math.abs(Robot.imu.getPitch()) > 1.5 / 180 * Math.PI) last_time_valid = Timer.getFPGATimestamp();
+		if (Math.abs(Robot.imu.getPitch()) > 1.5 / 180 * PI) last_time_valid = Timer.getFPGATimestamp();
 	}
 
 	@Override

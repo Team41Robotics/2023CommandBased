@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static java.lang.Math.PI;
+
 import frc.robot.Constants.OperatorConstants;
 
 public class Util {
@@ -26,10 +28,10 @@ public class Util {
 	 * @return rotation normalized from -180 deg to 180 deg
 	 */
 	public static double normRot(double rad) {
-		rad %= 2 * Math.PI;
-		rad += 2 * Math.PI;
-		rad %= 2 * Math.PI;
-		if (rad > Math.PI) rad -= 2 * Math.PI;
+		rad %= 2 * PI;
+		rad += 2 * PI;
+		rad %= 2 * PI;
+		if (rad > PI) rad -= 2 * PI;
 		return rad;
 	}
 

@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static java.lang.Math.PI;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -11,10 +13,10 @@ public class IMU {
 	double yawOffset = 0;
 
 	public IMU() {
-		imutab.addNumber("roll", () -> getRoll() * 180 / Math.PI);
-		imutab.addNumber("pitch", () -> getPitch() * 180 / Math.PI);
-		imutab.addNumber("yaw", () -> getYaw() * 180 / Math.PI);
-		imutab.addNumber("angle", () -> getAngle() * 180 / Math.PI);
+		imutab.addNumber("roll", () -> getRoll() * 180 / PI);
+		imutab.addNumber("pitch", () -> getPitch() * 180 / PI);
+		imutab.addNumber("yaw", () -> getYaw() * 180 / PI);
+		imutab.addNumber("angle", () -> getAngle() * 180 / PI);
 	}
 
 	public boolean isCalibrating() {
@@ -26,18 +28,18 @@ public class IMU {
 	}
 
 	public double getPitch() {
-		return ahrs.getPitch() * Math.PI / 180;
+		return ahrs.getPitch() * PI / 180;
 	}
 
 	public double getRoll() {
-		return ahrs.getRoll() * Math.PI / 180;
+		return ahrs.getRoll() * PI / 180;
 	}
 
 	public double getYaw() {
-		return (-ahrs.getYaw() - yawOffset) * Math.PI / 180;
+		return (-ahrs.getYaw() - yawOffset) * PI / 180;
 	}
 
 	public double getAngle() {
-		return (-ahrs.getAngle() - yawOffset) * Math.PI / 180;
+		return (-ahrs.getAngle() - yawOffset) * PI / 180;
 	}
 }

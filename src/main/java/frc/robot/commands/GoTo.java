@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static java.lang.Math.PI;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -17,7 +19,7 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 	public GoTo(Transform2d target) {
 		this.target = target;
 		addRequirements(drive);
-		wPID.enableContinuousInput(-Math.PI, Math.PI);
+		wPID.enableContinuousInput(-PI, PI);
 	}
 
 	PIDController xPID = new PIDController(2, 0, 0);
@@ -37,7 +39,7 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 		else xPID.setI(0);
 		if (Math.abs(yPID.getPositionError()) < 0.1) yPID.setI(0.5);
 		else yPID.setI(0);
-		if (Math.abs(wPID.getPositionError()) < 10 * Math.PI / 180) wPID.setI(1);
+		if (Math.abs(wPID.getPositionError()) < 10 * PI / 180) wPID.setI(1);
 		else wPID.setI(0);
 
 		double vx = xPID.calculate(odom.now().x, target.x);

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static java.lang.Math.PI;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -11,7 +13,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
-	private static final double THETA_THRESHOLD = 10 / 180. * Math.PI;
+	private static final double THETA_THRESHOLD = 10 / 180. * PI;
 
 	static PhotonVisionSubsystem pv;
 
@@ -20,10 +22,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
 		null,
-		new Transform2d(15.51310, 1.06341, Math.PI),
-		new Transform2d(15.51310, 2.73981, Math.PI),
-		new Transform2d(15.51310, 4.41621, Math.PI),
-		new Transform2d(16.17832, 6.74161, Math.PI),
+		new Transform2d(15.51310, 1.06341, PI),
+		new Transform2d(15.51310, 2.73981, PI),
+		new Transform2d(15.51310, 4.41621, PI),
+		new Transform2d(16.17832, 6.74161, PI),
 		new Transform2d(0.36168, 6.74161, 0),
 		new Transform2d(1.02690, 4.41621, 0),
 		new Transform2d(1.02690, 2.73981, 0),
