@@ -80,6 +80,9 @@ public class Robot extends TimedRobot {
 	}
 
 	public void configureButtons() {
+		new JoystickButton(rightjs, 3)
+				.onTrue(new InstantCommand(
+						() -> System.out.println(odom.now().x + " : " + odom.now().y + " : " + odom.now().theta)));
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 1).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
 	}
