@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.util;
 
 public class ArmPosition {
 	double e, j1, j2;

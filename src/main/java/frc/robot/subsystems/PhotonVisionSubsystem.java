@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
-import static java.lang.Math.PI;
+import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Transform2d;
-import frc.robot.Util;
+import frc.robot.util.Transform2d;
+import frc.robot.util.Util;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -65,12 +65,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 					poses[ptr % 32] = pose;
 					times[ptr % 32] = time;
 					ptr++;
-				} else if (Math.abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
+				} else if (abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
 					// mod 32; overwrites first estimate if ovf; 99% not needed or used
 					poses[ptr % 32] = pose;
 					times[ptr % 32] = time;
 					ptr++;
-				} else if (Math.abs(Util.normRot(altpose.theta - odom.now().theta)) < THETA_THRESHOLD) {
+				} else if (abs(Util.normRot(altpose.theta - odom.now().theta)) < THETA_THRESHOLD) {
 					poses[ptr % 32] = altpose;
 					times[ptr % 32] = time;
 					ptr++;
@@ -88,7 +88,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		double tsin = 0; // orz
 		double tcos = 0;
 
-		int sz = Math.min(32, ptr);
+		int sz = min(32, ptr);
 		if (sz == 0) return;
 		for (int i = 0; i < 32 && i < ptr; i++) {
 			Transform2d o = odom.origin_if(poses[i], times[i]);
@@ -98,7 +98,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 			tcos += o.cos;
 		}
 		ptr = 0;
-		double norm = Math.sqrt(tsin * tsin + tcos * tcos);
+		double norm = sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos / norm, tsin / norm);
 		odom.update_origin(avg);
 	}

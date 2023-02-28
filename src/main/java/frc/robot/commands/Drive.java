@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Robot;
-import frc.robot.Util;
 import frc.robot.subsystems.HDriveSubsystem;
+import frc.robot.util.Util;
 
 public class Drive extends CommandBase {
 	Joystick leftjs, rightjs;

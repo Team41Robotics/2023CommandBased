@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static java.lang.Math.PI;
+import static java.lang.Math.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.Transform2d;
-import frc.robot.Util;
+import frc.robot.util.Transform2d;
+import frc.robot.util.Util;
 import java.util.ArrayList;
 
 public class OdomSubsystem extends SubsystemBase {
@@ -82,8 +82,8 @@ public class OdomSubsystem extends SubsystemBase {
 			dx = df;
 			dy = ds;
 		} else {
-			dx = Math.sin(dtheta) / dtheta * df + (Math.cos(dtheta) - 1) / dtheta * ds;
-			dy = (1 - Math.cos(dtheta)) / dtheta * df + Math.sin(dtheta) / dtheta * ds;
+			dx = sin(dtheta) / dtheta * df + (cos(dtheta) - 1) / dtheta * ds;
+			dy = (1 - cos(dtheta)) / dtheta * df + sin(dtheta) / dtheta * ds;
 		}
 
 		Transform2d trans = new Transform2d(dx, dy, dtheta);

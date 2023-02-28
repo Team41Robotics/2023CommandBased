@@ -1,8 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.ArmConstants.*;
-import static java.lang.Math.PI;
-import static java.lang.Math.signum;
+import static java.lang.Math.*;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -60,19 +59,25 @@ public class ArmSubsystem extends SubsystemBase {
 				elev_vel / ELEV_METERS_PER_RAD / 2 / PI,
 				ControlType.kVelocity,
 				0,
-				ELEV_kS * signum(elev_vel) + ELEV_kV * elev_vel + ELEV_kA * elev_acc,
+				ELEV_kG + ELEV_kS * signum(elev_vel) + ELEV_kV * elev_vel + ELEV_kA * elev_acc,
 				ArbFFUnits.kVoltage);
 		joint1_vpid.setReference(
 				joint1_vel * JOINT1_RATIO / 2 / PI,
 				ControlType.kVelocity,
 				0,
-				JOINT1_kS * signum(joint1_vel) + JOINT1_kV * joint1_vel + JOINT1_kA * joint1_acc,
+				JOINT1_kG * cos(getJoint1Pos())
+						+ JOINT1_kS * signum(joint1_vel)
+						+ JOINT1_kV * joint1_vel
+						+ JOINT1_kA * joint1_acc,
 				ArbFFUnits.kVoltage);
 		joint2_vpid.setReference(
 				joint2_vel * JOINT2_RATIO / 2 / PI,
 				ControlType.kVelocity,
 				0,
-				JOINT2_kS * signum(joint2_vel) + JOINT2_kV * joint2_vel + JOINT2_kA * joint2_acc,
+				JOINT2_kG * cos(getJoint2Pos())
+						+ JOINT2_kS * signum(joint2_vel)
+						+ JOINT2_kV * joint2_vel
+						+ JOINT2_kA * joint2_acc,
 				ArbFFUnits.kVoltage);
 	}
 

@@ -1,14 +1,14 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.GoToConstants.*;
-import static java.lang.Math.PI;
+import static java.lang.Math.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Transform2d;
-import frc.robot.Util;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
+import frc.robot.util.Transform2d;
+import frc.robot.util.Util;
 
 public class GoTo extends CommandBase { // TODO: trajectory & make this more aggressive with traj
 	HDriveSubsystem drive = HDriveSubsystem.getInstance();
@@ -35,11 +35,11 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 
 	@Override
 	public void execute() {
-		if (Math.abs(xPID.getPositionError()) < 0.1) xPID.setI(0.5);
+		if (abs(xPID.getPositionError()) < 0.1) xPID.setI(0.5);
 		else xPID.setI(0);
-		if (Math.abs(yPID.getPositionError()) < 0.1) yPID.setI(0.5);
+		if (abs(yPID.getPositionError()) < 0.1) yPID.setI(0.5);
 		else yPID.setI(0);
-		if (Math.abs(wPID.getPositionError()) < 10 * PI / 180) wPID.setI(1);
+		if (abs(wPID.getPositionError()) < 10 * PI / 180) wPID.setI(1);
 		else wPID.setI(0);
 
 		double vx = xPID.calculate(odom.now().x, target.x);
@@ -47,15 +47,15 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 		double w = wPID.calculate(odom.now().theta, target.theta);
 
 		double robot_angle = odom.now().theta;
-		double vf = Math.cos(robot_angle) * vx + Math.sin(robot_angle) * vy;
-		double vs = -Math.sin(robot_angle) * vx + Math.cos(robot_angle) * vy;
+		double vf = cos(robot_angle) * vx + sin(robot_angle) * vy;
+		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
 		drive.drive(vf, vs, w);
 	}
 
 	public boolean isFinished() {
-		return Math.abs(odom.now().x - target.x) <= GOTO_XY_THRESHOLD
-				// && Math.abs(odom.now().y - target.y) <= GOTO_XY_THRESHOLD
-				&& Math.abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_THRESHOLD
+		return abs(odom.now().x - target.x) <= GOTO_XY_THRESHOLD
+				// && abs(odom.now().y - target.y) <= GOTO_XY_THRESHOLD
+				&& abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_THRESHOLD
 				&& drive.getLeftVel() < GOTO_VEL_THRES
 				&& drive.getRightVel() < GOTO_VEL_THRES;
 		// && drive.getMidVel() < GOTO_VEL_THRES;

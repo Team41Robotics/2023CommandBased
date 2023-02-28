@@ -1,12 +1,15 @@
 package frc.robot.commands;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Robot;
-import frc.robot.Util;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
+import frc.robot.util.Util;
 
 public class FODdrive extends CommandBase {
 	Joystick leftjs, rightjs;
@@ -25,8 +28,8 @@ public class FODdrive extends CommandBase {
 		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
 
 		double robot_angle = odom.now().theta;
-		double vx = Math.cos(robot_angle) * vf + Math.sin(robot_angle) * vs;
-		double vy = -Math.sin(robot_angle) * vf + Math.cos(robot_angle) * vs;
+		double vx = cos(robot_angle) * vf + sin(robot_angle) * vs;
+		double vy = -sin(robot_angle) * vf + cos(robot_angle) * vs;
 		drive.drive(vx / 4, vy / 4, w / 2); // FIXME
 	}
 

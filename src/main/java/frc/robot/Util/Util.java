@@ -1,6 +1,6 @@
-package frc.robot;
+package frc.robot.util;
 
-import static java.lang.Math.PI;
+import static java.lang.Math.*;
 
 import frc.robot.Constants.OperatorConstants;
 
@@ -11,8 +11,8 @@ public class Util {
 	 * @return applied deadzone
 	 */
 	public static double deadZone(double joystickAxis, double deadZone) {
-		if (Math.abs(joystickAxis) < deadZone) return 0;
-		return Math.signum(joystickAxis) * (Math.abs(joystickAxis) - deadZone) / (1 - deadZone);
+		if (abs(joystickAxis) < deadZone) return 0;
+		return signum(joystickAxis) * (abs(joystickAxis) - deadZone) / (1 - deadZone);
 	}
 
 	/**

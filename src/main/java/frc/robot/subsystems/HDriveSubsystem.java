@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
-import static java.lang.Math.PI;
+import static java.lang.Math.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.SendableDouble;
+import frc.robot.util.SendableDouble;
 
 public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current if touching ground
 	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
@@ -102,9 +102,9 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 		vm = vy;
 
 		double max = 0;
-		if (max < Math.abs(vl * LEFT_SPEED_TO_ONE * 8)) max = Math.abs(vl * LEFT_SPEED_TO_ONE * 8);
-		if (max < Math.abs(vr * RIGHT_SPEED_TO_ONE * 8)) max = Math.abs(vr * RIGHT_SPEED_TO_ONE * 8);
-		if (max < Math.abs(vm * H_SPEED_TO_ONE)) max = Math.abs(vm * H_SPEED_TO_ONE);
+		if (max < abs(vl * LEFT_SPEED_TO_ONE * 8)) max = abs(vl * LEFT_SPEED_TO_ONE * 8);
+		if (max < abs(vr * RIGHT_SPEED_TO_ONE * 8)) max = abs(vr * RIGHT_SPEED_TO_ONE * 8);
+		if (max < abs(vm * H_SPEED_TO_ONE)) max = abs(vm * H_SPEED_TO_ONE);
 
 		System.out.println("max = " + max);
 		if (max > 1) {

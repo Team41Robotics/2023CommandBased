@@ -73,16 +73,19 @@ public final class Constants {
 		public static final double JOINT2_MAX_ACCEL = 0;
 
 		public static final double ELEV_kV = 0;
-		public static final double JOINT1_kV = 0;
-		public static final double JOINT2_kV = 0;
-
 		public static final double ELEV_kS = 0;
-		public static final double JOINT1_kS = 0;
-		public static final double JOINT2_kS = 0;
-
 		public static final double ELEV_kA = 0;
+		public static final double ELEV_kG = 0;
+
+		public static final double JOINT1_kV = 0;
+		public static final double JOINT1_kS = 0;
 		public static final double JOINT1_kA = 0;
+		public static final double JOINT1_kG = 0;
+
+		public static final double JOINT2_kV = 0;
+		public static final double JOINT2_kS = 0;
 		public static final double JOINT2_kA = 0;
+		public static final double JOINT2_kG = 0;
 	}
 
 	public static class GoToConstants {
