@@ -11,6 +11,8 @@ import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
+        static ArmSubsystem arm;
+
 	CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
 	CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
 	CANSparkMax jt2 = new CANSparkMax(JOINT2_ID, MotorType.kBrushless);
@@ -33,14 +35,18 @@ public class ArmSubsystem extends SubsystemBase {
 		pid.setIZone(kIz);
 	}
 
-	public void zero() {
-		elev.getEncoder().setPosition(ELEV_PACKAGED_POSITION / 2 / PI / ELEV_METERS_PER_RAD);
-		jt1.getEncoder().setPosition(JOINT1_PACKAGED_POSITION / 2 / PI / JOINT1_RATIO);
-		jt2.getEncoder().setPosition(JOINT2_PACKAGED_POSITION / 2 / PI / JOINT2_RATIO);
+	private void setMotor(SparkMaxPIDController pid, double vel, double ff) {
+		pid.setReference(vel, ControlType.kVelocity, 0, ff, ArbFFUnits.kVoltage);
+	}
 
+	public void zero() {
 		elev.restoreFactoryDefaults();
 		jt1.restoreFactoryDefaults();
 		jt2.restoreFactoryDefaults();
+
+		elev.getEncoder().setPosition(ELEV_PACK_POS * ELEV_RAD_PER_METER / 2 / PI);
+		jt1.getEncoder().setPosition(JOINT1_PACK_POS / 2 / PI * JOINT1_RATIO);
+		jt2.getEncoder().setPosition(JOINT2_PACK_POS / 2 / PI * JOINT2_RATIO);
 	}
 	// TODO dynamic zeroing of encoder based on limit switches on elevator
 
@@ -49,24 +55,18 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public void set(double elev_v, double jt1_v, double jt2_v, double elev_a, double jt1_a, double jt2_a) {
-		elev_vpid.setReference(
-				elev_v / ELEV_METERS_PER_RAD / 2 / PI,
-				ControlType.kVelocity,
-				0,
-				ELEV_kG + ELEV_kS * signum(elev_v) + ELEV_kV * elev_v + ELEV_kA * elev_a,
-				ArbFFUnits.kVoltage);
-		jt1_vpid.setReference(
+		setMotor(
+				elev_vpid,
+				elev_v * ELEV_RAD_PER_METER / 2 / PI,
+				ELEV_kG + ELEV_kS * signum(elev_v) + ELEV_kV * elev_v + ELEV_kA * elev_a);
+		setMotor(
+				jt1_vpid,
 				jt1_v * JOINT1_RATIO / 2 / PI,
-				ControlType.kVelocity,
-				0,
-				JOINT1_kG * cos(getJoint1Pos()) + JOINT1_kS * signum(jt1_v) + JOINT1_kV * jt1_v + JOINT1_kA * jt1_a,
-				ArbFFUnits.kVoltage);
-		jt2_vpid.setReference(
+				JOINT1_kG * cos(getJoint1Pos()) + JOINT1_kS * signum(jt1_v) + JOINT1_kV * jt1_v + JOINT1_kA * jt1_a);
+		setMotor(
+				jt2_vpid,
 				jt2_v * JOINT2_RATIO / 2 / PI,
-				ControlType.kVelocity,
-				0,
-				JOINT2_kG * cos(getJoint2Pos()) + JOINT2_kS * signum(jt2_v) + JOINT2_kV * jt2_v + JOINT2_kA * jt2_a,
-				ArbFFUnits.kVoltage);
+				JOINT2_kG * cos(getJoint2Pos()) + JOINT2_kS * signum(jt2_v) + JOINT2_kV * jt2_v + JOINT2_kA * jt2_a);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public double getElevPos() {
-		return elev.getEncoder().getPosition() * 2 * PI * ELEV_METERS_PER_RAD;
+		return elev.getEncoder().getPosition() * 2 * PI / ELEV_RAD_PER_METER;
 	}
 
 	public double getJoint1Pos() {
@@ -84,5 +84,12 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public double getJoint2Pos() {
 		return jt2.getEncoder().getPosition() * 2 * PI / JOINT2_RATIO;
+	}
+
+	public static ArmSubsystem getInstance() {
+		if (arm == null) {
+			arm = new ArmSubsystem();
+		}
+		return arm;
 	}
 }

@@ -58,19 +58,17 @@ public final class Constants {
 		public static final double JOINT1_RATIO = 0;
 		public static final double JOINT2_RATIO = 0;
 
-		public static final double ELEV_METERS_PER_RAD = 0;
-		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_RAD;
+		public static final double ELEV_METERS_PER_AXLE_RAD = 0;
+		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
-		public static final double ELEV_PACKAGED_POSITION = 0;
-		public static final double JOINT1_PACKAGED_POSITION = 0;
-		public static final double JOINT2_PACKAGED_POSITION = 0;
+                public static final double ELEV_THETA = 50/180.*PI;
+		public static final double ELEV_LEN = 0;
+		public static final double JOINT1_LEN = 0;
+		public static final double JOITN2_LEN = 0;
 
-		public static final double ELEV_MAX_SPEED = 0; // todo calc using sysid
-		public static final double ELEV_MAX_ACCEL = 0;
-		public static final double JOINT1_MAX_SPEED = 0;
-		public static final double JOINT1_MAX_ACCEL = 0;
-		public static final double JOINT2_MAX_SPEED = 0;
-		public static final double JOINT2_MAX_ACCEL = 0;
+		public static final double ELEV_PACK_POS = 0;
+		public static final double JOINT1_PACK_POS = 0;
+		public static final double JOINT2_PACK_POS = 0;
 
 		public static final double ELEV_kV = 0;
 		public static final double ELEV_kS = 0;
@@ -86,6 +84,13 @@ public final class Constants {
 		public static final double JOINT2_kS = 0;
 		public static final double JOINT2_kA = 0;
 		public static final double JOINT2_kG = 0;
+
+		public static final double ELEV_MAX_SPEED = 0; // todo calc using sysid // assume mx 7 volts
+		public static final double ELEV_MAX_ACCEL = 0;
+		public static final double JOINT1_MAX_SPEED = 0;
+		public static final double JOINT1_MAX_ACCEL = 0;
+		public static final double JOINT2_MAX_SPEED = 0;
+		public static final double JOINT2_MAX_ACCEL = 0;
 	}
 
 	public static class GoToConstants {
