@@ -11,7 +11,7 @@ import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
-        static ArmSubsystem arm;
+	static ArmSubsystem arm;
 
 	CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
 	CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);

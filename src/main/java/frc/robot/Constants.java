@@ -61,7 +61,7 @@ public final class Constants {
 		public static final double ELEV_METERS_PER_AXLE_RAD = 0;
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
-                public static final double ELEV_THETA = 50/180.*PI;
+		public static final double ELEV_THETA = 50 / 180. * PI;
 		public static final double ELEV_LEN = 0;
 		public static final double JOINT1_LEN = 0;
 		public static final double JOITN2_LEN = 0;
