@@ -28,6 +28,15 @@ public class MovArm extends CommandBase {
 		double v = sec * (vx * cos(alpha) + vy * sin(alpha));
 		double omega = sec / arm.getElevPos() * (-vx * sin(theta) + vy * cos(theta));
 
+		double max = 0;
+		if (abs(v) > ArmConstants.ELEV_MAX_SPEED) max = max(max, abs(v) / ArmConstants.ELEV_MAX_SPEED);
+		if (abs(omega) > ArmConstants.JOINT1_MAX_SPEED) max = max(max, abs(omega) / ArmConstants.JOINT1_MAX_SPEED);
+		if (abs(omega) > ArmConstants.JOINT2_MAX_SPEED) max = max(max, abs(omega) / ArmConstants.JOINT2_MAX_SPEED);
+
+		if (max > 1) {
+			v /= max;
+			omega /= max;
+		}
 		arm.set(v, omega, -omega);
 	}
 
