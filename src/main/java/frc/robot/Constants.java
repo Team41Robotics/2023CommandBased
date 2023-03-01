@@ -51,6 +51,7 @@ public final class Constants {
 
 	public static class ArmConstants {
 		public static final int ELEV_ID = 0;
+		public static final int ELEV1_ID = 0;
 		public static final int JOINT1_ID = 0;
 		public static final int JOINT2_ID = 0;
 

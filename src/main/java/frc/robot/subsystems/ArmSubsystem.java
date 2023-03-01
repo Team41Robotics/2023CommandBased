@@ -14,14 +14,20 @@ public class ArmSubsystem extends SubsystemBase {
 	static ArmSubsystem arm;
 
 	CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
+	CANSparkMax elev1 = new CANSparkMax(ELEV1_ID, MotorType.kBrushless);
 	CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
 	CANSparkMax jt2 = new CANSparkMax(JOINT2_ID, MotorType.kBrushless);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();
+	SparkMaxPIDController elev1_vpid = elev1.getPIDController();
 	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
 	public ArmSubsystem() {
+		elev.restoreFactoryDefaults();
+		jt1.restoreFactoryDefaults();
+		jt2.restoreFactoryDefaults(); // TODO call zero somewhere
+
 		setPID(elev_vpid, 1, 0, 0, 0);
 		setPID(jt1_vpid, 1, 0, 0, 0);
 		setPID(jt2_vpid, 1, 0, 0, 0);
@@ -39,10 +45,6 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public void zero() {
-		elev.restoreFactoryDefaults();
-		jt1.restoreFactoryDefaults();
-		jt2.restoreFactoryDefaults();
-
 		elev.getEncoder().setPosition(ELEV_PACK_POS * ELEV_RAD_PER_METER / 2 / PI);
 		jt1.getEncoder().setPosition(JOINT1_PACK_POS / 2 / PI * JOINT1_RATIO);
 		jt2.getEncoder().setPosition(JOINT2_PACK_POS / 2 / PI * JOINT2_RATIO);
@@ -57,6 +59,10 @@ public class ArmSubsystem extends SubsystemBase {
 		// TODO kG probably varies
 		setMotor(
 				elev_vpid,
+				elev_v * ELEV_RAD_PER_METER / 2 / PI,
+				ELEV_kG + ELEV_kS * signum(elev_v) + ELEV_kV * elev_v + ELEV_kA * elev_a);
+		setMotor(
+				elev1_vpid,
 				elev_v * ELEV_RAD_PER_METER / 2 / PI,
 				ELEV_kG + ELEV_kS * signum(elev_v) + ELEV_kV * elev_v + ELEV_kA * elev_a);
 		setMotor(
