@@ -55,6 +55,7 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public void set(double elev_v, double jt1_v, double jt2_v, double elev_a, double jt1_a, double jt2_a) {
+		// TODO kG probably varies
 		setMotor(
 				elev_vpid,
 				elev_v * ELEV_RAD_PER_METER / 2 / PI,
@@ -85,6 +86,14 @@ public class ArmSubsystem extends SubsystemBase {
 	public double getJoint2Pos() {
 		return jt2.getEncoder().getPosition() * 2 * PI / JOINT2_RATIO;
 	}
+
+        public boolean isFwdLimitSwitch() {
+                return false;
+        }
+
+        public boolean isRevLimitSwitch() {
+                return false;
+        }
 
 	public static ArmSubsystem getInstance() {
 		if (arm == null) {

@@ -29,6 +29,11 @@ public class Balance extends CommandBase {
 	}
 
 	@Override
+	public void end(boolean interrupted) {
+		drive.drive(0, 0, 0);
+	}
+
+	@Override
 	public boolean isFinished() {
 		return Timer.getFPGATimestamp() - last_time_valid > 2;
 		// trivial

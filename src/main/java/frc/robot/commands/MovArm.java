@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.util.Util;
 
 public class MovArm extends CommandBase {
 	double st;
@@ -37,6 +38,13 @@ public class MovArm extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
-		return Timer.getFPGATimestamp() > st + t;
+		double alpha = arm.getJoint1Pos();
+		double theta = ArmConstants.ELEV_THETA;
+		double sec = 1 / cos(alpha - theta);
+		double v = sec * (vx * cos(alpha) + vy * sin(alpha));
+		if (v > 0 && arm.isFwdLimitSwitch()) return true;
+		if (v < 0 && arm.isRevLimitSwitch()) return true;
+		return Timer.getFPGATimestamp() > st + t
+				|| Util.normRot(arm.getJoint1Pos() + Math.PI / 2 - ArmConstants.ELEV_THETA) < 5 / 180. * Math.PI;
 	}
 }

@@ -52,6 +52,11 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 		drive.drive(vf, vs, w);
 	}
 
+	@Override
+	public void end(boolean interrupted) {
+		drive.drive(0, 0, 0);
+	}
+
 	public boolean isFinished() {
 		return abs(odom.now().x - target.x) <= GOTO_XY_THRESHOLD
 				// && abs(odom.now().y - target.y) <= GOTO_XY_THRESHOLD

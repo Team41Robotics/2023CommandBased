@@ -63,8 +63,7 @@ public final class Constants {
 
 		public static final double ELEV_THETA = 50 / 180. * PI;
 		public static final double ELEV_LEN = 0;
-		public static final double JOINT1_LEN = 0;
-		public static final double JOITN2_LEN = 0;
+		public static final double ARM_LEN = 0;
 
 		public static final double ELEV_PACK_POS = 0;
 		public static final double JOINT1_PACK_POS = 0;
@@ -98,4 +97,6 @@ public final class Constants {
 		public static final double GOTO_TURN_THRESHOLD = .5 / 180. * PI;
 		public static final double GOTO_VEL_THRES = 0.2;
 	}
+
+	public static final double LOOP_TIME = 0.02;
 }
