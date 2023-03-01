@@ -9,6 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.ArmPosition;
 
@@ -56,9 +57,14 @@ public class ArmTo extends CommandBase {
 		arm.set(0, 0, 0);
 	}
 
-        @Override
-        public boolean isFinished() {
-		//if (v > 0 && arm.isFwdLimitSwitch()) return true;
-		//if (v < 0 && arm.isRevLimitSwitch()) return true;
-        }
+	@Override
+	public boolean isFinished() {
+		if (elev_prof.isFinished(Timer.getFPGATimestamp() - st)
+				&& jt1_prof.isFinished(Timer.getFPGATimestamp() - st)
+				&& jt2_prof.isFinished(Timer.getFPGATimestamp() - st)) {
+			if (elev_pid.getPositionError() < ArmConstants.ELEVATOR_TOLERANCE
+					&& jt1_pid.getPositionError() < ArmConstants.JOINT_TOLERANCE) return true;
+		}
+		return false;
+	}
 }

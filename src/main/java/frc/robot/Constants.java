@@ -90,6 +90,9 @@ public final class Constants {
 		public static final double JOINT1_MAX_ACCEL = 0;
 		public static final double JOINT2_MAX_SPEED = 0;
 		public static final double JOINT2_MAX_ACCEL = 0;
+
+		public static final double ELEVATOR_TOLERANCE = 0;
+		public static final double JOINT_TOLERANCE = 0;
 	}
 
 	public static class GoToConstants {

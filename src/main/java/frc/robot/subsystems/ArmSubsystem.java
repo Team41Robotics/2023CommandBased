@@ -87,13 +87,13 @@ public class ArmSubsystem extends SubsystemBase {
 		return jt2.getEncoder().getPosition() * 2 * PI / JOINT2_RATIO;
 	}
 
-        public boolean isFwdLimitSwitch() {
-                return false;
-        }
+	public boolean isFwdLimitSwitch() {
+		return false;
+	}
 
-        public boolean isRevLimitSwitch() {
-                return false;
-        }
+	public boolean isRevLimitSwitch() {
+		return false;
+	}
 
 	public static ArmSubsystem getInstance() {
 		if (arm == null) {
