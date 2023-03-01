@@ -13,6 +13,7 @@ import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
@@ -26,7 +27,7 @@ public class Robot extends TimedRobot {
 	public boolean FOD;
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
-
+	ArmSubsystem arm = ArmSubsystem.getInstance();
 	private Command autonomousCommand;
 
 	private void schedule(Command cmd) {
@@ -39,7 +40,7 @@ public class Robot extends TimedRobot {
 
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
-
+		arm.zero();
 		AutonomousRoutine.initShuffleboard();
 	}
 

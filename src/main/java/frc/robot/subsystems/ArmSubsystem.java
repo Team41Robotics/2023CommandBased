@@ -22,7 +22,6 @@ public class ArmSubsystem extends SubsystemBase {
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
 	public ArmSubsystem() {
-		zero();
 		setPID(elev_vpid, 1, 0, 0, 0);
 		setPID(jt1_vpid, 1, 0, 0, 0);
 		setPID(jt2_vpid, 1, 0, 0, 0);
