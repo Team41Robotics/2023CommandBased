@@ -108,7 +108,7 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 			max = Math.abs(vm * DrivetrainConstants.H_SPEED_TO_ONE);
 
 		System.out.println("max = " + max);
-		if (max > 1) {
+		if (preserve && max > 1) {
 			vx /= max;
 			vy /= max;
 			w /= max;
