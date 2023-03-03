@@ -14,19 +14,20 @@ import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
 import frc.robot.subsystems.HDriveSubsystem;
+import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
 public class Robot extends TimedRobot {
 	public static Joystick leftjs = new Joystick(0);
+
 	public static Joystick rightjs = new Joystick(1);
 	public static IMU imu = new IMU();
-
 	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
 	public boolean FOD;
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
-
+	LEDSubsytem lights = LEDSubsytem.getInstance();
 	private Command autonomousCommand;
 
 	private void schedule(Command cmd) {
@@ -35,8 +36,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		configureButtons();
 
+		configureButtons();
+		lights.initLights();
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
 

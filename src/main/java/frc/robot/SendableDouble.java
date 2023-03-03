@@ -15,4 +15,8 @@ public class SendableDouble implements Sendable {
 		builder.setSmartDashboardType("Text View");
 		builder.addDoubleProperty("x", () -> x, (x) -> this.x = x);
 	}
+
+	public int INT() {
+		return (int) x;
+	}
 }
