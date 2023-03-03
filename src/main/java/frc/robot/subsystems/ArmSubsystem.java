@@ -16,20 +16,26 @@ public class ArmSubsystem extends SubsystemBase {
 	CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
 	CANSparkMax elev1 = new CANSparkMax(ELEV1_ID, MotorType.kBrushless);
 	CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
+	CANSparkMax jt11 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
 	CANSparkMax jt2 = new CANSparkMax(JOINT2_ID, MotorType.kBrushless);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();
 	SparkMaxPIDController elev1_vpid = elev1.getPIDController();
 	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
+	SparkMaxPIDController jt11_vpid = jt11.getPIDController();
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
 	public ArmSubsystem() {
 		elev.restoreFactoryDefaults();
+		elev1.restoreFactoryDefaults();
 		jt1.restoreFactoryDefaults();
+		jt11.restoreFactoryDefaults();
 		jt2.restoreFactoryDefaults(); // TODO call zero somewhere
 
 		setPID(elev_vpid, 1, 0, 0, 0);
+		setPID(elev1_vpid, 1, 0, 0, 0);
 		setPID(jt1_vpid, 1, 0, 0, 0);
+		setPID(jt11_vpid, 1, 0, 0, 0);
 		setPID(jt2_vpid, 1, 0, 0, 0);
 	}
 
@@ -69,6 +75,10 @@ public class ArmSubsystem extends SubsystemBase {
 				jt1_vpid,
 				jt1_v * JOINT1_RATIO / 2 / PI,
 				JOINT1_kG * cos(getJoint1Pos()) + JOINT1_kS * signum(jt1_v) + JOINT1_kV * jt1_v + JOINT1_kA * jt1_a);
+		setMotor(
+				jt11_vpid,
+				-jt1_v * JOINT1_RATIO / 2 / PI,
+				-(JOINT1_kG * cos(getJoint1Pos()) + JOINT1_kS * signum(jt1_v) + JOINT1_kV * jt1_v + JOINT1_kA * jt1_a));
 		setMotor(
 				jt2_vpid,
 				jt2_v * JOINT2_RATIO / 2 / PI,
