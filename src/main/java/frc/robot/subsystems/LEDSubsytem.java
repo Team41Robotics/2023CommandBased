@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
@@ -11,28 +12,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SendableDouble;
 
 public class LEDSubsytem extends SubsystemBase {
-	AddressableLED m_led;
-	AddressableLEDBuffer m_ledBuffer;
-	private int m_rainbowFirstPixelHue;
+	AddressableLED m_led = new AddressableLED(0);
+	AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(108);
+	int m_rainbowFirstPixelHue;
 	ShuffleboardTab lightTab = Shuffleboard.getTab("LEDS");
 	double offset = 0;
 	Joystick testjs = new Joystick(0);
-	private SendableDouble point = new SendableDouble(0);
-	
-	public void initLights() {
+	SendableDouble point = new SendableDouble(0);
+
+	public void initLights() { // perhaps just constructor?
 		lightTab.add("point", point);
 
-		// PWM port 9
-		// Must be a PWM header, not MXP or DIO
-		m_led = new AddressableLED(0);
-
-		// Reuse buffer
-		// Default to a length of 60, start empty output
-		// Length is expensive to set, so only set it once, then just update data
-		m_ledBuffer = new AddressableLEDBuffer(108);
 		m_led.setLength(m_ledBuffer.getLength());
 
-		// Set the data
 		m_led.setData(m_ledBuffer);
 		m_led.start();
 	}
@@ -52,18 +44,18 @@ public class LEDSubsytem extends SubsystemBase {
 				point.x = point.x + -1;
 				System.out.println(point.x);
 			}
-			if(testjs.getRawButtonPressed(3)){
-				point.x = point.x  -10;
+			if (testjs.getRawButtonPressed(3)) {
+				point.x = point.x - 10;
 			}
 
-			if(!testjs.getRawButton(2)){
+			if (!testjs.getRawButton(2)) {
 				rainbow();
-			}else{
-				flashRight();;
+			} else {
+				flashRight();
 			}
-		 		} else {
+		} else {
 			System.out.println("moooove");
-			//rainbow();
+			// rainbow();
 			if (testjs.getRawButtonPressed(1)) {
 				point.x = point.x + 10;
 				System.out.println(point.x);
@@ -75,21 +67,17 @@ public class LEDSubsytem extends SubsystemBase {
 			if (testjs.getRawButtonPressed(5)) {
 				point.x = point.x + -1;
 				System.out.println(point.x);
-			} 
+			}
 			discovery();
 		}
 		m_led.setData(m_ledBuffer);
-		if (DriverStation.isTest()) {
-			
-		}
-
-		super.periodic();
+		if (DriverStation.isTest()) {}
 	}
 
 	private void bootUp() {
-
 		for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-			if ((i + (int) offset) % m_ledBuffer.getLength() >= m_ledBuffer.getLength()/2) m_ledBuffer.setRGB(i, 255, 214, 0);
+			if ((i + (int) offset) % m_ledBuffer.getLength() >= m_ledBuffer.getLength() / 2)
+				m_ledBuffer.setRGB(i, 255, 214, 0);
 			else m_ledBuffer.setRGB(i, 0, 0, 255);
 		}
 		offset += 0.5;
@@ -104,43 +92,37 @@ public class LEDSubsytem extends SubsystemBase {
 			}
 		}
 	}
+
 	static int flicker;
+
 	private void flashRight() {
-		for(int i = 0; i < 45; i++) 
-			m_ledBuffer.setLED(i, (flicker > 7 ? Color.kPurple : Color.kBlack));
-		
-		flicker = (flicker+1) %20;
+		for (int i = 0; i < 45; i++) m_ledBuffer.setLED(i, (flicker > 7 ? Color.kPurple : Color.kBlack));
+
+		flicker = (flicker + 1) % 20;
 	}
-	private long hangTime = 0;
-	private final int hangTimeMax = 1000;
+
+	private double hangTime = 0;
+	private final double hangTimeMax = 1;
+
 	private void rainbow() {
-		// For every pixel
 		int length = m_ledBuffer.getLength();
-		for (var i = 0; i < length/2; i++) {
+		for (var i = 0; i < length / 2; i++) {
 			int hue = 0;
-			if (i < Math.abs(offset - length/2)) {
+			if (i < Math.abs(offset - length / 2)) {
 				m_ledBuffer.setRGB(i, 0, 0, 0);
 
-				m_ledBuffer.setRGB(-i+m_ledBuffer.getLength()-1, 0, 0, 0);
+				m_ledBuffer.setRGB(-i + m_ledBuffer.getLength() - 1, 0, 0, 0);
 			} else {
-				// Calculate the hue - hue is easier for rainbows because the color
-				// shape is a circle so only one value needs to precess
-				hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength()*2)) % 180;
+				hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength() * 2)) % 180;
 				m_ledBuffer.setHSV(i, hue, 255, 128);
-				m_ledBuffer.setHSV(-i+m_ledBuffer.getLength()-1, hue, 255, 128);
-
+				m_ledBuffer.setHSV(-i + m_ledBuffer.getLength() - 1, hue, 255, 128);
 			}
-			// Set the value
 		}
 
-		if(hangTime + hangTimeMax <= System.currentTimeMillis()){
-			offset = (offset + 0.25) %108;
-			System.out.println(offset);
-			if(offset == 54){ hangTime = System.currentTimeMillis(); }
+		if (hangTime + hangTimeMax <= Timer.getFPGATimestamp()) {
+			offset = (offset + 0.25) % 108;
+			if (offset == 54) hangTime = Timer.getFPGATimestamp();
 		}
-		// Increase by to make the rainbow "move"
-		// m_rainbowFirstPixelHue +=3;
-		// Check bounds
 		m_rainbowFirstPixelHue %= 180;
 	}
 
