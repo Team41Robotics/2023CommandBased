@@ -50,17 +50,17 @@ public final class Constants {
 	}
 
 	public static class ArmConstants {
-		public static final int ELEV_ID = 0;
-		public static final int ELEV1_ID = 0;
-		public static final int JOINT1_ID = 0;
-		public static final int JOINT11_ID = 0;
+		public static final int ELEV_ID = 8;
+		public static final int ELEV1_ID = 9;
+		public static final int JOINT1_ID = 10;
+		public static final int JOINT11_ID = 11;
 		public static final int JOINT2_ID = 0;
 
-		public static final double ELEV_RATIO = 0;
-		public static final double JOINT1_RATIO = 0;
-		public static final double JOINT2_RATIO = 0;
+		public static final double ELEV_RATIO = 5;
+		public static final double JOINT1_RATIO = 9;
+		public static final double JOINT2_RATIO = 36;
 
-		public static final double ELEV_METERS_PER_AXLE_RAD = 0;
+		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 * 2;
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
 		public static final double ELEV_THETA = 50 / 180. * PI;
@@ -86,7 +86,7 @@ public final class Constants {
 		public static final double JOINT2_kA = 0;
 		public static final double JOINT2_kG = 0;
 
-		public static final double ELEV_MAX_SPEED = 0; // todo calc using sysid // assume mx 7 volts
+		public static final double ELEV_MAX_SPEED = 0; // todo calc using sysid
 		public static final double ELEV_MAX_ACCEL = 0;
 		public static final double JOINT1_MAX_SPEED = 0;
 		public static final double JOINT1_MAX_ACCEL = 0;

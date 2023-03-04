@@ -78,7 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
 		setMotor(
 				jt11_vpid,
 				-jt1_v * JOINT1_RATIO / 2 / PI,
-				-(JOINT1_kG * cos(getJoint1Pos()) + JOINT1_kS * signum(jt1_v) + JOINT1_kV * jt1_v + JOINT1_kA * jt1_a));
+				-JOINT1_kG * cos(getJoint1Pos()) - JOINT1_kS * signum(jt1_v) - JOINT1_kV * jt1_v - JOINT1_kA * jt1_a);
 		setMotor(
 				jt2_vpid,
 				jt2_v * JOINT2_RATIO / 2 / PI,
