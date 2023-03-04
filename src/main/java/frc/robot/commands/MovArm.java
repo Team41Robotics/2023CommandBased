@@ -1,10 +1,10 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.ArmConstants.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.Util;
 
@@ -23,15 +23,15 @@ public class MovArm extends CommandBase {
 	@Override
 	public void execute() {
 		double alpha = arm.getJoint1Pos();
-		double theta = ArmConstants.ELEV_THETA;
+		double theta = ELEV_THETA;
 		double sec = 1 / cos(alpha - theta);
 		double v = sec * (vx * cos(alpha) + vy * sin(alpha));
 		double omega = sec / arm.getElevPos() * (-vx * sin(theta) + vy * cos(theta));
 
 		double max = 0;
-		if (abs(v) > ArmConstants.ELEV_MAX_SPEED) max = max(max, abs(v) / ArmConstants.ELEV_MAX_SPEED);
-		if (abs(omega) > ArmConstants.JOINT1_MAX_SPEED) max = max(max, abs(omega) / ArmConstants.JOINT1_MAX_SPEED);
-		if (abs(omega) > ArmConstants.JOINT2_MAX_SPEED) max = max(max, abs(omega) / ArmConstants.JOINT2_MAX_SPEED);
+		if (abs(v) > ELEV_MAX_SPEED) max = max(max, abs(v) / ELEV_MAX_SPEED);
+		if (abs(omega) > JOINT1_MAX_SPEED) max = max(max, abs(omega) / JOINT1_MAX_SPEED);
+		if (abs(omega) > JOINT2_MAX_SPEED) max = max(max, abs(omega) / JOINT2_MAX_SPEED);
 
 		if (max > 1) {
 			v /= max;
@@ -48,12 +48,12 @@ public class MovArm extends CommandBase {
 	@Override
 	public boolean isFinished() {
 		double alpha = arm.getJoint1Pos();
-		double theta = ArmConstants.ELEV_THETA;
+		double theta = ELEV_THETA;
 		double sec = 1 / cos(alpha - theta);
 		double v = sec * (vx * cos(alpha) + vy * sin(alpha));
-		if (v > 0 && arm.isFwdLimitSwitch()) return true;
-		if (v < 0 && arm.isRevLimitSwitch()) return true;
+		if (arm.getElevPos() < 0.05 && v < 0) return true;
+		if (arm.getElevPos() > ELEV_LEN - 0.05 && v > 0) return true;
 		return Timer.getFPGATimestamp() > st + t
-				|| Util.normRot(arm.getJoint1Pos() + Math.PI / 2 - ArmConstants.ELEV_THETA) < 5 / 180. * Math.PI;
+				|| Util.normRot(arm.getJoint1Pos() + Math.PI / 2 - ELEV_THETA) < 5 / 180. * Math.PI;
 	}
 }
