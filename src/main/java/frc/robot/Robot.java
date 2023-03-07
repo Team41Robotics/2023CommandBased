@@ -1,5 +1,10 @@
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,19 +39,30 @@ public class Robot extends TimedRobot {
 		CommandScheduler.getInstance().schedule(cmd);
 	}
 
+        DigitalInput a = new DigitalInput(0);
+        DigitalInput b = new DigitalInput(1);
+        CANSparkMax leftElevator =       new CANSparkMax(9, MotorType.kBrushless);
+        CANSparkMax rightElevator = new CANSparkMax(8, MotorType.kBrushless);
 	@Override
 	public void robotInit() {
+                hdrive.dttab.addBoolean("L1", ()->a.get());
+                hdrive.dttab.addBoolean("L2", ()->b.get());
 
+                
 		configureButtons();
 		lights.initLights();
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
 
 		AutonomousRoutine.initShuffleboard();
+
+                leftElevator.setIdleMode(IdleMode.kBrake);
+                rightElevator.setIdleMode(IdleMode.kBrake);
 	}
 
 	@Override
 	public void robotPeriodic() {
+                System.out.println(leftElevator.getEncoder().getPosition());
 		CommandScheduler.getInstance().run();
 	}
 
@@ -66,15 +82,26 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+                leftElevator.getEncoder().setPosition(0);
 		imu.zeroYaw(); // TODO move to auton
 		odom.start();
+                limitSwitch=true;
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
 	}
-
+        private boolean limitSwitch = true;
 	@Override
 	public void teleopPeriodic() {
+                if(limitSwitch) {
+                        rightElevator.set(0.5);
+                        leftElevator.set(0.5);
+                 limitSwitch=a.get() && b.get();  }else{
+                        leftElevator.set(-0.1);
+                        rightElevator.set(-0.1);
+                        limitSwitch=leftElevator.getEncoder().getPosition()<=1;
+                }
+               
 		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else hdrive.drive(0, 0, 0);
