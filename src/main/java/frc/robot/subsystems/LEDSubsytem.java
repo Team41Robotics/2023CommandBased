@@ -71,7 +71,7 @@ public class LEDSubsytem extends SubsystemBase {
 			}
 			discovery();
 		}*/
-                if(System.currentTimeMillis() - startTime >= 1000){
+                if(System.currentTimeMillis() - start >= 1000){
                         rainbow();
                 }else{
                         bootUp();

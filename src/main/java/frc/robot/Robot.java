@@ -41,14 +41,14 @@ public class Robot extends TimedRobot {
 
         DigitalInput a = new DigitalInput(0);
         DigitalInput b = new DigitalInput(1);
-        CANSparkMax leftElevator =       new CANSparkMax(9, MotorType.kBrushless);
-        CANSparkMax rightElevator = new CANSparkMax(8, MotorType.kBrushless);
+		CANSparkMax rightElevator = new CANSparkMax(9,MotorType.kBrushless);
+		CANSparkMax leftElevator = new CANSparkMax(8,MotorType.kBrushless);
+        CANSparkMax leftArm =       new CANSparkMax(10, MotorType.kBrushless);
+        CANSparkMax rightArm = new CANSparkMax(11, MotorType.kBrushless);
 	@Override
 	public void robotInit() {
                 hdrive.dttab.addBoolean("L1", ()->a.get());
                 hdrive.dttab.addBoolean("L2", ()->b.get());
-
-                
 		configureButtons();
 		lights.initLights();
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
@@ -59,10 +59,10 @@ public class Robot extends TimedRobot {
                 leftElevator.setIdleMode(IdleMode.kBrake);
                 rightElevator.setIdleMode(IdleMode.kBrake);
 	}
-
+	DigitalInput c = new DigitalInput(2);
 	@Override
 	public void robotPeriodic() {
-                System.out.println(leftElevator.getEncoder().getPosition());
+                System.out.println(c.get());
 		CommandScheduler.getInstance().run();
 	}
 
@@ -93,15 +93,19 @@ public class Robot extends TimedRobot {
         private boolean limitSwitch = true;
 	@Override
 	public void teleopPeriodic() {
+		/*
+		leftArm.set(0.1);
+		rightArm.set(-0.1);
+
                 if(limitSwitch) {
-                        rightElevator.set(0.5);
-                        leftElevator.set(0.5);
-                 limitSwitch=a.get() && b.get();  }else{
-                        leftElevator.set(-0.1);
-                        rightElevator.set(-0.1);
-                        limitSwitch=leftElevator.getEncoder().getPosition()<=1;
-                }
-               
+                        rightElevator.set(0.1);
+                        leftElevator.set(0.1);
+                 limitSwitch=a.get() && b.get();  }else {
+					leftElevator.set(-0.1);
+					rightElevator.set(-0.1);
+					limitSwitch = !c.get();
+				}
+*/
 		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else hdrive.drive(0, 0, 0);
