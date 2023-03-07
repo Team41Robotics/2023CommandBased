@@ -50,4 +50,19 @@ public final class Constants {
 	public static final double GOTO_XY_THRESHOLD = 0.03;
 	public static final double GOTO_TURN_THRESHOLD = .5 / 180. * Math.PI;
 	public static final double GOTO_VEL_THRES = 0.2;
+
+	public static class LEDConstants{
+		
+		public static final int LEFT_LENGTH = 44;
+		public static final int MID_LENGTH = 20;
+		public static final int RIGHT_LENGTH = 44;
+
+		public static enum LEDLocations{
+			LEFT,
+			MID,
+			RIGHT
+		}
+
+	}
+
 }

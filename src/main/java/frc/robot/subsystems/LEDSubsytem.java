@@ -8,20 +8,39 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Pair;
 import frc.robot.SendableDouble;
+import frc.robot.Constants.LEDConstants;
+import frc.robot.Constants.LEDConstants.LEDLocations;
+import java.util.HashMap;
 
 public class LEDSubsytem extends SubsystemBase {
+
 	AddressableLED m_led;
 	AddressableLEDBuffer m_ledBuffer;
-	private int m_rainbowFirstPixelHue;
+	LEDLocations LEDstate;
 	ShuffleboardTab lightTab = Shuffleboard.getTab("LEDS");
 	double offset = 0;
 	Joystick testjs = new Joystick(0);
-	private SendableDouble point = new SendableDouble(0);
-	
-	public void initLights() {
-		lightTab.add("point", point);
 
+	private SendableDouble point = new SendableDouble(0);
+	private int m_rainbowFirstPixelHue;
+
+	private HashMap<LEDLocations, Pair<Integer, Integer>> lightMap = new HashMap<>();
+
+	private Pair<Integer, Integer> leftPts = new Pair<>(LEDConstants.MID_LENGTH, LEDConstants.LEFT_LENGTH);
+	private Pair<Integer, Integer> midPts = new Pair<>(LEDConstants.RIGHT_LENGTH, LEDConstants.MID_LENGTH);
+	private Pair<Integer, Integer> rightPts = new Pair<>(0, LEDConstants.RIGHT_LENGTH);
+
+	public void initLights() {
+
+		lightMap.put(LEDLocations.LEFT, leftPts);
+		lightMap.put(LEDLocations.RIGHT, rightPts);
+		lightMap.put(LEDLocations.MID, midPts);
+
+		lightTab.add("point", point);
+		
 		// PWM port 9
 		// Must be a PWM header, not MXP or DIO
 		m_led = new AddressableLED(0);
@@ -59,11 +78,27 @@ public class LEDSubsytem extends SubsystemBase {
 			if(!testjs.getRawButton(2)){
 				rainbow();
 			}else{
-				flashRight();;
+
+				LEDstate = LEDLocations.RIGHT;
+
+				switch(LEDstate){
+
+					case RIGHT:
+						setLights(LEDLocations.RIGHT);
+						break;
+					case MID:
+						setLights(LEDLocations.MID);
+						break;
+					case LEFT:
+						setLights(LEDLocations.LEFT);
+						break;
+
+				}
 			}
 		 		} else {
 			System.out.println("moooove");
 			//rainbow();
+
 			if (testjs.getRawButtonPressed(1)) {
 				point.x = point.x + 10;
 				System.out.println(point.x);
@@ -105,12 +140,30 @@ public class LEDSubsytem extends SubsystemBase {
 		}
 	}
 	static int flicker;
+	
+	/* 
 	private void flashRight() {
 		for(int i = 0; i < 45; i++) 
 			m_ledBuffer.setLED(i, (flicker > 7 ? Color.kPurple : Color.kBlack));
 		
 		flicker = (flicker+1) %20;
 	}
+	*/
+
+	private void setLights(LEDLocations position){
+
+		int lightStart = lightMap.get(position).x;
+		int endPoint = lightMap.get(position).y;
+
+		for(int i = lightStart; i < endPoint; i++){
+			m_ledBuffer.setLED(i, (flicker > 7 ? Color.kPurple : Color.kBlack));
+		}
+
+		flicker = (flicker+1) %20;
+
+	}
+
+
 	private long hangTime = 0;
 	private final int hangTimeMax = 1000;
 	private void rainbow() {
