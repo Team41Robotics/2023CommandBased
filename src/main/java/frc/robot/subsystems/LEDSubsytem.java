@@ -9,7 +9,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Pair;
 import frc.robot.SendableDouble;
+import frc.robot.Constants.LEDConstants;
+import frc.robot.Constants.LEDConstants.LEDLocations;
+import java.util.HashMap;
 
 public class LEDSubsytem extends SubsystemBase {
 	AddressableLED m_led = new AddressableLED(0);
@@ -98,7 +103,6 @@ public class LEDSubsytem extends SubsystemBase {
 	}
 
 	static int flicker;
-
 	private void flashRight() {
 		for (int i = 0; i < 45; i++) m_ledBuffer.setLED(i, (flicker > 7 ? Color.kPurple : Color.kBlack));
 
