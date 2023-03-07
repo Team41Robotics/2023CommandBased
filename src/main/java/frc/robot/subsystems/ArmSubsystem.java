@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -18,6 +19,11 @@ public class ArmSubsystem extends SubsystemBase {
 	CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
 	CANSparkMax jt11 = new CANSparkMax(JOINT11_ID, MotorType.kBrushless);
 	CANSparkMax jt2 = new CANSparkMax(JOINT2_ID, MotorType.kBrushless);
+
+	DigitalInput lower_limit1 = new DigitalInput(LOWERLIMIT1_ID);
+	DigitalInput lower_limit2 = new DigitalInput(LOWERLIMIT2_ID);
+	DigitalInput upper_limit1 = new DigitalInput(UPPERLIMIT1_ID);
+	DigitalInput upper_limit2 = new DigitalInput(UPPERLIMIT2_ID);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();
 	SparkMaxPIDController elev1_vpid = elev1.getPIDController();
@@ -103,11 +109,11 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public boolean isFwdLimitSwitch() {
-		return false;
+		return !(lower_limit1.get() && lower_limit2.get());
 	}
 
 	public boolean isRevLimitSwitch() {
-		return false;
+		return !(upper_limit1.get() && upper_limit2.get());
 	}
 
 	public static ArmSubsystem getInstance() {

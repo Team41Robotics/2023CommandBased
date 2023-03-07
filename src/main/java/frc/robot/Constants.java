@@ -56,6 +56,11 @@ public final class Constants {
 		public static final int JOINT11_ID = 11;
 		public static final int JOINT2_ID = 13;
 
+		public static final int LOWERLIMIT1_ID = 0;
+		public static final int LOWERLIMIT2_ID = 1;
+		public static final int UPPERLIMIT1_ID = 2;
+		public static final int UPPERLIMIT2_ID = 3;
+
 		public static final double ELEV_RATIO = 5;
 		public static final double JOINT1_RATIO = 9;
 		public static final double JOINT2_RATIO = 36;

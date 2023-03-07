@@ -51,8 +51,8 @@ public class MovArm extends CommandBase {
 		double theta = ELEV_THETA;
 		double sec = 1 / cos(alpha - theta);
 		double v = sec * (vx * cos(alpha) + vy * sin(alpha));
-		if (arm.getElevPos() < 0.05 && v < 0) return true;
-		if (arm.getElevPos() > ELEV_LEN - 0.05 && v > 0) return true;
+		if (arm.isRevLimitSwitch() && v < 0) return true;
+		if (arm.isFwdLimitSwitch() && v > 0) return true;
 		return Timer.getFPGATimestamp() > st + t
 				|| Util.normRot(arm.getJoint1Pos() + Math.PI / 2 - ELEV_THETA) < 5 / 180. * Math.PI;
 	}
