@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SendableDouble;
 
+
+
+
 public class LEDSubsytem extends SubsystemBase {
 	AddressableLED m_led = new AddressableLED(0);
 	AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(108);
@@ -19,18 +22,19 @@ public class LEDSubsytem extends SubsystemBase {
 	double offset = 0;
 	Joystick testjs = new Joystick(0);
 	SendableDouble point = new SendableDouble(0);
-
+	private long start;
 	public void initLights() { // perhaps just constructor?
 		lightTab.add("point", point);
 
 		m_led.setLength(m_ledBuffer.getLength());
-
+		start = System.currentTimeMillis();
 		m_led.setData(m_ledBuffer);
 		m_led.start();
 	}
 
 	@Override
 	public void periodic() {
+                /*
 		if (!DriverStation.isEnabled()) {
 			if (testjs.getRawButtonPressed(1)) {
 				point.x = point.x + 10;
@@ -69,6 +73,11 @@ public class LEDSubsytem extends SubsystemBase {
 				System.out.println(point.x);
 			}
 			discovery();
+		}*/
+		if(System.currentTimeMillis() - start >= 1000){
+			rainbow();
+		}else{
+			bootUp();
 		}
 		m_led.setData(m_ledBuffer);
 		if (DriverStation.isTest()) {}
@@ -76,25 +85,23 @@ public class LEDSubsytem extends SubsystemBase {
 
 	private void bootUp() {
 		for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-			if ((i + (int) offset) % m_ledBuffer.getLength() >= m_ledBuffer.getLength() / 2)
-				m_ledBuffer.setRGB(i, 255, 214, 0);
-			else m_ledBuffer.setRGB(i, 0, 0, 255);
+			m_ledBuffer.setLED(i, Color.kDarkRed);
 		}
-		offset += 0.5;
+
 	}
 
-	private void discovery() {
+	/*private void discovery() {
 		for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-			if (i == point.x) {
+			if (i == point.INT()) {
 				m_ledBuffer.setRGB(i, 255, 255, 255);
 			} else {
 				m_ledBuffer.setRGB(i, 0, 0, 0);
 			}
 		}
 	}
+	*/
 
 	static int flicker;
-
 	private void flashRight() {
 		for (int i = 0; i < 45; i++) m_ledBuffer.setLED(i, (flicker > 7 ? Color.kPurple : Color.kBlack));
 
