@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.SendableDouble;
+import frc.robot.util.SendableDouble;
 
 public class LEDSubsytem extends SubsystemBase {
 	AddressableLED m_led = new AddressableLED(0);
@@ -85,7 +85,7 @@ public class LEDSubsytem extends SubsystemBase {
 
 	private void discovery() {
 		for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-			if (i == point.INT()) {
+			if (i == point.x) {
 				m_ledBuffer.setRGB(i, 255, 255, 255);
 			} else {
 				m_ledBuffer.setRGB(i, 0, 0, 0);

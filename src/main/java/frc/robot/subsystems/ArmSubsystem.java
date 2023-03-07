@@ -16,7 +16,7 @@ public class ArmSubsystem extends SubsystemBase {
 	CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
 	CANSparkMax elev1 = new CANSparkMax(ELEV1_ID, MotorType.kBrushless);
 	CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
-	CANSparkMax jt11 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
+	CANSparkMax jt11 = new CANSparkMax(JOINT11_ID, MotorType.kBrushless);
 	CANSparkMax jt2 = new CANSparkMax(JOINT2_ID, MotorType.kBrushless);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();

@@ -54,7 +54,7 @@ public final class Constants {
 		public static final int ELEV1_ID = 9;
 		public static final int JOINT1_ID = 10;
 		public static final int JOINT11_ID = 11;
-		public static final int JOINT2_ID = 0;
+		public static final int JOINT2_ID = 13;
 
 		public static final double ELEV_RATIO = 5;
 		public static final double JOINT1_RATIO = 9;
