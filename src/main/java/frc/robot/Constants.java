@@ -76,10 +76,10 @@ public final class Constants {
 		public static final double JOINT1_PACK_POS = 0;
 		public static final double JOINT2_PACK_POS = 0;
 
-		public static final double ELEV_kV = 0;
-		public static final double ELEV_kS = 0;
-		public static final double ELEV_kA = 0;
-		public static final double ELEV_kG = 0;
+		public static final double ELEV_kV = 2.6369;
+		public static final double ELEV_kS = 0.075079;
+		public static final double ELEV_kA = 0.14281;
+		public static final double ELEV_kG = 0.42523;
 
 		public static final double JOINT1_kV = 0;
 		public static final double JOINT1_kS = 0;
