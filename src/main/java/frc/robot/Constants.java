@@ -65,11 +65,11 @@ public final class Constants {
 		public static final double JOINT1_RATIO = 9;
 		public static final double JOINT2_RATIO = 36;
 
-		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 * 2;
+		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 / 2 * 2;
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
 		public static final double ELEV_THETA = 50 / 180. * PI;
-		public static final double ELEV_LEN = 0;
+		public static final double ELEV_LEN = 0; // TODO do we ever need this
 		public static final double ARM_LEN = 0;
 
 		public static final double ELEV_PACK_POS = 0;
