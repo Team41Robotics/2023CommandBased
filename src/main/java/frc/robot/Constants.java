@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class Constants {
 	public static final double FALCON_MAX_SPEED = 6380 * 2 * Math.PI / 60;
 	public static final double NEO_MAX_SPEED = 5676 * 2 * Math.PI / 60;
@@ -57,11 +60,17 @@ public final class Constants {
 		public static final int MID_LENGTH = 20;
 		public static final int RIGHT_LENGTH = 44;
 
-		public static enum LEDLocations{
+		public enum LEDLocations{
 			LEFT,
 			MID,
 			RIGHT
 		}
+		public static Map<LEDLocations, Pair<Integer,Integer>> lightPositions = Map.of(
+				LEDLocations.LEFT, new Pair<Integer, Integer>(0,44),
+				LEDLocations.MID, new Pair<Integer, Integer>(44,20),
+				LEDLocations.RIGHT, new Pair<Integer, Integer>(66,44)
+		);
+
 
 	}
 

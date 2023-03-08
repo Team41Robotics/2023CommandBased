@@ -10,11 +10,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Pair;
 import frc.robot.SendableDouble;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDLocations;
 import java.util.HashMap;
+
+import static frc.robot.Constants.LEDConstants.lightPositions;
 
 public class LEDSubsytem extends SubsystemBase {
 	AddressableLED m_led = new AddressableLED(0);
@@ -29,62 +30,34 @@ public class LEDSubsytem extends SubsystemBase {
 		lightTab.add("point", point);
 
 		m_led.setLength(m_ledBuffer.getLength());
-                start = System.currentTimeMillis();
+		start = System.currentTimeMillis();
 		m_led.setData(m_ledBuffer);
 		m_led.start();
 	}
 
+	private void loadBuffer(){
+		flicker = (flicker + 1) % 20;
+		if(System.currentTimeMillis() - start <= 1000) {
+			bootUp();
+			return;
+		}
+		rainbow();
+
+	}
 	@Override
 	public void periodic() {
-                /* 
-		if (!DriverStation.isEnabled()) {
-			if (testjs.getRawButtonPressed(1)) {
-				point.x = point.x + 10;
-				System.out.println(point.x);
-			}
-			if (testjs.getRawButtonPressed(4)) {
-				point.x = point.x + 1;
-				System.out.println(point.x);
-			}
-			if (testjs.getRawButtonPressed(5)) {
-				point.x = point.x + -1;
-				System.out.println(point.x);
-			}
-			if (testjs.getRawButtonPressed(3)) {
-				point.x = point.x - 10;
-			}
+		for(int i = 0; i< m_ledBuffer.getLength(); i++){
+			m_ledBuffer.setLED(i,Color.kBlack);
+		}
+		loadBuffer();
 
-			if (!testjs.getRawButton(2)) {
-				rainbow();
-			} else {
-				flashRight();
-			}
-		} else {
-			System.out.println("moooove");
-			// rainbow();
-			if (testjs.getRawButtonPressed(1)) {
-				point.x = point.x + 10;
-				System.out.println(point.x);
-			}
-			if (testjs.getRawButtonPressed(4)) {
-				point.x = point.x + 1;
-				System.out.println(point.x);
-			}
-			if (testjs.getRawButtonPressed(5)) {
-				point.x = point.x + -1;
-				System.out.println(point.x);
-			}
-			discovery();
-		}*/
-                if(System.currentTimeMillis() - start >= 1000){
-                        rainbow();
-                }else{
-                        bootUp();
-                }
 		m_led.setData(m_ledBuffer);
-		if (DriverStation.isTest()) {}
 	}
-
+	private void flash(LEDLocations location, Color color){
+		int start = lightPositions.get(location).x;
+		int length = lightPositions.get(location).y;
+		for (int i = start; i < start+length; i++) m_ledBuffer.setLED(i, (flicker > 7 ? color : Color.kBlack));
+	}
 	private void bootUp() {
 		for (int i = 0; i < m_ledBuffer.getLength(); i++) {
 			m_ledBuffer.setLED(i, Color.kDarkRed);
