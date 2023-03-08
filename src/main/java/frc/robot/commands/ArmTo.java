@@ -28,6 +28,8 @@ public class ArmTo extends CommandBase {
 	double st = Timer.getFPGATimestamp();
 
 	public ArmTo(ArmPosition pos) {
+		addRequirements(arm);
+
 		this.pos = pos;
 		elev_prof = new TrapezoidProfile(new Constraints(ELEV_MAX_SPEED, ELEV_MAX_ACCEL), new State(pos.e, 0));
 		jt1_prof = new TrapezoidProfile(new Constraints(JOINT1_MAX_SPEED, JOINT1_MAX_ACCEL), new State(pos.j1, 0));

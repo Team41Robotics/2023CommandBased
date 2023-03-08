@@ -53,7 +53,6 @@ public final class Constants {
 		public static final int ELEV_ID = 8;
 		public static final int ELEV1_ID = 9;
 		public static final int JOINT1_ID = 10;
-		public static final int JOINT11_ID = 11;
 		public static final int JOINT2_ID = 13;
 
 		public static final int LOWERLIMIT1_ID = 0;
@@ -62,18 +61,18 @@ public final class Constants {
 		public static final int UPPERLIMIT2_ID = 3;
 
 		public static final double ELEV_RATIO = 5;
-		public static final double JOINT1_RATIO = 9;
-		public static final double JOINT2_RATIO = 36;
+		public static final double JOINT1_RATIO = 81 * 84 / 16.;
+		public static final double JOINT2_RATIO = 81 * 84 / 16.;
 
 		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 / 2 * 2;
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
 		public static final double ELEV_THETA = 50 / 180. * PI;
-		public static final double ELEV_LEN = 0; // TODO do we ever need this
-		public static final double ARM_LEN = 0;
+		public static final double ELEV_LEN = 1;
+		public static final double ARM_LEN = 14.75 * 2.54 / 100;
 
 		public static final double ELEV_PACK_POS = 0;
-		public static final double JOINT1_PACK_POS = 0;
+		public static final double JOINT1_PACK_POS = 0; // TODO do we need this?
 		public static final double JOINT2_PACK_POS = 0;
 
 		public static final double ELEV_kV = 2.6369;
@@ -81,25 +80,30 @@ public final class Constants {
 		public static final double ELEV_kA = 0.14281;
 		public static final double ELEV_kG = 0.42523;
 
-		public static final double JOINT1_kV = 0;
-		public static final double JOINT1_kS = 0;
-		public static final double JOINT1_kA = 0;
-		public static final double JOINT1_kG = 0;
+		public static final double JOINT1_kV = 4.7816;
+		public static final double JOINT1_kS = 0.25931;
+		public static final double JOINT1_kA = 4.7816;
+		public static final double JOINT1_kG = 0.80517;
 
-		public static final double JOINT2_kV = 0;
-		public static final double JOINT2_kS = 0;
-		public static final double JOINT2_kA = 0;
-		public static final double JOINT2_kG = 0;
+		public static final double JOINT2_kV = 4.145;
+		public static final double JOINT2_kS = 0.11592;
+		public static final double JOINT2_kA = 0.092903;
+		public static final double JOINT2_kG = 0.16105;
 
-		public static final double ELEV_MAX_SPEED = 0; // todo calc using sysid
+		public static final double ELEV_MAX_SPEED = 0; // todo go figure
 		public static final double ELEV_MAX_ACCEL = 0;
-		public static final double JOINT1_MAX_SPEED = 0;
+		public static final double JOINT1_MAX_SPEED = 18 / 180. * PI;
 		public static final double JOINT1_MAX_ACCEL = 0;
-		public static final double JOINT2_MAX_SPEED = 0;
+		public static final double JOINT2_MAX_SPEED = 18 / 180. * PI;
 		public static final double JOINT2_MAX_ACCEL = 0;
 
 		public static final double ELEVATOR_TOLERANCE = 0;
 		public static final double JOINT_TOLERANCE = 0;
+
+		public static final double JOINT1_ZERO_THRES = 0.1;
+		public static final double JOINT1_ZERO_ANGLE = 16.15 / 180. * PI;
+                public static final double JOINT1_UPPER_BOUND = 15 / 180. * PI;
+                public static final double JOINT1_LOWER_BOUND = -90 / 180. * PI;
 	}
 
 	public static class GoToConstants {

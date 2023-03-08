@@ -13,6 +13,7 @@ import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
+import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
@@ -58,6 +59,7 @@ public class Robot extends TimedRobot {
 			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
 			schedule(cmd);
 		}
+		schedule(new ZeroArm()); // TODO add to all auton stuffs
 	}
 
 	@Override
@@ -65,6 +67,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		arm.set(0.0, 0, 0);
 		imu.zeroYaw(); // TODO move to auton
 		odom.start();
 		if (autonomousCommand != null) {

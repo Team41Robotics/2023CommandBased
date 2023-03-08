@@ -11,9 +11,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SendableDouble;
 
-
-
-
 public class LEDSubsytem extends SubsystemBase {
 	AddressableLED m_led = new AddressableLED(0);
 	AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(108);
@@ -23,6 +20,7 @@ public class LEDSubsytem extends SubsystemBase {
 	Joystick testjs = new Joystick(0);
 	SendableDouble point = new SendableDouble(0);
 	private long start;
+
 	public void initLights() { // perhaps just constructor?
 		lightTab.add("point", point);
 
@@ -34,7 +32,7 @@ public class LEDSubsytem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-                /*
+		/*
 		if (!DriverStation.isEnabled()) {
 			if (testjs.getRawButtonPressed(1)) {
 				point.x = point.x + 10;
@@ -74,9 +72,9 @@ public class LEDSubsytem extends SubsystemBase {
 			}
 			discovery();
 		}*/
-		if(System.currentTimeMillis() - start >= 1000){
+		if (System.currentTimeMillis() - start >= 1000) {
 			rainbow();
-		}else{
+		} else {
 			bootUp();
 		}
 		m_led.setData(m_ledBuffer);
@@ -87,7 +85,6 @@ public class LEDSubsytem extends SubsystemBase {
 		for (int i = 0; i < m_ledBuffer.getLength(); i++) {
 			m_ledBuffer.setLED(i, Color.kDarkRed);
 		}
-
 	}
 
 	/*private void discovery() {
@@ -102,6 +99,7 @@ public class LEDSubsytem extends SubsystemBase {
 	*/
 
 	static int flicker;
+
 	private void flashRight() {
 		for (int i = 0; i < 45; i++) m_ledBuffer.setLED(i, (flicker > 7 ? Color.kPurple : Color.kBlack));
 
