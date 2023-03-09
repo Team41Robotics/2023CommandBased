@@ -53,8 +53,8 @@ public final class Constants {
 	}
 
 	public static class ArmConstants {
-		public static final int ELEV_ID = 8;
-		public static final int ELEV1_ID = 9;
+		public static final int ELEV_ID = 9;
+		public static final int ELEV1_ID = 8;
 		public static final int JOINT1_ID = 10;
 		public static final int JOINT2_ID = 13;
 
@@ -130,4 +130,5 @@ public final class Constants {
 	}
 
 	public static final double LOOP_TIME = 0.02;
+	public static final int INTAKE_ID = 12;
 }

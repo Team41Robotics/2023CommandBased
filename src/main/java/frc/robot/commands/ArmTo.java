@@ -9,7 +9,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.ArmPosition;
 
@@ -25,15 +24,23 @@ public class ArmTo extends CommandBase {
 	PIDController jt1_pid = new PIDController(1, 0, 0);
 	PIDController jt2_pid = new PIDController(1, 0, 0);
 
-	double st = Timer.getFPGATimestamp();
+	double st;
 
 	public ArmTo(ArmPosition pos) {
 		addRequirements(arm);
 
 		this.pos = pos;
+	}
+
+	@Override
+	public void initialize() {
+		st = Timer.getFPGATimestamp();
 		elev_prof = new TrapezoidProfile(new Constraints(ELEV_MAX_SPEED, ELEV_MAX_ACCEL), new State(pos.e, 0));
 		jt1_prof = new TrapezoidProfile(new Constraints(JOINT1_MAX_SPEED, JOINT1_MAX_ACCEL), new State(pos.j1, 0));
 		jt2_prof = new TrapezoidProfile(new Constraints(JOINT2_MAX_SPEED, JOINT2_MAX_ACCEL), new State(pos.j2, 0));
+		elev_pid.reset();
+		jt1_pid.reset();
+		jt2_pid.reset();
 	}
 
 	@Override
@@ -51,6 +58,9 @@ public class ArmTo extends CommandBase {
 		double jt1_fb = jt1_pid.calculate(arm.getJoint1Pos(), jt1s.position);
 		double jt2_fb = jt2_pid.calculate(arm.getJoint2Pos(), jt2s.position);
 
+		//System.out.println(elevs.position + "  "+arm.getElevPos() + " " + elevs.velocity);
+                //System.out.println(jt1s.position + " "+ arm.getJoint1Pos() + " "+ jt1s.velocity);
+                System.out.println(jt2s.position + " "+ arm.getJoint1Pos() + " "+ jt2s.velocity);
 		arm.set(elev_fb + elevs.velocity, jt1_fb + jt1s.velocity, jt2_fb + jt2s.velocity, elev_a, jt1_a, jt2_a);
 	}
 
@@ -61,12 +71,15 @@ public class ArmTo extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
+		return false;
+		/*
 		if (elev_prof.isFinished(Timer.getFPGATimestamp() - st)
 				&& jt1_prof.isFinished(Timer.getFPGATimestamp() - st)
 				&& jt2_prof.isFinished(Timer.getFPGATimestamp() - st)) {
-			if (elev_pid.getPositionError() < ArmConstants.ELEVATOR_TOLERANCE
-					&& jt1_pid.getPositionError() < ArmConstants.JOINT_TOLERANCE) return true;
+			if (Math.abs(elev_pid.getPositionError()) < ArmConstants.ELEVATOR_TOLERANCE
+					&& Math.abs(jt1_pid.getPositionError()) < ArmConstants.JOINT_TOLERANCE) return true;
 		}
 		return false;
+					*/
 	}
 }

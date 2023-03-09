@@ -16,7 +16,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants.LEDLocations;
+import frc.robot.commands.ArmTo;
 import frc.robot.commands.ZeroArm;
+import frc.robot.util.ArmPosition;
 
 public class ArmSubsystem extends SubsystemBase {
 	static ArmSubsystem arm;
@@ -55,10 +57,12 @@ public class ArmSubsystem extends SubsystemBase {
 		setPID(jt1_vpid, 0, 0, 0, 0);
 		setPID(jt2_vpid, 0, 0, 0, 0);
 
-		zero();
-
 		armtab.addNumber("elev pos", () -> getElevPos());
 		armtab.addNumber("joint 1 pos", () -> getJoint1Pos());
+                armtab.addNumber("joint 2 pos", () -> getJoint2Pos());
+		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
+                armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
+		armtab.add(this);
 	}
 
 	private void setPID(SparkMaxPIDController pid, double kP, double kI, double kD, double kIz) {
@@ -111,7 +115,7 @@ public class ArmSubsystem extends SubsystemBase {
 	public void periodic() {
 		if (!DriverStation.isEnabled()) {
 			if (!upper_limit1.get()) {
-				arm.jt1.getEncoder().setPosition(0);
+				arm.jt2.getEncoder().setPosition(0);
 				lights.setColor(LEDLocations.LEFT, Color.kGreen);
 				System.out.println(upper_limit1.get());
 			}
@@ -120,10 +124,11 @@ public class ArmSubsystem extends SubsystemBase {
 				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
 				lights.setColor(LEDLocations.RIGHT, (jtLock ? Color.kGreen : Color.kRed));
 			}
+                        elev.getEncoder().setPosition(0);
 			p_upper_limit2 = !upper_limit2.get();
 		}
 		// TODO dynamic zeroing of encoder based on limit switches on elevator
-		if (isTopLimitSwitch()) elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
+		if (DriverStation.isEnabled() && isTopLimitSwitch()) elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
 
 		if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);
 		if (elev.getEncoder().getVelocity() < 0 && isBotLimitSwitch()) set(0, 0, 0);
@@ -146,17 +151,18 @@ public class ArmSubsystem extends SubsystemBase {
 		return jt2.getEncoder().getPosition() * 2 * PI / JOINT2_RATIO;
 	}
 
-	public boolean isTopLimitSwitch() {
+	public boolean isBotLimitSwitch() {
 		return !(lower_limit1.get() && lower_limit2.get());
 	}
 
-	public boolean isBotLimitSwitch() {
+	public boolean isTopLimitSwitch() {
 		return !(upper_limit1.get() && upper_limit2.get());
 	}
 
 	public static ArmSubsystem getInstance() {
 		if (arm == null) {
 			arm = new ArmSubsystem();
+                        arm.armtab.add(new ArmTo(new ArmPosition(0.5, 0, 0)));
 		}
 		return arm;
 	}
