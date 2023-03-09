@@ -38,6 +38,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
 	Transform2d[] poses = new Transform2d[32];
 	double[] times = new double[32];
+	double[] areas = new double[32];
 	int ptr = 0;
 
 	public void update(int ci) {
@@ -61,18 +62,17 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
 				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
-				if (tgt.getPoseAmbiguity() < 0.03) {
-					poses[ptr % 32] = pose;
-					times[ptr % 32] = time;
-					ptr++;
-				} else if (abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
+				if (tgt.getPoseAmbiguity() < 0.03
+						|| abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
 					// mod 32; overwrites first estimate if ovf; 99% not needed or used
 					poses[ptr % 32] = pose;
 					times[ptr % 32] = time;
+					areas[ptr % 32] = tgt.getArea();
 					ptr++;
 				} else if (abs(Util.normRot(altpose.theta - odom.now().theta)) < THETA_THRESHOLD) {
 					poses[ptr % 32] = altpose;
 					times[ptr % 32] = time;
+					areas[ptr % 32] = tgt.getArea();
 					ptr++;
 				}
 			}
@@ -89,17 +89,19 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		double tcos = 0;
 
 		int sz = min(32, ptr);
+		double totarea = 0;
 		if (sz == 0) return;
 		for (int i = 0; i < 32 && i < ptr; i++) {
 			Transform2d o = odom.origin_if(poses[i], times[i]);
-			tx += o.x;
-			ty += o.y;
-			tsin += o.sin;
-			tcos += o.cos;
+			tx += o.x * areas[i];
+			ty += o.y * areas[i];
+			tsin += o.sin * areas[i];
+			tcos += o.cos * areas[i];
+			totarea += areas[i];
 		}
 		ptr = 0;
 		double norm = sqrt(tsin * tsin + tcos * tcos);
-		Transform2d avg = new Transform2d(tx / sz, ty / sz, tcos / norm, tsin / norm);
+		Transform2d avg = new Transform2d(tx / totarea, ty / totarea, tcos / norm, tsin / norm);
 		odom.update_origin(avg);
 	}
 
