@@ -10,9 +10,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LEDConstants.LEDLocations;
 import frc.robot.commands.ZeroArm;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -35,6 +38,8 @@ public class ArmSubsystem extends SubsystemBase {
 	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
+	LEDSubsytem lights = LEDSubsytem.getInstance();
+
 	public ArmSubsystem() {
 		elev.restoreFactoryDefaults();
 		elev1.restoreFactoryDefaults();
@@ -43,7 +48,7 @@ public class ArmSubsystem extends SubsystemBase {
 		elev.setIdleMode(IdleMode.kBrake);
 		elev1.setIdleMode(IdleMode.kBrake);
 		jt1.setIdleMode(IdleMode.kBrake);
-		jt1.setIdleMode(IdleMode.kBrake);
+		jt2.setIdleMode(IdleMode.kCoast);
 
 		setPID(elev_vpid, 0, 0, 0, 0);
 		setPID(elev1_vpid, 0, 0, 0, 0);
@@ -67,10 +72,8 @@ public class ArmSubsystem extends SubsystemBase {
 		pid.setReference(vel, ControlType.kVelocity, 0, ff, ArbFFUnits.kVoltage);
 	}
 
-	public void zero() { // FIXME
-		elev.getEncoder().setPosition(ELEV_PACK_POS * ELEV_RAD_PER_METER / 2 / PI);
-		jt1.getEncoder().setPosition(JOINT1_PACK_POS / 2 / PI * JOINT1_RATIO);
-		jt2.getEncoder().setPosition(JOINT2_PACK_POS / 2 / PI * JOINT2_RATIO);
+	public void zero() {
+		elev.getEncoder().setPosition(0);
 	}
 	// TODO dynamic zeroing of encoder based on limit switches on elevator
 
@@ -95,23 +98,40 @@ public class ArmSubsystem extends SubsystemBase {
 		setMotor(
 				jt2_vpid,
 				jt2_v * JOINT2_RATIO / 2 / PI,
-				JOINT2_kG * cos(getJoint1Pos()+getJoint2Pos()) + JOINT2_kS * signum(jt2_v) + JOINT2_kV * jt2_v + JOINT2_kA * jt2_a);
+				JOINT2_kG * cos(getJoint1Pos() + getJoint2Pos())
+						+ JOINT2_kS * signum(jt2_v)
+						+ JOINT2_kV * jt2_v
+						+ JOINT2_kA * jt2_a);
 	}
+
+	private boolean jtLock = false;
+	private boolean p_upper_limit2 = false;
 
 	@Override
 	public void periodic() {
+		if (!DriverStation.isEnabled()) {
+			if (!upper_limit1.get()) {
+				arm.jt1.getEncoder().setPosition(0);
+				lights.setColor(LEDLocations.LEFT, Color.kGreen);
+				System.out.println(upper_limit1.get());
+			}
+			if (!p_upper_limit2 && !upper_limit2.get()) {
+				jtLock = !jtLock;
+				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
+				lights.setColor(LEDLocations.RIGHT, (jtLock ? Color.kGreen : Color.kRed));
+			}
+			p_upper_limit2 = !upper_limit2.get();
+		}
 		// TODO dynamic zeroing of encoder based on limit switches on elevator
 		if (isTopLimitSwitch()) elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
 
 		if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);
 		if (elev.getEncoder().getVelocity() < 0 && isBotLimitSwitch()) set(0, 0, 0);
 
-                if(!(getCurrentCommand() instanceof ZeroArm)) {
-                        if(jt1.getEncoder().getVelocity() > 0 && getJoint1Pos() > JOINT1_UPPER_BOUND)
-                                set(0,0,0);
-                        if(jt1.getEncoder().getVelocity() < 0 && getJoint1Pos() < JOINT1_LOWER_BOUND)
-                                set(0,0,0);
-                }
+		if (!(getCurrentCommand() instanceof ZeroArm)) {
+			if (jt1.getEncoder().getVelocity() > 0 && getJoint1Pos() > JOINT1_UPPER_BOUND) set(0, 0, 0);
+			if (jt1.getEncoder().getVelocity() < 0 && getJoint1Pos() < JOINT1_LOWER_BOUND) set(0, 0, 0);
+		}
 	}
 
 	public double getElevPos() {

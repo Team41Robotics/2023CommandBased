@@ -16,6 +16,7 @@ import frc.robot.commands.FODdrive;
 import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.HDriveSubsystem;
+import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
 	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 	ArmSubsystem arm = ArmSubsystem.getInstance();
 	private Command autonomousCommand;
+	LEDSubsytem lights = LEDSubsytem.getInstance();
 
 	private void schedule(Command cmd) {
 		CommandScheduler.getInstance().schedule(cmd);
@@ -38,7 +40,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		configureButtons();
-
+		lights.initLights();
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
 		arm.zero();

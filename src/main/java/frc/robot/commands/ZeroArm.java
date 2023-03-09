@@ -21,6 +21,7 @@ public class ZeroArm extends CommandBase {
 		if (arm.jt1.getEncoder().getVelocity() / 60. * 2 * PI / JOINT1_RATIO < JOINT1_ZERO_THRES && prev_above)
 			arm.jt1.getEncoder().setPosition(JOINT1_ZERO_ANGLE / 2 / PI * JOINT1_RATIO);
 		arm.jt1.set(0.2);
+		arm.jt2.set(-0.2);
 	}
 
 	@Override
