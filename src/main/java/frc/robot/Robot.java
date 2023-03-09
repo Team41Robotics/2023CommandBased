@@ -4,16 +4,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.AutonomousRoutine;
-import frc.robot.commands.ArmTo;
-import frc.robot.commands.Drive;
-import frc.robot.commands.FODdrive;
 import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.HDriveSubsystem;
@@ -21,7 +17,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
-import frc.robot.util.ArmPosition;
+import frc.robot.util.Util;
 
 public class Robot extends TimedRobot {
 	public static Joystick leftjs = new Joystick(0);
@@ -47,7 +43,7 @@ public class Robot extends TimedRobot {
 		configureButtons();
 		lights.initLights();
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
-		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
+		// hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
 		AutonomousRoutine.initShuffleboard();
 	}
 
@@ -60,7 +56,7 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		autonomousCommand = AutonomousRoutine.AUTO_CHOOSER.getSelected().construct();
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
-                arm.elev.getEncoder().setPosition(0);
+		arm.elev.getEncoder().setPosition(0);
 		arm.zero();
 		if (autonomousCommand != null) {
 			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
@@ -85,6 +81,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		if (arm.getCurrentCommand() == null) {
+			arm.set(
+					Util.deadZone(-leftjs.getY()),
+					Util.deadZone(-rightjs.getY()),
+					Util.deadZone(rightjs.getY()) + Util.deadZone(-new Joystick(3).getY()));
+		}
 		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else hdrive.drive(0, 0, 0);
@@ -94,9 +96,10 @@ public class Robot extends TimedRobot {
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		// new JoystickButton(leftjs, 1).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
-		new JoystickButton(rightjs, 1).onTrue(new RunCommand(() -> intake.run(.3), intake));
-		new JoystickButton(leftjs, 1).onTrue(new RunCommand(() -> intake.run(-.3), intake));
+		new JoystickButton(rightjs, 1).onTrue(new RunCommand(() -> intake.run(.6), intake));
+		new JoystickButton(leftjs, 1).onTrue(new RunCommand(() -> intake.run(-.6), intake));
 		new JoystickButton(rightjs, 2).onTrue(new RunCommand(() -> intake.run(0), intake));
-		new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
+		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
+		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));
 	}
 }

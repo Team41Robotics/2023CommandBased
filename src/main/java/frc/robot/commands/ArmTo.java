@@ -58,9 +58,9 @@ public class ArmTo extends CommandBase {
 		double jt1_fb = jt1_pid.calculate(arm.getJoint1Pos(), jt1s.position);
 		double jt2_fb = jt2_pid.calculate(arm.getJoint2Pos(), jt2s.position);
 
-		//System.out.println(elevs.position + "  "+arm.getElevPos() + " " + elevs.velocity);
-                //System.out.println(jt1s.position + " "+ arm.getJoint1Pos() + " "+ jt1s.velocity);
-                System.out.println(jt2s.position + " "+ arm.getJoint1Pos() + " "+ jt2s.velocity);
+		// System.out.println(elevs.position + "  "+arm.getElevPos() + " " + elevs.velocity);
+		// System.out.println(jt1s.position + " "+ arm.getJoint1Pos() + " "+ jt1s.velocity);
+		System.out.println(jt2s.position + " " + arm.getJoint1Pos() + " " + jt2s.velocity);
 		arm.set(elev_fb + elevs.velocity, jt1_fb + jt1s.velocity, jt2_fb + jt2s.velocity, elev_a, jt1_a, jt2_a);
 	}
 
