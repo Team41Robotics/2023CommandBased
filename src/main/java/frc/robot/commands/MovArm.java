@@ -19,6 +19,10 @@ public class MovArm extends CommandBase {
 		this.vx = vx;
 		this.vy = vy;
 		this.t = t;
+	}
+
+	@Override
+	public void initialize() {
 		st = Timer.getFPGATimestamp();
 	}
 

@@ -9,8 +9,12 @@ public class IntakeSubsystem extends SubsystemBase {
 	static IntakeSubsystem intake;
 	CANSparkMax motor = new CANSparkMax(Constants.INTAKE_ID, MotorType.kBrushless);
 
+	public IntakeSubsystem() {
+		motor.restoreFactoryDefaults();
+		// motor.setIdleMode(IdleMode.kBrake);
+	}
+
 	public void run(double x) {
-		System.out.println(x);
 		motor.set(x);
 	}
 

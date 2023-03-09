@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants.LEDLocations;
-import frc.robot.commands.ZeroArm;
 
 public class ArmSubsystem extends SubsystemBase {
 	static ArmSubsystem arm;
@@ -129,13 +128,14 @@ public class ArmSubsystem extends SubsystemBase {
 		if (DriverStation.isEnabled() && isTopLimitSwitch())
 			elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
 
-		if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);
-		if (elev.getEncoder().getVelocity() < 0 && isBotLimitSwitch()) set(0, 0, 0);
+		// TODO
+		// if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);
+		// if (elev.getEncoder().getVelocity() < 0 && isBotLimitSwitch()) set(0, 0, 0);
 
-		if (!(getCurrentCommand() instanceof ZeroArm)) {
-			if (jt1.getEncoder().getVelocity() > 0 && getJoint1Pos() > JOINT1_UPPER_BOUND) set(0, 0, 0);
-			if (jt1.getEncoder().getVelocity() < 0 && getJoint1Pos() < JOINT1_LOWER_BOUND) set(0, 0, 0);
-		}
+		// if (!(getCurrentCommand() instanceof ZeroArm)) {
+		// if (jt1.getEncoder().getVelocity() > 0 && getJoint1Pos() > JOINT1_UPPER_BOUND) set(0, 0, 0);
+		// if (jt1.getEncoder().getVelocity() < 0 && getJoint1Pos() < JOINT1_LOWER_BOUND) set(0, 0, 0);
+		// }
 	}
 
 	public double getElevPos() {
