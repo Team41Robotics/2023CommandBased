@@ -34,11 +34,6 @@ public class FODdrive extends CommandBase {
 	}
 
 	@Override
-	public void end(boolean interrupted) {
-		drive.drive(0, 0, 0);
-	}
-
-	@Override
 	public boolean isFinished() {
 		return true;
 		// trivial
