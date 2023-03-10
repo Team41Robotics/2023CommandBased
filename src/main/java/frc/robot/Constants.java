@@ -68,6 +68,7 @@ public final class Constants {
 		public static final double JOINT2_RATIO = 81 * 84 / 16.;
 
 		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 / 2 * 2;
+                public static final double TEMP = ELEV_METERS_PER_AXLE_RAD*2*PI;
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
 		public static final double ELEV_THETA = 50 / 180. * PI;
@@ -96,8 +97,8 @@ public final class Constants {
 		public static final double JOINT2_MAX_SPEED = 18 / 180. * PI;
 		public static final double JOINT2_MAX_ACCEL = 55;
 
-		public static final double ELEVATOR_TOLERANCE = 0;
-		public static final double JOINT_TOLERANCE = 0;
+		public static final double ELEVATOR_TOLERANCE = 0.03;
+		public static final double JOINT_TOLERANCE = 2 / 180. * PI;
 
 		public static final double JOINT1_ZERO_THRES = 0.1;
 		public static final double JOINT1_ZERO_ANGLE = 16.15 / 180. * PI;

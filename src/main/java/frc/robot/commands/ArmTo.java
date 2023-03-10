@@ -20,9 +20,9 @@ public class ArmTo extends CommandBase {
 	TrapezoidProfile jt1_prof;
 	TrapezoidProfile jt2_prof;
 
-	PIDController elev_pid = new PIDController(1, 0, 0);
-	PIDController jt1_pid = new PIDController(1, 0, 0);
-	PIDController jt2_pid = new PIDController(1, 0, 0);
+	PIDController elev_pid = new PIDController(1, 0.5, 0);
+	PIDController jt1_pid = new PIDController(1, 0.2, 0);
+	PIDController jt2_pid = new PIDController(1, 0.2, 0);
 
 	double st;
 
@@ -43,6 +43,7 @@ public class ArmTo extends CommandBase {
 		jt2_pid.reset();
 	}
 
+        double vel;
 	@Override
 	public void execute() {
 		State elevs = elev_prof.calculate(Timer.getFPGATimestamp() - st + Constants.LOOP_TIME);
@@ -58,10 +59,10 @@ public class ArmTo extends CommandBase {
 		double jt1_fb = jt1_pid.calculate(arm.getJoint1Pos(), jt1s.position);
 		double jt2_fb = jt2_pid.calculate(arm.getJoint2Pos(), jt2s.position);
 
-		// System.out.println(elevs.position + "  "+arm.getElevPos() + " " + elevs.velocity);
-		// System.out.println(jt1s.position + " "+ arm.getJoint1Pos() + " "+ jt1s.velocity);
-		System.out.println(jt2s.position + " " + arm.getJoint1Pos() + " " + jt2s.velocity);
-		arm.set(elev_fb + elevs.velocity, jt1_fb + jt1s.velocity, jt2_fb + jt2s.velocity, elev_a, jt1_a, jt2_a);
+                vel=elevs.velocity + elev_fb;
+                if (arm.isTopLimitSwitch() && vel > 0) vel=0;
+                if (arm.isBotLimitSwitch() && vel < 0) vel=0;
+		arm.set(vel, jt1_fb + jt1s.velocity, jt2_fb + jt2s.velocity, elev_a, jt1_a, jt2_a);
 	}
 
 	@Override
@@ -71,15 +72,12 @@ public class ArmTo extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
-		return false;
-		/*
 		if (elev_prof.isFinished(Timer.getFPGATimestamp() - st)
 				&& jt1_prof.isFinished(Timer.getFPGATimestamp() - st)
 				&& jt2_prof.isFinished(Timer.getFPGATimestamp() - st)) {
-			if (Math.abs(elev_pid.getPositionError()) < ArmConstants.ELEVATOR_TOLERANCE
-					&& Math.abs(jt1_pid.getPositionError()) < ArmConstants.JOINT_TOLERANCE) return true;
+			if (Math.abs(elev_pid.getPositionError()) < ELEVATOR_TOLERANCE
+					&& Math.abs(jt1_pid.getPositionError()) < JOINT_TOLERANCE) return true;
 		}
 		return false;
-					*/
 	}
 }

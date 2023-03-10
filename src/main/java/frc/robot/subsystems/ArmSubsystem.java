@@ -13,9 +13,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants.LEDLocations;
+import frc.robot.commands.ArmTo;
+import frc.robot.util.ArmPosition;
+import java.util.Map;
 
 public class ArmSubsystem extends SubsystemBase {
 	static ArmSubsystem arm;
@@ -38,6 +43,7 @@ public class ArmSubsystem extends SubsystemBase {
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
 	LEDSubsytem lights = LEDSubsytem.getInstance();
+	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
 
 	public ArmSubsystem() {
 		elev.restoreFactoryDefaults();
@@ -60,6 +66,25 @@ public class ArmSubsystem extends SubsystemBase {
 		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
 		armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
 		armtab.add(this);
+
+		Map<String, ArmPosition> positions = Map.of(
+				"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
+				"BALL TOP   ", new ArmPosition(1.031, 0.038, 1.203),
+				"BALL MID   ", new ArmPosition(0.833, -0.574, 0.869),
+				"ALL  BOT   ", new ArmPosition(0.116, -0.850, 1.172),
+				"CONE MID   ", new ArmPosition(0.500, 0.183, 0.374),
+				"CONE TOP   ", new ArmPosition(1.040, 0.104, 0.753),
+				"CONE PICKUP", new ArmPosition(0.141, 0.095, -0.661),
+				"BALL HIGH  ", new ArmPosition(0.950, 0.249, 0.55));
+
+		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
+			armposes.addOption(entry.getKey(), entry.getValue());
+		}
+		armtab.add(armposes);
+	}
+
+	public void init() {
+		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));
 	}
 
 	private void setPID(SparkMaxPIDController pid, double kP, double kI, double kD, double kIz) {
@@ -72,11 +97,6 @@ public class ArmSubsystem extends SubsystemBase {
 	private void setMotor(SparkMaxPIDController pid, double vel, double ff) {
 		pid.setReference(vel, ControlType.kVelocity, 0, ff, ArbFFUnits.kVoltage);
 	}
-
-	public void zero() {
-		elev.getEncoder().setPosition(0);
-	}
-	// TODO dynamic zeroing of encoder based on limit switches on elevator
 
 	public void set(double elev_vel, double jt1_vel, double jt2_vel) {
 		set(elev_vel, jt1_vel, jt2_vel, 0, 0, 0);
@@ -161,9 +181,7 @@ public class ArmSubsystem extends SubsystemBase {
 	public static ArmSubsystem getInstance() {
 		if (arm == null) {
 			arm = new ArmSubsystem();
-			// arm.armtab.add(new ArmTo(new ArmPosition(0.5, 0, 0)));
-			// arm.armtab.add("set elev",new InstantCommand(()->arm.set(.2,0,0)));
-			// arm.armtab.add("stop elev",new InstantCommand(()->arm.set(0,0,0)));
+			arm.init();
 		}
 		return arm;
 	}

@@ -23,7 +23,6 @@ public class LEDSubsytem extends SubsystemBase {
 	private long start;
 
 	public void initLights() { // perhaps just constructor?
-
 		m_led.setLength(m_ledBuffer.getLength());
 		start = System.currentTimeMillis();
 		bootUp();
