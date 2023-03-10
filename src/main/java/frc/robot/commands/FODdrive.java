@@ -1,8 +1,9 @@
 package frc.robot.commands;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import static java.lang.Math.*;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.OperatorConstants;
@@ -28,6 +29,7 @@ public class FODdrive extends CommandBase {
 		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
 
 		double robot_angle = odom.now().theta;
+		if (DriverStation.getAlliance() == Alliance.Red) robot_angle = PI - robot_angle;
 		double vx = cos(robot_angle) * vf + sin(robot_angle) * vs;
 		double vy = -sin(robot_angle) * vf + cos(robot_angle) * vs;
 		drive.drive(vx / 4, vy / 4, w / 2); // FIXME

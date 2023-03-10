@@ -4,6 +4,8 @@ import static frc.robot.Constants.GoToConstants.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
@@ -17,6 +19,12 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 	Transform2d target;
 
 	public GoTo(Transform2d target) {
+		this(target, true);
+	}
+
+	public GoTo(Transform2d target, boolean transformIfRed) {
+		if (transformIfRed && DriverStation.getAlliance() == Alliance.Red)
+			target = Util.flipTransformAcrossField(target);
 		this.target = target;
 		addRequirements(drive);
 		wPID.enableContinuousInput(-PI, PI);

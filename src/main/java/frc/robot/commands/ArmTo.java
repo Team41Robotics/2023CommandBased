@@ -43,7 +43,8 @@ public class ArmTo extends CommandBase {
 		jt2_pid.reset();
 	}
 
-        double vel;
+	double vel;
+
 	@Override
 	public void execute() {
 		State elevs = elev_prof.calculate(Timer.getFPGATimestamp() - st + Constants.LOOP_TIME);
@@ -59,9 +60,9 @@ public class ArmTo extends CommandBase {
 		double jt1_fb = jt1_pid.calculate(arm.getJoint1Pos(), jt1s.position);
 		double jt2_fb = jt2_pid.calculate(arm.getJoint2Pos(), jt2s.position);
 
-                vel=elevs.velocity + elev_fb;
-                if (arm.isTopLimitSwitch() && vel > 0) vel=0;
-                if (arm.isBotLimitSwitch() && vel < 0) vel=0;
+		vel = elevs.velocity + elev_fb;
+		if (arm.isTopLimitSwitch() && vel > 0) vel = 0;
+		if (arm.isBotLimitSwitch() && vel < 0) vel = 0;
 		arm.set(vel, jt1_fb + jt1s.velocity, jt2_fb + jt2s.velocity, elev_a, jt1_a, jt2_a);
 	}
 

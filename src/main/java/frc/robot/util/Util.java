@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import static java.lang.Math.*;
 
+import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 
 public class Util {
@@ -47,5 +48,9 @@ public class Util {
 		double theta = t1.theta + alpha * normRot(t2.theta - t1.theta);
 
 		return new Transform2d(tx, ty, theta);
+	}
+
+	public static Transform2d flipTransformAcrossField(Transform2d trans) {
+		return new Transform2d(Constants.FIELD_LENGTH - trans.x, trans.y, PI - trans.theta);
 	}
 }

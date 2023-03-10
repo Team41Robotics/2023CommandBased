@@ -68,7 +68,7 @@ public final class Constants {
 		public static final double JOINT2_RATIO = 81 * 84 / 16.;
 
 		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 / 2 * 2;
-                public static final double TEMP = ELEV_METERS_PER_AXLE_RAD*2*PI;
+		public static final double TEMP = ELEV_METERS_PER_AXLE_RAD * 2 * PI;
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
 		public static final double ELEV_THETA = 50 / 180. * PI;
@@ -132,4 +132,7 @@ public final class Constants {
 
 	public static final double LOOP_TIME = 0.02;
 	public static final int INTAKE_ID = 12;
+
+	public static final double FIELD_LENGTH = 16.54;
+	public static final double FIELD_WIDTH = 8;
 }
