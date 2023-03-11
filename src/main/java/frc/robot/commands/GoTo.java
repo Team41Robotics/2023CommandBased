@@ -23,10 +23,10 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 	}
 
 	public GoTo(Transform2d target, boolean transformIfRed) {
-		if (transformIfRed && DriverStation.getAlliance() == Alliance.Red)
-			target = Util.flipTransformAcrossField(target);
-		this.target = target;
 		addRequirements(drive);
+		this.target = target;
+		if (transformIfRed && DriverStation.getAlliance() == Alliance.Red)
+			this.target = Util.flipTransformAcrossField(this.target);
 		wPID.enableContinuousInput(-PI, PI);
 	}
 
@@ -57,6 +57,8 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 		double robot_angle = odom.now().theta;
 		double vf = cos(robot_angle) * vx + sin(robot_angle) * vy;
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
+		System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
+		System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
 		drive.drive(vf, vs, w);
 	}
 
@@ -66,11 +68,11 @@ public class GoTo extends CommandBase { // TODO: trajectory & make this more agg
 	}
 
 	public boolean isFinished() {
-		return abs(odom.now().x - target.x) <= GOTO_XY_THRESHOLD
-				// && abs(odom.now().y - target.y) <= GOTO_XY_THRESHOLD
-				&& abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_THRESHOLD
-				&& drive.getLeftVel() < GOTO_VEL_THRES
-				&& drive.getRightVel() < GOTO_VEL_THRES;
-		// && drive.getMidVel() < GOTO_VEL_THRES;
+		return abs(odom.now().x - target.x) <= GOTO_XY_TOLERANCE
+				&& abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
+				&& abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_TOLERANCE
+				&& drive.getLeftVel() < GOTO_VEL_TOLERANCE
+				&& drive.getRightVel() < GOTO_VEL_TOLERANCE
+				&& drive.getMidVel() < GOTO_VEL_TOLERANCE;
 	}
 }

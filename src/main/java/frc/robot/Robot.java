@@ -2,15 +2,18 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.LEDLocations;
 import frc.robot.autonomous.AutonomousRoutine;
-import frc.robot.commands.ArmTo;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
@@ -20,9 +23,9 @@ import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LEDSubsytem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
-import frc.robot.util.ArmPosition;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 public class Robot extends TimedRobot {
 	public static Joystick leftjs = new Joystick(0);
@@ -33,10 +36,10 @@ public class Robot extends TimedRobot {
 	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
 	public boolean FOD;
 	OdomSubsystem odom = OdomSubsystem.getInstance();
-	// PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
+	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
 	ArmSubsystem arm = ArmSubsystem.getInstance();
 	private Command autonomousCommand;
-	LEDSubsytem lights = LEDSubsytem.getInstance();
+	LEDSubsystem lights = LEDSubsystem.getInstance();
 	IntakeSubsystem intake = IntakeSubsystem.getInstance();
 
 	private void schedule(Command cmd) {
@@ -75,11 +78,13 @@ public class Robot extends TimedRobot {
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
 		arm.elev.getEncoder().setPosition(0);
 		if (autonomousCommand != null) {
-			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
+			SequentialCommandGroup cmd =
+					new SequentialCommandGroup(new WaitCommand(delay), new ZeroArm(), autonomousCommand);
+			// SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
 			schedule(cmd);
 		}
 		// schedule(new ZeroArm()); // TODO add to all auton stuffs
-		schedule(new ZeroArm().andThen(new ArmTo(new ArmPosition(.5, 0, 0)))); // TODO add to all auton stuffs
+		// schedule(new ZeroArm().andThen(new ArmTo(new ArmPosition(.5, 0, 0)))); // TODO add to all auton stuffs
 	}
 
 	@Override
@@ -97,7 +102,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-
 		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
 		// else hdrive.drive(0, 0, 0);
@@ -117,5 +121,16 @@ public class Robot extends TimedRobot {
 		new JoystickButton(new Joystick(3), 1)
 				.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
 						+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
+		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kYellow), lights));
+		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kYellow), lights));
+		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kYellow), lights));
+		new POVButton(leftjs, 180).onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
+		new POVButton(rightjs, 270)
+				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kPurple), lights));
+		new POVButton(rightjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kPurple), lights));
+		new POVButton(rightjs, 90)
+				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kPurple), lights));
+		new POVButton(rightjs, 180)
+				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
 	}
 }

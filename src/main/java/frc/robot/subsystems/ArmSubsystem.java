@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LEDConstants.LEDLocations;
 import frc.robot.commands.ArmTo;
+import frc.robot.commands.ZeroArm;
 import frc.robot.util.ArmPosition;
 import java.util.Map;
 
@@ -42,7 +42,7 @@ public class ArmSubsystem extends SubsystemBase {
 	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
-	LEDSubsytem lights = LEDSubsytem.getInstance();
+	LEDSubsystem lights = LEDSubsystem.getInstance();
 	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
 	public Map<String, ArmPosition> positions = Map.of(
 			"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
@@ -81,24 +81,26 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	private void createShuffleboardPosition(String name, int y, int x) {
-		armtab.add(name, new ArmTo(name)).withPosition(y, x);
+		armtab.add(name, new ArmTo(name)).withPosition(x, y);
 	}
 
 	public void init() {
 		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
 			armposes.addOption(entry.getKey(), entry.getValue());
 		}
-		createShuffleboardPosition("BALL PICKUP", 2, 1);
-		createShuffleboardPosition("BALL TOP", 2, 2);
-		createShuffleboardPosition("BALL MID", 2, 3);
-		createShuffleboardPosition("BALL HMN ST", 2, 5);
+		createShuffleboardPosition("BALL PICKUP", 1, 1);
+		createShuffleboardPosition("BALL TOP", 1, 2);
+		createShuffleboardPosition("BALL MID", 1, 3);
+		createShuffleboardPosition("BALL HMN ST", 1, 5);
 
-		createShuffleboardPosition("ALL  BOT", 3, 1);
+		createShuffleboardPosition("ALL  BOT", 2, 1);
 
-		createShuffleboardPosition("CONE PICKUP", 4, 1);
-		createShuffleboardPosition("CONE TOP", 4, 2);
-		createShuffleboardPosition("CONE MID", 4, 3);
-		createShuffleboardPosition("CONE HMN ST", 4, 5);
+		createShuffleboardPosition("CONE PICKUP", 3, 1);
+		createShuffleboardPosition("CONE TOP", 3, 2);
+		createShuffleboardPosition("CONE MID", 3, 3);
+		createShuffleboardPosition("CONE HMN ST", 3, 5);
+
+		armtab.add("ZERO ARM", new ZeroArm());
 		//
 		armtab.add(armposes);
 		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));
@@ -150,12 +152,14 @@ public class ArmSubsystem extends SubsystemBase {
 		if (!DriverStation.isEnabled()) {
 			if (!upper_limit1.get()) {
 				arm.jt2.getEncoder().setPosition(0);
-				lights.setColor(LEDLocations.LEFT, Color.kGreen);
+				lights.lf = false;
+				lights.left = Color.kGreen;
 			}
 			if (!p_upper_limit2 && !upper_limit2.get()) { // TODO TODO TODO TODO
 				jtLock = !jtLock;
 				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
-				lights.setColor(LEDLocations.RIGHT, (jtLock ? Color.kGreen : Color.kRed));
+				lights.rf = false;
+				lights.right = jtLock ? Color.kGreen : Color.kRed;
 			}
 			elev.getEncoder().setPosition(0);
 			p_upper_limit2 = !upper_limit2.get();

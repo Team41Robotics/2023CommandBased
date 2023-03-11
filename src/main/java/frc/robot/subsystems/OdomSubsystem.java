@@ -60,7 +60,8 @@ public class OdomSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-
+		// field.setRobotPose(now().x, now().y, Rotation2d.fromRadians(now().theta));
+		field.setRobotPose(1.02690 + 0.5, 4.41621, new Rotation2d());
 		double theta = Robot.imu.getAngle();
 		double dtheta = theta - ptheta;
 		ptheta = theta;
@@ -89,7 +90,6 @@ public class OdomSubsystem extends SubsystemBase {
 		Transform2d trans = new Transform2d(dx, dy, dtheta);
 		odoms.add(acc().mul(trans));
 		times.add(Timer.getFPGATimestamp());
-		field.setRobotPose(now().x, now().y, Rotation2d.fromRadians(now().theta));
 	}
 
 	public Transform2d acc() {

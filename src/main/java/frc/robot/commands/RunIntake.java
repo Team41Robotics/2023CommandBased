@@ -8,25 +8,32 @@ public class RunIntake extends CommandBase {
 	IntakeSubsystem intake = IntakeSubsystem.getInstance();
 	double speed;
 	double startTime;
+	double mintime, maxtime;
 
 	public RunIntake(double d) {
+		this(d, .5, 99);
+	}
+
+	public RunIntake(double d, double maxtime) {
+		this(d, .5, maxtime);
+	}
+
+	public RunIntake(double d, double mintime, double maxtime) {
 		addRequirements(intake);
 		this.speed = d;
+		this.mintime = mintime;
+		this.maxtime = maxtime;
 	}
 
 	@Override
 	public void initialize() {
 		startTime = Timer.getFPGATimestamp();
-	}
-
-	@Override
-	public void execute() {
-                System.out.println("EXECUTE");
 		intake.run(speed);
 	}
 
 	@Override
 	public boolean isFinished() {
-		return (Math.abs(intake.getSpeed()) <= Math.abs(speed) / 2 && Timer.getFPGATimestamp() - startTime > 0.5);
+		return (Math.abs(intake.getSpeed()) <= Math.abs(speed) / 2 && Timer.getFPGATimestamp() - startTime > mintime)
+				|| Timer.getFPGATimestamp() - startTime > maxtime;
 	}
 }

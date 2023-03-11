@@ -3,7 +3,6 @@ package frc.robot;
 import static java.lang.Math.PI;
 
 import edu.wpi.first.math.Pair;
-import java.util.Map;
 
 public final class Constants {
 	public static final double FALCON_MAX_SPEED = 6380 * 2 * PI / 60;
@@ -108,9 +107,9 @@ public final class Constants {
 	}
 
 	public static class GoToConstants {
-		public static final double GOTO_XY_THRESHOLD = 0.03;
-		public static final double GOTO_TURN_THRESHOLD = .5 / 180. * PI;
-		public static final double GOTO_VEL_THRES = 0.2;
+		public static final double GOTO_XY_TOLERANCE = 0.03;
+		public static final double GOTO_TURN_TOLERANCE = .5 / 180. * PI;
+		public static final double GOTO_VEL_TOLERANCE = 0.2;
 	}
 
 	public static class LEDConstants {
@@ -119,16 +118,16 @@ public final class Constants {
 		public static final int MID_LENGTH = 20;
 		public static final int RIGHT_LENGTH = 44;
 
-		public enum LEDLocations {
-			LEFT,
-			MID,
-			RIGHT
-		}
+		public static final Pair<Integer, Integer> LEFT = new Pair<>(0, 45);
+		public static final Pair<Integer, Integer> MID = new Pair<>(45, 65);
+		public static final Pair<Integer, Integer> RIGHT = new Pair<>(66, 66 + 42);
+	}
 
-		public static Map<LEDLocations, Pair<Integer, Integer>> lightPositions = Map.of(
-				LEDLocations.LEFT, new Pair<Integer, Integer>(0, 45),
-				LEDLocations.MID, new Pair<Integer, Integer>(45, 20),
-				LEDLocations.RIGHT, new Pair<Integer, Integer>(66, 42));
+	public static enum LEDLocations {
+		LEFT,
+		RIGHT,
+		MID,
+		NONE;
 	}
 
 	public static final double LOOP_TIME = 0.02;

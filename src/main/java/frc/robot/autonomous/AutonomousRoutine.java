@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class AutonomousRoutine {
 	private static final Map<String, AutonomousRoutine> AUTO_REGISTRY = new HashMap<>();
 
 	/** Most basic auto already defined */
-	public static final AutonomousRoutine DO_NOTHING = new AutonomousRoutine("Do Nothing", () -> null);
+	public static final AutonomousRoutine DO_NOTHING = new AutonomousRoutine("Do Nothing", () -> new WaitCommand(0));
 
 	private final AutonomousProvider provider;
 	private final String name;
