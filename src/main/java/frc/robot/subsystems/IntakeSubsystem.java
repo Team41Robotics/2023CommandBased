@@ -19,6 +19,10 @@ public class IntakeSubsystem extends SubsystemBase {
 		motor.set(x);
 	}
 
+	public double getSpeed() {
+		return motor.getEncoder().getVelocity() / Constants.NEO_550_MAX_SPEED_RPM;
+	}
+
 	public static IntakeSubsystem getInstance() {
 		if (intake == null) {
 			intake = new IntakeSubsystem();

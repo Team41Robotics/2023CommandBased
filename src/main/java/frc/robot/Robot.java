@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -16,6 +15,7 @@ import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
 import frc.robot.commands.MovArm;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.HDriveSubsystem;
@@ -107,9 +107,9 @@ public class Robot extends TimedRobot {
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
-		new JoystickButton(rightjs, 1).onTrue(new RunCommand(() -> intake.run(.6), intake));
-		new JoystickButton(leftjs, 1).onTrue(new RunCommand(() -> intake.run(-.6), intake));
-		new JoystickButton(rightjs, 2).onTrue(new RunCommand(() -> intake.run(0), intake));
+		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
+		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6));
+		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));
 		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));

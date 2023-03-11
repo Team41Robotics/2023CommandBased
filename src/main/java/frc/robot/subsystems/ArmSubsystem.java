@@ -44,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 	LEDSubsytem lights = LEDSubsytem.getInstance();
 	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
-	Map<String, ArmPosition> positions = Map.of(
+	public Map<String, ArmPosition> positions = Map.of(
 			"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
 			"BALL TOP", new ArmPosition(1.031, 0.038, 1.203),
 			"BALL MID", new ArmPosition(0.833, -0.574, 0.869),
@@ -70,6 +70,8 @@ public class ArmSubsystem extends SubsystemBase {
 		setPID(jt1_vpid, 0, 0, 0, 0);
 		setPID(jt2_vpid, 0, 0, 0, 0);
 
+		// armtab.getLayout("Arm").withSize(128, 128);
+
 		armtab.addNumber("elev pos", () -> getElevPos());
 		armtab.addNumber("joint 1 pos", () -> getJoint1Pos());
 		armtab.addNumber("joint 2 pos", () -> getJoint2Pos());
@@ -79,7 +81,7 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	private void createShuffleboardPosition(String name, int y, int x) {
-		armtab.add(name, positions.get(name)).withPosition(y, x);
+		armtab.add(name, new ArmTo(name)).withPosition(y, x);
 	}
 
 	public void init() {
@@ -91,7 +93,7 @@ public class ArmSubsystem extends SubsystemBase {
 		createShuffleboardPosition("BALL MID", 2, 3);
 		createShuffleboardPosition("BALL HMN ST", 2, 5);
 
-		createShuffleboardPosition("ALL BOT", 3, 1);
+		createShuffleboardPosition("ALL  BOT", 3, 1);
 
 		createShuffleboardPosition("CONE PICKUP", 4, 1);
 		createShuffleboardPosition("CONE TOP", 4, 2);
@@ -150,11 +152,11 @@ public class ArmSubsystem extends SubsystemBase {
 				arm.jt2.getEncoder().setPosition(0);
 				lights.setColor(LEDLocations.LEFT, Color.kGreen);
 			}
-			/*if (!p_upper_limit2 && !upper_limit2.get()) { // TODO TODO TODO TODO
+			if (!p_upper_limit2 && !upper_limit2.get()) { // TODO TODO TODO TODO
 				jtLock = !jtLock;
 				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
 				lights.setColor(LEDLocations.RIGHT, (jtLock ? Color.kGreen : Color.kRed));
-			}*/
+			}
 			elev.getEncoder().setPosition(0);
 			p_upper_limit2 = !upper_limit2.get();
 		}

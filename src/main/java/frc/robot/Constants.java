@@ -8,6 +8,7 @@ import java.util.Map;
 public final class Constants {
 	public static final double FALCON_MAX_SPEED = 6380 * 2 * PI / 60;
 	public static final double NEO_MAX_SPEED = 5676 * 2 * PI / 60;
+	public static final double NEO_550_MAX_SPEED_RPM = 11710;
 
 	public static class OperatorConstants {
 

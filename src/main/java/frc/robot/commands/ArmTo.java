@@ -13,7 +13,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.ArmPosition;
 
 public class ArmTo extends CommandBase {
-	ArmSubsystem arm = ArmSubsystem.getInstance();
+	static ArmSubsystem arm = ArmSubsystem.getInstance();
 	ArmPosition pos;
 
 	TrapezoidProfile elev_prof;
@@ -25,6 +25,10 @@ public class ArmTo extends CommandBase {
 	PIDController jt2_pid = new PIDController(1, 0.2, 0);
 
 	double st;
+
+	public ArmTo(String pos) {
+		this(arm.positions.get(pos));
+	}
 
 	public ArmTo(ArmPosition pos) {
 		addRequirements(arm);
