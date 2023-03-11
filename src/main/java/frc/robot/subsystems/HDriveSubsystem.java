@@ -102,8 +102,8 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 		vm = vy;
 
 		double max = 0;
-		if (max < abs(vl * LEFT_SPEED_TO_ONE * 8)) max = abs(vl * LEFT_SPEED_TO_ONE * 8);
-		if (max < abs(vr * RIGHT_SPEED_TO_ONE * 8)) max = abs(vr * RIGHT_SPEED_TO_ONE * 8);
+		if (max < abs(vl * LEFT_SPEED_TO_ONE)) max = abs(vl * LEFT_SPEED_TO_ONE);
+		if (max < abs(vr * RIGHT_SPEED_TO_ONE)) max = abs(vr * RIGHT_SPEED_TO_ONE);
 		if (max < abs(vm * H_SPEED_TO_ONE)) max = abs(vm * H_SPEED_TO_ONE);
 
 		if (preserve && max > 1) {

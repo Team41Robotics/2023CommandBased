@@ -44,6 +44,16 @@ public class ArmSubsystem extends SubsystemBase {
 
 	LEDSubsytem lights = LEDSubsytem.getInstance();
 	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
+	Map<String, ArmPosition> positions = Map.of(
+			"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
+			"BALL TOP", new ArmPosition(1.031, 0.038, 1.203),
+			"BALL MID", new ArmPosition(0.833, -0.574, 0.869),
+			"ALL  BOT", new ArmPosition(0.116, -0.850, 1.172),
+			"CONE MID", new ArmPosition(0.500, 0.183, 0.374),
+			"CONE TOP", new ArmPosition(1.040, 0.104, 0.753),
+			"CONE PICKUP", new ArmPosition(0.141, 0.095, -0.661),
+			"BALL HMN ST", new ArmPosition(0.950, 0.249, 0.55),
+			"CONE HMN ST", new ArmPosition(0.950, 0.249, 0.0));
 
 	public ArmSubsystem() {
 		elev.restoreFactoryDefaults();
@@ -66,24 +76,29 @@ public class ArmSubsystem extends SubsystemBase {
 		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
 		armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
 		armtab.add(this);
+	}
 
-		Map<String, ArmPosition> positions = Map.of(
-				"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
-				"BALL TOP   ", new ArmPosition(1.031, 0.038, 1.203),
-				"BALL MID   ", new ArmPosition(0.833, -0.574, 0.869),
-				"ALL  BOT   ", new ArmPosition(0.116, -0.850, 1.172),
-				"CONE MID   ", new ArmPosition(0.500, 0.183, 0.374),
-				"CONE TOP   ", new ArmPosition(1.040, 0.104, 0.753),
-				"CONE PICKUP", new ArmPosition(0.141, 0.095, -0.661),
-				"BALL HIGH  ", new ArmPosition(0.950, 0.249, 0.55));
-
-		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
-			armposes.addOption(entry.getKey(), entry.getValue());
-		}
-		armtab.add(armposes);
+	private void createShuffleboardPosition(String name, int y, int x) {
+		armtab.add(name, positions.get(name)).withPosition(y, x);
 	}
 
 	public void init() {
+		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
+			armposes.addOption(entry.getKey(), entry.getValue());
+		}
+		createShuffleboardPosition("BALL PICKUP", 2, 1);
+		createShuffleboardPosition("BALL TOP", 2, 2);
+		createShuffleboardPosition("BALL MID", 2, 3);
+		createShuffleboardPosition("BALL HMN ST", 2, 5);
+
+		createShuffleboardPosition("ALL BOT", 3, 1);
+
+		createShuffleboardPosition("CONE PICKUP", 4, 1);
+		createShuffleboardPosition("CONE TOP", 4, 2);
+		createShuffleboardPosition("CONE MID", 4, 3);
+		createShuffleboardPosition("CONE HMN ST", 4, 5);
+		//
+		armtab.add(armposes);
 		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));
 	}
 
@@ -134,19 +149,17 @@ public class ArmSubsystem extends SubsystemBase {
 			if (!upper_limit1.get()) {
 				arm.jt2.getEncoder().setPosition(0);
 				lights.setColor(LEDLocations.LEFT, Color.kGreen);
-				System.out.println(upper_limit1.get());
 			}
-			if (!p_upper_limit2 && !upper_limit2.get()) {
+			/*if (!p_upper_limit2 && !upper_limit2.get()) { // TODO TODO TODO TODO
 				jtLock = !jtLock;
 				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
 				lights.setColor(LEDLocations.RIGHT, (jtLock ? Color.kGreen : Color.kRed));
-			}
+			}*/
 			elev.getEncoder().setPosition(0);
 			p_upper_limit2 = !upper_limit2.get();
 		}
-		// TODO dynamic zeroing of encoder based on limit switches on elevator
-		if (DriverStation.isEnabled() && isTopLimitSwitch())
-			elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
+		// if (DriverStation.isEnabled() && isTopLimitSwitch())
+		// elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
 
 		// TODO
 		// if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);

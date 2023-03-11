@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.ArmTo;
+import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
 import frc.robot.commands.MovArm;
@@ -105,7 +106,7 @@ public class Robot extends TimedRobot {
 
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-		// new JoystickButton(leftjs, 1).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
+		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
 		new JoystickButton(rightjs, 1).onTrue(new RunCommand(() -> intake.run(.6), intake));
 		new JoystickButton(leftjs, 1).onTrue(new RunCommand(() -> intake.run(-.6), intake));
 		new JoystickButton(rightjs, 2).onTrue(new RunCommand(() -> intake.run(0), intake));

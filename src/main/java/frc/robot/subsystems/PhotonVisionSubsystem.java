@@ -18,7 +18,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 	static PhotonVisionSubsystem pv;
 
 	OdomSubsystem odom = OdomSubsystem.getInstance();
-	ShuffleboardTab camtab = Shuffleboard.getTab("Camera");
+	ShuffleboardTab camtab = Shuffleboard.getTab("HD_USB_Camera");
 
 	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
 		null,
@@ -33,7 +33,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 	};
 
 	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("TopCamera")};
-	Transform2d[] camlocs = new Transform2d[] {new Transform2d(-0.42, 0, 0)}; // FIXME
+	Transform2d[] camlocs = new Transform2d[] {new Transform2d(-14 * 2.54 / 100, 11.5 * 2.54 / 100, 0)}; // FIXME
 	double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
 	Transform2d[] poses = new Transform2d[32];
