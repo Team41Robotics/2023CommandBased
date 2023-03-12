@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.LEDLocations;
@@ -17,9 +15,7 @@ import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
-import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
-import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -78,10 +74,10 @@ public class Robot extends TimedRobot {
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
 		arm.elev.getEncoder().setPosition(0);
 		if (autonomousCommand != null) {
-			SequentialCommandGroup cmd =
-					new SequentialCommandGroup(new WaitCommand(delay), new ZeroArm(), autonomousCommand);
+			// SequentialCommandGroup cmd =
+			// new SequentialCommandGroup(new WaitCommand(delay), new ZeroArm(), autonomousCommand);
 			// SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
-			schedule(cmd);
+			// schedule(cmd);
 		}
 		// schedule(new ZeroArm()); // TODO add to all auton stuffs
 		// schedule(new ZeroArm().andThen(new ArmTo(new ArmPosition(.5, 0, 0)))); // TODO add to all auton stuffs
@@ -109,28 +105,14 @@ public class Robot extends TimedRobot {
 	}
 
 	public void configureButtons() {
-		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
+		// new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
 		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
 		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6));
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));
-		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
-		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
-		new JoystickButton(new Joystick(3), 1)
-				.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
-						+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
 		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kYellow), lights));
-		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kYellow), lights));
-		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kYellow), lights));
-		new POVButton(leftjs, 180).onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
-		new POVButton(rightjs, 270)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kPurple), lights));
-		new POVButton(rightjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kPurple), lights));
-		new POVButton(rightjs, 90)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kPurple), lights));
-		new POVButton(rightjs, 180)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
+		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kPurple), lights));
 	}
 }
