@@ -109,9 +109,10 @@ public class Robot extends TimedRobot {
 
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
-		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
-		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6));
+		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> leftjs.getRawButtonPressed(4)));
+		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6).until(() -> rightjs.getRawButtonPressed(1)));
+		new JoystickButton(leftjs, 1)
+				.onTrue(new RunIntake(DS.getRawButton(3) ? -1 : -.6).until(() -> leftjs.getRawButtonPressed(1)));
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));

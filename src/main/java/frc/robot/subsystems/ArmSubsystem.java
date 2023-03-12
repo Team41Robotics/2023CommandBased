@@ -154,7 +154,7 @@ public class ArmSubsystem extends SubsystemBase {
 				lights.lf = false;
 				lights.left = Color.kGreen;
 			}
-			if (!p_upper_limit2 && !upper_limit2.get()) { // TODO TODO TODO TODO
+			if (!p_upper_limit2 && !upper_limit2.get()) {
 				jtLock = !jtLock;
 				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
 				lights.rf = false;
@@ -164,7 +164,7 @@ public class ArmSubsystem extends SubsystemBase {
 			p_upper_limit2 = !upper_limit2.get();
 		}
 		double ve = 0, v1 = 0, v2 = 0;
-		if (Robot.DS.getRawButton(6)) ve = .8;
+		if (Robot.DS.getRawButton(6)) ve = .8; // FIXME higher speeds?
 		else if (Robot.DS.getRawButton(5)) ve = -.5;
 		if (Robot.DS.getRawButton(1)) v1 = .3;
 		else if (Robot.DS.getRawButton(2)) v1 = -.3;
