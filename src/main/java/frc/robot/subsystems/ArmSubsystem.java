@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.commands.ArmTo;
 import frc.robot.commands.ZeroArm;
 import frc.robot.util.ArmPosition;
@@ -69,8 +70,6 @@ public class ArmSubsystem extends SubsystemBase {
 		setPID(elev1_vpid, 0, 0, 0, 0);
 		setPID(jt1_vpid, 0, 0, 0, 0);
 		setPID(jt2_vpid, 0, 0, 0, 0);
-
-		// armtab.getLayout("Arm").withSize(128, 128);
 
 		armtab.addNumber("elev pos", () -> getElevPos());
 		armtab.addNumber("joint 1 pos", () -> getJoint1Pos());
@@ -164,17 +163,14 @@ public class ArmSubsystem extends SubsystemBase {
 			elev.getEncoder().setPosition(0);
 			p_upper_limit2 = !upper_limit2.get();
 		}
-		// if (DriverStation.isEnabled() && isTopLimitSwitch())
-		// elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
-
-		// TODO
-		// if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);
-		// if (elev.getEncoder().getVelocity() < 0 && isBotLimitSwitch()) set(0, 0, 0);
-
-		// if (!(getCurrentCommand() instanceof ZeroArm)) {
-		// if (jt1.getEncoder().getVelocity() > 0 && getJoint1Pos() > JOINT1_UPPER_BOUND) set(0, 0, 0);
-		// if (jt1.getEncoder().getVelocity() < 0 && getJoint1Pos() < JOINT1_LOWER_BOUND) set(0, 0, 0);
-		// }
+		double ve = 0, v1 = 0, v2 = 0;
+		if (Robot.DS.getRawButton(6)) ve = .8;
+		else if (Robot.DS.getRawButton(5)) ve = -.5;
+		if (Robot.DS.getRawButton(1)) v1 = .3;
+		else if (Robot.DS.getRawButton(2)) v1 = -.3;
+		if (Robot.rightjs.getPOV() == 0) v2 = .5;
+		else if (Robot.rightjs.getPOV() == 180) v2 = -.5;
+		set(ve, v1, v2);
 	}
 
 	public double getElevPos() {

@@ -17,7 +17,6 @@ import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
-import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmSubsystem;
@@ -116,21 +115,7 @@ public class Robot extends TimedRobot {
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));
-		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
-		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
-		new JoystickButton(new Joystick(3), 1)
-				.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
-						+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
 		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kYellow), lights));
-		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kYellow), lights));
-		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kYellow), lights));
-		new POVButton(leftjs, 180).onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
-		new POVButton(rightjs, 270)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kPurple), lights));
-		new POVButton(rightjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kPurple), lights));
-		new POVButton(rightjs, 90)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kPurple), lights));
-		new POVButton(rightjs, 180)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
+		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kPurple), lights));
 	}
 }
