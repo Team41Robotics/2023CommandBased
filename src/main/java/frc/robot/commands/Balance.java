@@ -13,7 +13,7 @@ public class Balance extends CommandBase {
 	HDriveSubsystem drive = HDriveSubsystem.getInstance();
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 
-	PIDController bal_pid = new PIDController(1.2, 0, 0);
+	PIDController bal_pid = new PIDController(1.5, 0, 0);
 	double last_time_valid = Timer.getFPGATimestamp();
 
 	public Balance() {

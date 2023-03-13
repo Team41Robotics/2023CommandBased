@@ -18,8 +18,8 @@ public class Autonomous {
 				"SCORE TAXI",
 				() -> new SequentialCommandGroup(new ArmTo("BALL TOP"), new RunIntake(.6, 1), new DriveTo(4, -1)));
 		create(
-				"SCORE BAL",
+				"SCORE BALANCE",
 				() -> new SequentialCommandGroup(
-						new ArmTo("BALL TOP"), new RunIntake(.6, 1), new DriveTo(3, -1), new Balance()));
+						new ArmTo("BALL TOP"), new RunIntake(.6, 1), new DriveTo(1.75, -1.5), new Balance()));
 	}
 }

@@ -163,14 +163,16 @@ public class ArmSubsystem extends SubsystemBase {
 			elev.getEncoder().setPosition(0);
 			p_upper_limit2 = !upper_limit2.get();
 		}
-		double ve = 0, v1 = 0, v2 = 0;
-		if (Robot.DS.getRawButton(6)) ve = .8; // FIXME higher speeds?
-		else if (Robot.DS.getRawButton(5)) ve = -.5;
-		if (Robot.DS.getRawButton(1)) v1 = .3;
-		else if (Robot.DS.getRawButton(2)) v1 = -.3;
-		if (Robot.rightjs.getPOV() == 0) v2 = .5;
-		else if (Robot.rightjs.getPOV() == 180) v2 = -.5;
-		set(ve, v1, v2);
+                if(DriverStation.isTeleopEnabled()) {
+                        double ve = 0, v1 = 0, v2 = 0;
+                        if (Robot.DS.getRawButton(6)) ve = 1.5; // FIXME higher speeds?
+                        else if (Robot.DS.getRawButton(5)) ve = -1;
+                        if (Robot.DS.getRawButton(1)) v1 = .3;
+                        else if (Robot.DS.getRawButton(2)) v1 = -.3;
+                        if (Robot.rightjs.getPOV() == 0) v2 = .5;
+                        else if (Robot.rightjs.getPOV() == 180) v2 = -.5;
+                        set(ve, v1, v2);
+                }
 	}
 
 	public double getElevPos() {

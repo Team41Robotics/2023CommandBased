@@ -77,9 +77,9 @@ public class Robot extends TimedRobot {
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
 		arm.elev.getEncoder().setPosition(0);
 		if (autonomousCommand != null) {
-			SequentialCommandGroup cmd =
-					new SequentialCommandGroup(new WaitCommand(delay), new ZeroArm(), autonomousCommand);
-			// SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
+			// SequentialCommandGroup cmd =
+					// new SequentialCommandGroup(new WaitCommand(delay), new ZeroArm(), autonomousCommand);
+			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
 			schedule(cmd);
 		}
 		// schedule(new ZeroArm()); // TODO add to all auton stuffs
@@ -110,9 +110,8 @@ public class Robot extends TimedRobot {
 	public void configureButtons() {
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> leftjs.getRawButtonPressed(4)));
-		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6).until(() -> rightjs.getRawButtonPressed(1)));
-		new JoystickButton(leftjs, 1)
-				.onTrue(new RunIntake(DS.getRawButton(3) ? -1 : -.6).until(() -> leftjs.getRawButtonPressed(1)));
+		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
+		new JoystickButton(leftjs, 1).onTrue(new RunIntake(DS.getRawButton(3) ? -1 : -.6));
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));

@@ -35,6 +35,6 @@ public class DriveTo extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
-		return abs(hd.getLeftPos() + hd.getRightPos() - lse - rse) > abs(dist);
+		return abs(hd.getLeftPos() + hd.getRightPos() - lse - rse) > abs(dist)*2;
 	}
 }

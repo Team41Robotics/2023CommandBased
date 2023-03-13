@@ -30,15 +30,15 @@ public class LEDSubsystem extends SubsystemBase {
 		I++;
 		for (int i = 0; i < ledBuffer.getLength(); i++) {
 			if (i > LEDConstants.LEFT.getFirst() && i < LEDConstants.LEFT.getSecond()) {
-				if (I % 10 < 5 && lf) ledBuffer.setLED(i, Color.kBlack);
+				if (I % 30 < 15 && lf) ledBuffer.setLED(i, Color.kBlack);
 				else ledBuffer.setLED(i, left);
 			}
 			if (i > LEDConstants.RIGHT.getFirst() && i < LEDConstants.RIGHT.getSecond()) {
-				if (I % 10 < 5 && rf) ledBuffer.setLED(i, Color.kBlack);
+				if (I % 30 < 15 && rf) ledBuffer.setLED(i, Color.kBlack);
 				else ledBuffer.setLED(i, right);
 			}
 			if (i > LEDConstants.MID.getFirst() && i < LEDConstants.MID.getSecond()) {
-				if (I % 10 < 5 && mf) ledBuffer.setLED(i, Color.kBlack);
+				if (I % 30 < 15 && mf) ledBuffer.setLED(i, Color.kBlack);
 				else ledBuffer.setLED(i, mid);
 			}
 		}
