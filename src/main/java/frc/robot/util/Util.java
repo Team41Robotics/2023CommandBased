@@ -16,6 +16,10 @@ public class Util {
 		return signum(joystickAxis) * (abs(joystickAxis) - deadZone) / (1 - deadZone);
 	}
 
+        public static double curvedDeadZone(double x) {
+                return deadZone(x) * abs(deadZone(x));
+        }
+
 	/**
 	 * @param joystickAxis joystick axis input
 	 * @return applied deadzone with default deadzone

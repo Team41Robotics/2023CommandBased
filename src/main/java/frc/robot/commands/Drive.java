@@ -19,9 +19,9 @@ public class Drive extends CommandBase {
 
 	@Override
 	public void execute() {
-		double vf = -Util.deadZone(leftjs.getY()) * OperatorConstants.FWD_DRIVE_VELOCITY;
-		double vs = -Util.deadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
-		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
+		double vf = -Util.curvedDeadZone(leftjs.getY()) * OperatorConstants.FWD_DRIVE_VELOCITY;
+		double vs = -Util.curvedDeadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
+		double w = -Util.curvedDeadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
 		drive.drive(vf / 2, vs / 2, w / 2); // FIXME
 	}
 
