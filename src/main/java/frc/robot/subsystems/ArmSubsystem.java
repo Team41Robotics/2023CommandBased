@@ -160,7 +160,6 @@ public class ArmSubsystem extends SubsystemBase {
 				lights.rf = false;
 				lights.right = jtLock ? Color.kGreen : Color.kRed;
 			}
-			elev.getEncoder().setPosition(0);
 			p_upper_limit2 = !upper_limit2.get();
 		}
                 if(DriverStation.isTeleopEnabled()) {
