@@ -32,6 +32,11 @@ public class RunIntake extends CommandBase {
 	}
 
 	@Override
+	public void end(boolean interrupted) {
+		intake.run(0);
+	}
+
+	@Override
 	public boolean isFinished() {
 		return (Math.abs(intake.getSpeed()) <= Math.abs(speed) / 2 && Timer.getFPGATimestamp() - startTime > mintime)
 				|| Timer.getFPGATimestamp() - startTime > maxtime;

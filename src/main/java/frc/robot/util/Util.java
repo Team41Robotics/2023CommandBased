@@ -16,9 +16,23 @@ public class Util {
 		return signum(joystickAxis) * (abs(joystickAxis) - deadZone) / (1 - deadZone);
 	}
 
-        public static double curvedDeadZone(double x) {
-                return deadZone(x) * abs(deadZone(x));
-        }
+	/**
+	 * @param joystickAxis joystick input
+	 * @param deadZone dead zone
+	 * @return applied deadzone & sense curve
+	 */
+	public static double curvedDeadZone(double joystickAxis, double deadZone) {
+		double deaded = deadZone(joystickAxis, deadZone);
+		return deaded * abs(deaded); // TODO?
+	}
+
+	/**
+	 * @param joystickAxis joystick input
+	 * @return applied deadzone & sense curve
+	 */
+	public static double curvedDeadZone(double joystickAxis) {
+		return curvedDeadZone(joystickAxis, OperatorConstants.JOYSTICK_DEADZONE);
+	}
 
 	/**
 	 * @param joystickAxis joystick axis input
