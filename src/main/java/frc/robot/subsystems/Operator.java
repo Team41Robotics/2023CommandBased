@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
@@ -15,6 +16,7 @@ import java.awt.Point;
 // ALL CREDIT GOES TO 303 YOU ABSOLUTE LEGENDS
 
 public class Operator extends SubsystemBase {
+	public final LEDSubsystem leds = LEDSubsystem.getInstance();
 	public static final ShuffleboardTab OPERATOR_TAB = Shuffleboard.getTab("Operator");
 	public static final NetworkTable operator =
 			NetworkTableInstance.getDefault().getTable("Operator");
@@ -568,6 +570,7 @@ public class Operator extends SubsystemBase {
 		} else {
 			return;
 		}
+
 	}
 
 	@Override
@@ -650,6 +653,15 @@ public class Operator extends SubsystemBase {
 					nodes[i][j].setInteger(nodeSuperStateValues[i][j]);
 				}
 			}
+		}
+		if(heldObject == HeldObject.CONE){
+			leds.flash(Color.kYellow);
+		}
+		if(heldObject == HeldObject.CUBE){
+			leds.flash(Color.kPurple);
+		}
+		if(heldObject== HeldObject.NONE){
+			leds.allRainbow();
 		}
 	}
 	private static Operator instance = null;

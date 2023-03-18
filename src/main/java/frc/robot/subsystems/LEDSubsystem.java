@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
@@ -44,10 +45,20 @@ public class LEDSubsystem extends SubsystemBase {
 
 	public void flash(LEDSegment loc, Color c) {
 		leftSide.disable();
-		LEDSegment.rightSide.disable();
-		LEDSegment.midSide.disable();
+		rightSide.disable();
+		midSide.disable();
 		if (loc == null) return;
 		loc.flashColor(c);
+	}
+	public void flash(Color c){
+		leftSide.flashColor(c);
+		rightSide.flashColor(c);
+		midSide.flashColor(c);
+	}
+	public void allRainbow(){
+		leftSide.setRainbow();
+		rightSide.setNone();
+		midSide.setRainbow();
 	}
 
 	static LEDSubsystem instance;
@@ -62,7 +73,8 @@ public class LEDSubsystem extends SubsystemBase {
 	public static enum ledModes {
 		SET_COLOR,
 		RAINBOW,
-		FLICKER
+		FLICKER,
+		NONE
 	}
 
 	public static enum LEDSegment {
@@ -91,6 +103,9 @@ public class LEDSubsystem extends SubsystemBase {
 			this.mode = ledModes.SET_COLOR;
 			this.color = c;
 		}
+		public void setNone(){
+			this.mode = ledModes.NONE;
+		}
 
 		public void disable() {
 			setColor(Color.kBlack);
@@ -112,11 +127,11 @@ public class LEDSubsystem extends SubsystemBase {
 				if (i < Math.abs(offset - length / 2)) {
 					buffer.setRGB(i, 0, 0, 0);
 
-					//buffer.setRGB(-i + length - 1, 0, 0, 0);
+					buffer.setRGB(-i + length - 1, 0, 0, 0);
 				} else {
 					hue = ((i * 180 / buffer.getLength() * 2)) % 180;
 					buffer.setHSV(i, hue, 255, 128);
-					//buffer.setHSV(-i + buffer.getLength() - 1, hue, 255, 128);
+					buffer.setHSV(-i + buffer.getLength() - 1, hue, 255, 128);
 				}
 			}
 
@@ -148,6 +163,8 @@ public class LEDSubsystem extends SubsystemBase {
 					break;
 				case SET_COLOR:
 					solidColor();
+					break;
+				case NONE:
 					break;
 			}
 		}
