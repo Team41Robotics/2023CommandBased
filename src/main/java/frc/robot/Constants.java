@@ -10,7 +10,13 @@ public final class Constants {
 	public static final double NEO_550_MAX_SPEED_RPM = 11710;
 
 	public static class OperatorConstants {
+		public static enum HeldObject {
+			CUBE,
+			CONE,
+			NONE
+		}
 
+		public static HeldObject heldObject = HeldObject.NONE;
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		public static final int LEFT_JOYSTICK_PORT = 1;
 		public static final int RIGHT_JOYSTICK_PORT = 0;

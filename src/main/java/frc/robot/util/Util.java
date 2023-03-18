@@ -2,6 +2,8 @@ package frc.robot.util;
 
 import static java.lang.Math.*;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 
@@ -70,5 +72,13 @@ public class Util {
 
 	public static Transform2d flipTransformAcrossField(Transform2d trans) {
 		return new Transform2d(Constants.FIELD_LENGTH - trans.x, trans.y, PI - trans.theta);
+	}
+
+	public Color dim(Color color, double dimFactor) {
+		int newRed = (int) (MathUtil.clamp(color.red * dimFactor, 0, 200));
+		int newGreen = (int) (MathUtil.clamp(color.green * dimFactor, 0, 200));
+		int newBlue = (int) (MathUtil.clamp(color.blue * dimFactor, 0, 200));
+
+		return new Color(newRed, newGreen, newBlue);
 	}
 }

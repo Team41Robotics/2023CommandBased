@@ -74,4 +74,6 @@ public class LEDSubsystem extends SubsystemBase {
 		}
 		return instance;
 	}
+
+	public enum ledSegments {}
 }
