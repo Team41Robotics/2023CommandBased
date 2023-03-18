@@ -26,6 +26,7 @@ import frc.robot.subsystems.HDriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
+import frc.robot.subsystems.Operator;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
 public class Robot extends TimedRobot {
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
 	private Command autonomousCommand;
 	LEDSubsystem lights = LEDSubsystem.getInstance();
 	IntakeSubsystem intake = IntakeSubsystem.getInstance();
+	Operator operator = Operator.getInstance();
 
 	private void schedule(Command cmd) {
 		CommandScheduler.getInstance().schedule(cmd);
@@ -92,7 +94,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		arm.set(0.0, 0, 0);
+		//arm.set(0.0, 0, 0);
 		imu.zeroYaw(); // TODO move to auton
 		odom.start();
 		if (autonomousCommand != null) {
@@ -109,6 +111,19 @@ public class Robot extends TimedRobot {
 	}
 
 	public void configureButtons() {
+		new POVButton(leftjs,0).onTrue(new
+		InstantCommand(operator::moveUp));
+		new POVButton(leftjs, 90).onTrue(new
+		InstantCommand(operator::moveRight));
+		new POVButton(leftjs, 180).onTrue(new
+		InstantCommand(operator::moveDown));
+		new POVButton(leftjs, 270).onTrue(new
+		InstantCommand(operator::moveLeft));
+		new JoystickButton(leftjs, 2).onTrue(new
+		InstantCommand(operator::setPiece));
+		new JoystickButton(leftjs,3).onTrue(new
+		InstantCommand(operator::queuePlacement));
+
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
 		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
