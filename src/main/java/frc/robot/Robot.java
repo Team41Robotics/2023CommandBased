@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static frc.robot.subsystems.LEDSubsystem.LEDSegment.*;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.util.Color;
@@ -12,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.Constants.LEDLocations;
 import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
@@ -49,7 +50,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		configureButtons();
-		lights.initLights();
 		hdrive.dttab.addBoolean("FOD", () -> FOD);
 		/*
 		hdrive.setDefaultCommand(new ConditionalCommand(
@@ -121,16 +121,13 @@ public class Robot extends TimedRobot {
 		new JoystickButton(new Joystick(3), 1)
 				.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
 						+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
-		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kYellow), lights));
-		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kYellow), lights));
-		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kYellow), lights));
-		new POVButton(leftjs, 180).onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
-		new POVButton(rightjs, 270)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.LEFT, Color.kPurple), lights));
-		new POVButton(rightjs, 0).onTrue(new RunCommand(() -> lights.flash(LEDLocations.MID, Color.kPurple), lights));
-		new POVButton(rightjs, 90)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.RIGHT, Color.kPurple), lights));
-		new POVButton(rightjs, 180)
-				.onTrue(new RunCommand(() -> lights.flash(LEDLocations.NONE, Color.kYellow), lights));
+		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(leftSide, Color.kYellow), lights));
+		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(midSide, Color.kYellow), lights));
+		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(rightSide, Color.kYellow), lights));
+		new POVButton(leftjs, 180).onTrue(new RunCommand(() -> lights.flash(null, Color.kYellow), lights));
+		new POVButton(rightjs, 270).onTrue(new RunCommand(() -> lights.flash(leftSide, Color.kPurple), lights));
+		new POVButton(rightjs, 0).onTrue(new RunCommand(() -> lights.flash(midSide, Color.kPurple), lights));
+		new POVButton(rightjs, 90).onTrue(new RunCommand(() -> lights.flash(rightSide, Color.kPurple), lights));
+		new POVButton(rightjs, 180).onTrue(new RunCommand(() -> lights.flash(null, Color.kYellow), lights));
 	}
 }

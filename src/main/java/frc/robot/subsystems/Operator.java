@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 import java.awt.Point;
-//ALL CREDIT GOES TO 303 YOU ABSOLUTE LEGENDS
+// ALL CREDIT GOES TO 303 YOU ABSOLUTE LEGENDS
+
 public class Operator extends SubsystemBase {
 	public static final ShuffleboardTab OPERATOR_TAB = Shuffleboard.getTab("Operator");
 	public static final NetworkTable operator =

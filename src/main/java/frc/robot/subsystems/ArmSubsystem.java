@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.subsystems.LEDSubsystem.LEDSegment.*;
 import static java.lang.Math.*;
 
 import com.revrobotics.CANSparkMax;
@@ -149,17 +150,19 @@ public class ArmSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		System.out.println(!upper_limit1.get());
+		System.out.println(!upper_limit2.get());
+
 		if (!DriverStation.isEnabled()) {
 			if (!upper_limit1.get()) {
 				arm.jt2.getEncoder().setPosition(0);
-				lights.lf = false;
-				lights.left = Color.kGreen;
+				leftSide.setColor(Color.kGreen);
 			}
 			if (!p_upper_limit2 && !upper_limit2.get()) { // TODO TODO TODO TODO
 				jtLock = !jtLock;
 				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
-				lights.rf = false;
-				lights.right = jtLock ? Color.kGreen : Color.kRed;
+
+				rightSide.setColor(jtLock ? Color.kGreen : Color.kRed);
 			}
 			p_upper_limit2 = !upper_limit2.get();
 		}
