@@ -651,4 +651,11 @@ public class Operator extends SubsystemBase {
 			}
 		}
 	}
+	private static Operator instance = null;
+	public static Operator getInstance() {
+		if (instance == null) {
+			instance = new Operator();
+		}
+		return instance;
+	}
 }
