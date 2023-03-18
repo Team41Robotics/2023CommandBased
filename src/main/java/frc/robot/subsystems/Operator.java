@@ -5,6 +5,7 @@ import static frc.robot.Constants.OperatorConstants.*;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -654,15 +655,17 @@ public class Operator extends SubsystemBase {
 				}
 			}
 		}
-		if(heldObject == HeldObject.CONE){
+		if(DriverStation.isEnabled()){
+		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value){
 			leds.flash(Color.kYellow);
 		}
-		if(heldObject == HeldObject.CUBE){
+		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value){
 			leds.flash(Color.kPurple);
 		}
-		if(heldObject== HeldObject.NONE){
+		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value){
 			leds.allRainbow();
 		}
+	}
 	}
 	private static Operator instance = null;
 	public static Operator getInstance() {

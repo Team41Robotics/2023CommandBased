@@ -136,6 +136,7 @@ public class Robot extends TimedRobot {
 		new JoystickButton(new Joystick(3), 1)
 				.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
 						+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
+						/* 
 		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(leftSide, Color.kYellow), lights));
 		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(midSide, Color.kYellow), lights));
 		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(rightSide, Color.kYellow), lights));
@@ -144,5 +145,6 @@ public class Robot extends TimedRobot {
 		new POVButton(rightjs, 0).onTrue(new RunCommand(() -> lights.flash(midSide, Color.kPurple), lights));
 		new POVButton(rightjs, 90).onTrue(new RunCommand(() -> lights.flash(rightSide, Color.kPurple), lights));
 		new POVButton(rightjs, 180).onTrue(new RunCommand(() -> lights.flash(null, Color.kYellow), lights));
+		*/
 	}
 }
