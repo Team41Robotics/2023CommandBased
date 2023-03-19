@@ -55,7 +55,7 @@ public final class Constants {
 				DrivetrainConstants.RIGHT_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
 		public static final double H_SPEED_TO_ONE = DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED;
 
-		public static final double RADIUS = 0.6512/2;
+		public static final double RADIUS = 0.6512 / 2;
 	}
 
 	public static class ArmConstants {

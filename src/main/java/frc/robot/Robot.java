@@ -4,12 +4,10 @@ import static frc.robot.subsystems.LEDSubsystem.LEDSegment.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -85,8 +83,6 @@ public class Robot extends TimedRobot {
 			// SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
 			schedule(cmd);
 		}
-		// schedule(new ZeroArm()); // TODO add to all auton stuffs
-		// schedule(new ZeroArm().andThen(new ArmTo(new ArmPosition(.5, 0, 0)))); // TODO add to all auton stuffs
 	}
 
 	@Override
@@ -94,7 +90,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		//arm.set(0.0, 0, 0);
+		// arm.set(0.0, 0, 0);
 		imu.zeroYaw(); // TODO move to auton
 		odom.start();
 		if (autonomousCommand != null) {
@@ -111,18 +107,12 @@ public class Robot extends TimedRobot {
 	}
 
 	public void configureButtons() {
-		new POVButton(leftjs,0).onTrue(new
-		InstantCommand(operator::moveUp));
-		new POVButton(leftjs, 90).onTrue(new
-		InstantCommand(operator::moveRight));
-		new POVButton(leftjs, 180).onTrue(new
-		InstantCommand(operator::moveDown));
-		new POVButton(leftjs, 270).onTrue(new
-		InstantCommand(operator::moveLeft));
-		new JoystickButton(leftjs, 2).onTrue(new
-		InstantCommand(operator::setPiece));
-		new JoystickButton(leftjs,3).onTrue(new
-		InstantCommand(operator::queuePlacement));
+		new POVButton(leftjs, 0).onTrue(new InstantCommand(operator::moveUp));
+		new POVButton(leftjs, 90).onTrue(new InstantCommand(operator::moveRight));
+		new POVButton(leftjs, 180).onTrue(new InstantCommand(operator::moveDown));
+		new POVButton(leftjs, 270).onTrue(new InstantCommand(operator::moveLeft));
+		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(operator::setPiece));
+		new JoystickButton(leftjs, 3).onTrue(new InstantCommand(operator::queuePlacement));
 
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
@@ -136,7 +126,7 @@ public class Robot extends TimedRobot {
 		new JoystickButton(new Joystick(3), 1)
 				.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
 						+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
-						/* 
+		/*
 		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(leftSide, Color.kYellow), lights));
 		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(midSide, Color.kYellow), lights));
 		new POVButton(leftjs, 90).onTrue(new RunCommand(() -> lights.flash(rightSide, Color.kYellow), lights));

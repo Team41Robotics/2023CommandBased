@@ -571,7 +571,6 @@ public class Operator extends SubsystemBase {
 		} else {
 			return;
 		}
-
 	}
 
 	@Override
@@ -655,19 +654,21 @@ public class Operator extends SubsystemBase {
 				}
 			}
 		}
-		if(DriverStation.isEnabled()){
-		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value){
-			leds.flash(Color.kYellow);
-		}
-		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value){
-			leds.flash(Color.kPurple);
-		}
-		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value){
-			leds.allRainbow();
+		if (DriverStation.isEnabled()) {
+			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value) {
+				leds.flash(Color.kYellow);
+			}
+			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value) {
+				leds.flash(Color.kPurple);
+			}
+			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value) {
+				leds.allRainbow();
+			}
 		}
 	}
-	}
+
 	private static Operator instance = null;
+
 	public static Operator getInstance() {
 		if (instance == null) {
 			instance = new Operator();
