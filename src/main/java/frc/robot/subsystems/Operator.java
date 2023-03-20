@@ -654,13 +654,13 @@ public class Operator extends SubsystemBase {
 				}
 			}
 		}
-		if(heldObject == HeldObject.CONE){
+		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value){
 			leds.flash(Color.kYellow);
 		}
-		if(heldObject == HeldObject.CUBE){
+		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value){
 			leds.flash(Color.kPurple);
 		}
-		if(heldObject== HeldObject.NONE){
+		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value){
 			leds.allRainbow();
 		}
 	}
