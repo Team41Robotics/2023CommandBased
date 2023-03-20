@@ -25,7 +25,7 @@ public class Util {
 	 */
 	public static double curvedDeadZone(double joystickAxis, double deadZone) {
 		double deaded = deadZone(joystickAxis, deadZone);
-		return deaded * abs(deaded); // TODO?
+		return deaded * abs(deaded); // TODO maybe change curve later
 	}
 
 	/**

@@ -33,7 +33,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 	};
 
 	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("HD_USB_Camera")};
-	Transform2d[] camlocs = new Transform2d[] {new Transform2d(-14 * 2.54 / 100, 11.5 * 2.54 / 100, 0)}; // FIXME
+	Transform2d[] camlocs = new Transform2d[] {new Transform2d(-14 * 2.54 / 100, 11.5 * 2.54 / 100, 0)};
 	double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
 	Transform2d[] poses = new Transform2d[32];

@@ -66,7 +66,7 @@ public class ArmSubsystem extends SubsystemBase {
 		jt1.setIdleMode(IdleMode.kBrake);
 		jt2.setIdleMode(IdleMode.kCoast);
 
-		setPID(elev_vpid, 0, 0, 0, 0);
+		setPID(elev_vpid, 0, 0, 0, 0); // TODO actually have vpids
 		setPID(elev1_vpid, 0, 0, 0, 0);
 		setPID(jt1_vpid, 0, 0, 0, 0);
 		setPID(jt2_vpid, 0, 0, 0, 0);
@@ -123,7 +123,6 @@ public class ArmSubsystem extends SubsystemBase {
 	}
 
 	public void set(double elev_v, double jt1_v, double jt2_v, double elev_a, double jt1_a, double jt2_a) {
-		// TODO kG probably varies
 		setMotor(
 				elev_vpid,
 				elev_v * ELEV_RAD_PER_METER / 2 / PI,
@@ -166,7 +165,7 @@ public class ArmSubsystem extends SubsystemBase {
 		// if (DriverStation.isEnabled() && isTopLimitSwitch())
 		// elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
 
-		// TODO
+		// TODO dynamic zeroing
 		// if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);
 		// if (elev.getEncoder().getVelocity() < 0 && isBotLimitSwitch()) set(0, 0, 0);
 

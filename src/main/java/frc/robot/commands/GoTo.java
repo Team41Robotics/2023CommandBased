@@ -12,7 +12,7 @@ import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
 
-public class GoTo extends CommandBase { // TODO: trajectory & make this more aggressive with traj
+public class GoTo extends CommandBase {
 	HDriveSubsystem drive = HDriveSubsystem.getInstance();
 	OdomSubsystem odom = OdomSubsystem.getInstance();
 

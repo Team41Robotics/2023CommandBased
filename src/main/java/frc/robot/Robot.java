@@ -1,7 +1,5 @@
 package frc.robot;
 
-import static frc.robot.subsystems.LEDSubsystem.LEDSegment.*;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -114,7 +112,7 @@ public class Robot extends TimedRobot {
 		new POVButton(leftjs, 270).onTrue(new InstantCommand(operator::moveLeft));
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(operator::setPiece));
 		new JoystickButton(leftjs, 3).onTrue(new InstantCommand(operator::queuePlacement));
-
+		
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
 		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));

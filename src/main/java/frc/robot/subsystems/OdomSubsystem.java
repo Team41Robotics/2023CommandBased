@@ -17,8 +17,7 @@ public class OdomSubsystem extends SubsystemBase {
 	ArrayList<Double> times = new ArrayList<>();
 	ArrayList<Transform2d> odoms = new ArrayList<>();
 	Field2d field = new Field2d();
-	Transform2d origin = new Transform2d(1.02690 + 0.84, 2.73981, PI); // CHANGE WITH COORD SYSTEM
-	// TODO ORIGIN; we can likely just use apriltags lol
+	Transform2d origin = new Transform2d(); // just use apriltags TODO indicate
 
 	static OdomSubsystem odom;
 

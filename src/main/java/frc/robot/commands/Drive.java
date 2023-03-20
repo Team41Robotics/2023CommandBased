@@ -22,7 +22,8 @@ public class Drive extends CommandBase {
 		double vf = -Util.curvedDeadZone(leftjs.getY()) * OperatorConstants.FWD_DRIVE_VELOCITY;
 		double vs = -Util.curvedDeadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
 		double w = -Util.curvedDeadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
-		drive.drive(vf / 2, vs / 2, w / 2); // FIXME
+		int d = (rightjs.getRawButton(2)? 1 : 2);
+		drive.drive(vf / d, vs / d, w / d); // TODO maybe turbo mode
 	}
 
 	@Override
