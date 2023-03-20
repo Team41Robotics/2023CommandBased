@@ -375,7 +375,24 @@ public class Operator extends SubsystemBase {
 		// choice
 		hpSuggestion.setInteger((int) (Math.random() * 2) + 1);
 	}
+	private void changeTarget(int x, int y){
+		System.out.print(x + " : " + y);
+		if (!hoverValue.equals(queuedValue)) {
+			nodeSuperStateValues[hoverValue.x][hoverValue.y] = NodeSuperState.NONE.value;
+		} else {
+			nodeSuperStateValues[hoverValue.x][hoverValue.y] = NodeSuperState.QUEUED.value;
+		}
+		if (nodeSuperStateValues[x][y] == NodeSuperState.NONE.value
+				|| nodeSuperStateValues[x][y] == NodeSuperState.QUEUED.value) {
+			nodeSuperStateValues[x][y] = NodeSuperState.HOVER.value;
+			hoverValue.x = x;
+			hoverValue.y = y;
+			System.out.println("manual Select");
+			return;
+		}
 
+
+	}
 	public void autoQueuePlacement() {
 		if (queueManualOverride) {
 			return;
@@ -575,6 +592,7 @@ public class Operator extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+
 		// Check which links are complete
 		for (int i = 0; i < 3; i++) {
 			for (int j = 1; j < 8; ) {
@@ -647,10 +665,36 @@ public class Operator extends SubsystemBase {
 		}
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
-				if (nodeSuperStateValues[i][j] == NodeSuperState.NONE.value) {
-					nodes[i][j].setInteger(nodeStateValues[i][j]);
-				} else {
+				if (nodes[i][j].getInteger(0) == 6) {
+					System.out.println("change requested");
+					switch (nodeSuperStateValues[i][j]) {
+						case 0:
+							changeTarget(i, j);
+							queuePlacement();
+
+							break;
+						case 3:
+							queuePlacement();
+							break;
+						case 4:
+							queueManualOverride = false;
+
+							setPiece();
+							System.out.println(nodeSuperStateValues[i][j]);
+							break;
+
+					}
+				}
+			}
+		}
+		for (int i = 0; i < nodes.length; i++) {
+			for (int j = 0; j < nodes[i].length; j++) {
+
+
+				if (nodeStateValues[i][j] == NodeSuperState.NONE.value) {
 					nodes[i][j].setInteger(nodeSuperStateValues[i][j]);
+				} else {
+					nodes[i][j].setInteger(nodeStateValues[i][j]);
 				}
 			}
 		}
