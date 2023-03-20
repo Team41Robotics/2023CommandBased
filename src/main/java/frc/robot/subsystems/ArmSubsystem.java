@@ -150,15 +150,12 @@ public class ArmSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		System.out.println(!upper_limit1.get());
-		System.out.println(!upper_limit2.get());
-
 		if (!DriverStation.isEnabled()) {
 			if (!upper_limit1.get()) {
 				arm.jt2.getEncoder().setPosition(0);
 				leftSide.setColor(Color.kGreen);
 			}
-			if (!p_upper_limit2 && !upper_limit2.get()) { // TODO TODO TODO TODO
+			if (!p_upper_limit2 && !upper_limit2.get()) {
 				jtLock = !jtLock;
 				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
 
