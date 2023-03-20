@@ -74,6 +74,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		odom.start();
+
 		autonomousCommand = AutonomousRoutine.AUTO_CHOOSER.getSelected().construct();
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
 		arm.elev.getEncoder().setPosition(0);
@@ -90,8 +92,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		// arm.set(0.0, 0, 0);
-		imu.zeroYaw(); // TODO move to auton
+		arm.set(0.0, 0, 0);
 		odom.start();
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();

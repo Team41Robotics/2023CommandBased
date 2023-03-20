@@ -375,7 +375,8 @@ public class Operator extends SubsystemBase {
 		// choice
 		hpSuggestion.setInteger((int) (Math.random() * 2) + 1);
 	}
-	private void changeTarget(int x, int y){
+
+	private void changeTarget(int x, int y) {
 		System.out.print(x + " : " + y);
 		if (!hoverValue.equals(queuedValue)) {
 			nodeSuperStateValues[hoverValue.x][hoverValue.y] = NodeSuperState.NONE.value;
@@ -390,9 +391,8 @@ public class Operator extends SubsystemBase {
 			System.out.println("manual Select");
 			return;
 		}
-
-
 	}
+
 	public void autoQueuePlacement() {
 		if (queueManualOverride) {
 			return;
@@ -587,7 +587,6 @@ public class Operator extends SubsystemBase {
 		} else {
 			return;
 		}
-
 	}
 
 	@Override
@@ -682,14 +681,12 @@ public class Operator extends SubsystemBase {
 							setPiece();
 							System.out.println(nodeSuperStateValues[i][j]);
 							break;
-
 					}
 				}
 			}
 		}
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
-
 
 				if (nodeStateValues[i][j] == NodeSuperState.NONE.value) {
 					nodes[i][j].setInteger(nodeSuperStateValues[i][j]);
@@ -698,17 +695,19 @@ public class Operator extends SubsystemBase {
 				}
 			}
 		}
-		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value){
+		if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value) {
 			leds.flash(Color.kYellow);
 		}
-		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value){
+		if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value) {
 			leds.flash(Color.kPurple);
 		}
-		if(hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value){
+		if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value) {
 			leds.allRainbow();
 		}
 	}
+
 	private static Operator instance = null;
+
 	public static Operator getInstance() {
 		if (instance == null) {
 			instance = new Operator();
