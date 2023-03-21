@@ -9,9 +9,13 @@ public final class Constants {
 
 	public static class OperatorConstants {
 		public static enum HeldObject {
-			CUBE,
-			CONE,
-			NONE
+			CUBE("Cube"),
+			CONE("Cone"),
+			NONE("None");
+			public String name;
+			private HeldObject(String name){
+				this.name = name;
+			}
 		}
 
 		public static final int LEFT_JOYSTICK_PORT = 1;
@@ -109,7 +113,7 @@ public final class Constants {
 	}
 
 	public static class GoToConstants {
-		public static final double GOTO_XY_TOLERANCE = 0.03;
+		public static final double GOTO_XY_TOLERANCE = 0.07;
 		public static final double GOTO_TURN_TOLERANCE = .5 / 180. * PI;
 		public static final double GOTO_VEL_TOLERANCE = 0.2;
 	}

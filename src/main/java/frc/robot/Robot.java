@@ -119,8 +119,8 @@ public class Robot extends TimedRobot {
 
 		new JoystickButton(leftjs, 3)
 				.onTrue(new ProxyCommand(() -> new GoTo(new Transform2d(
-						1.02690 + 1,
-						(operator.queuedValue != null ? operator.queuedValue.getY() : 0) * 0.5588 + 2.73981,
+						1.02690 + 1.5,
+						(operator.queuedValue != null ? operator.queuedValue.getY() : 0) * -0.5588 + 2.73981,
 						Math.PI))));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));

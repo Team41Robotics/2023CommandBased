@@ -30,8 +30,8 @@ public class GoTo extends CommandBase {
 		wPID.enableContinuousInput(-PI, PI);
 	}
 
-	PIDController xPID = new PIDController(2, 0, 0);
-	PIDController yPID = new PIDController(2, 0, 0);
+	PIDController xPID = new PIDController(2, 0, 0.5);
+	PIDController yPID = new PIDController(2, 0, 0.5);
 	PIDController wPID = new PIDController(1.3, 0, 0);
 
 	@Override

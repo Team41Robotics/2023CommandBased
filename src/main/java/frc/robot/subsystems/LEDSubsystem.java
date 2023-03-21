@@ -71,8 +71,8 @@ public class LEDSubsystem extends SubsystemBase {
 	}
 
 	public static enum LEDSegment {
-		leftSide(0, 45, ledBuffer),
-		midSide(45, 20, ledBuffer),
+		leftSide(0, 44, ledBuffer),
+		midSide(44, 21, ledBuffer),
 		rightSide(66, 40, ledBuffer),
 		;
 		public final int startIndex;
@@ -134,8 +134,9 @@ public class LEDSubsystem extends SubsystemBase {
 		}
 
 		private void flicker() {
-			for (int j = startIndex; j <= startIndex + segmentSize; j++)
+			for (int j = startIndex; j <= startIndex + segmentSize; j++){
 				buffer.setLED(j, (timeStep % 20 >= 7 ? color : Color.kBlack));
+			}
 		}
 
 		private void solidColor() {

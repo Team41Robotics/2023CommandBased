@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
@@ -28,6 +29,7 @@ public class Operator extends SubsystemBase {
 	public static final int[][] nodeSuperStateValues = new int[3][9];
 	public static boolean[] linkComplete = new boolean[21];
 	public static boolean coopertitionBonusAchieved;
+	public static HeldObject heldObjectIn;
 	public boolean queueManualOverride = false;
 	public boolean suggestManualOverride = false;
 	public Point hoverValue = new Point(0, 0);
@@ -75,10 +77,18 @@ public class Operator extends SubsystemBase {
 						.getEntry();
 			}
 		}
+		heldObject = HeldObject.NONE;
+		System.out.println(heldObject
+		);
+		OPERATOR_TAB.addString("Current Game Piece",() -> (heldObject != null ? heldObject.name : "NONE" )).withPosition(2, 0);
+		OPERATOR_TAB.add("Cube", new InstantCommand(() -> heldObjectIn = HeldObject.CUBE)).withPosition(3, 0);
+		OPERATOR_TAB.add("None", new InstantCommand(() -> heldObjectIn = HeldObject.NONE)).withPosition(4, 0);
+		OPERATOR_TAB.add("Cone", new InstantCommand(() -> heldObjectIn = HeldObject.CONE)).withPosition(5, 0);
+
 		heldObjectChooser.addOption("None", HeldObject.NONE);
 		heldObjectChooser.addOption("Cube", HeldObject.CUBE);
 		heldObjectChooser.addOption("Cone", HeldObject.CONE);
-		OPERATOR_TAB.add("Held Object Chooser", heldObjectChooser).withPosition(2, 0);
+		OPERATOR_TAB.add("Held Object Chooser", heldObjectChooser).withPosition(1, 0);
 		hpSuggestion = OPERATOR_TAB
 				.add("HP Suggestion", 0)
 				.withPosition(8, 0)
@@ -619,7 +629,7 @@ public class Operator extends SubsystemBase {
 				}
 			}
 		}
-		if (heldObject != heldObjectChooser.getSelected()) {
+		if (heldObject != heldObjectIn) {
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 9; j++) {
 					if (nodeSuperStateValues[i][j] == NodeSuperState.INVALID.value
@@ -628,7 +638,7 @@ public class Operator extends SubsystemBase {
 					}
 				}
 			}
-			heldObject = heldObjectChooser.getSelected();
+			heldObject = heldObjectIn;
 			autoQueuePlacement();
 		}
 		if (suggestManualOverride && heldObject != HeldObject.NONE) {
