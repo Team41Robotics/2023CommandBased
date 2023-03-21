@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.RobotContainer.*;
 import static frc.robot.subsystems.LEDSubsystem.LEDSegment.*;
 import static java.lang.Math.*;
 
@@ -24,10 +25,6 @@ import frc.robot.util.ArmPosition;
 import java.util.Map;
 
 public class ArmSubsystem extends SubsystemBase {
-	static ArmSubsystem arm;
-
-	ShuffleboardTab armtab = Shuffleboard.getTab("Arm");
-
 	public CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
 	public CANSparkMax elev1 = new CANSparkMax(ELEV1_ID, MotorType.kBrushless);
 	public CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
@@ -43,7 +40,6 @@ public class ArmSubsystem extends SubsystemBase {
 	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
-	LEDSubsystem lights = LEDSubsystem.getInstance();
 	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
 	public Map<String, ArmPosition> positions = Map.of(
 			"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
@@ -56,7 +52,7 @@ public class ArmSubsystem extends SubsystemBase {
 			"BALL HMN ST", new ArmPosition(0.950, 0.249, 0.55),
 			"CONE HMN ST", new ArmPosition(0.950, 0.249, 0.0));
 
-	public ArmSubsystem() {
+	public void init() {
 		elev.restoreFactoryDefaults();
 		elev1.restoreFactoryDefaults();
 		jt1.restoreFactoryDefaults();
@@ -70,22 +66,18 @@ public class ArmSubsystem extends SubsystemBase {
 		setPID(elev1_vpid, 0, 0, 0, 0);
 		setPID(jt1_vpid, 0, 0, 0, 0);
 		setPID(jt2_vpid, 0, 0, 0, 0);
+	}
 
-		// armtab.getLayout("Arm").withSize(128, 128);
+	public void initShuffleboard() {
+		ShuffleboardTab armtab = Shuffleboard.getTab("Arm");
 
+		armtab.add(this);
 		armtab.addNumber("elev pos", () -> getElevPos());
 		armtab.addNumber("joint 1 pos", () -> getJoint1Pos());
 		armtab.addNumber("joint 2 pos", () -> getJoint2Pos());
 		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
 		armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
-		armtab.add(this);
-	}
 
-	private void createShuffleboardPosition(String name, int y, int x) {
-		armtab.add(name, new ArmTo(name)).withPosition(x, y);
-	}
-
-	public void init() {
 		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
 			armposes.addOption(entry.getKey(), entry.getValue());
 		}
@@ -102,9 +94,12 @@ public class ArmSubsystem extends SubsystemBase {
 		createShuffleboardPosition("CONE HMN ST", 3, 5);
 
 		armtab.add("ZERO ARM", new ZeroArm());
-		//
 		armtab.add(armposes);
 		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));
+	}
+
+	private void createShuffleboardPosition(String name, int y, int x) {
+		Shuffleboard.getTab("arm").add(name, new ArmTo(name)).withPosition(x, y);
 	}
 
 	private void setPID(SparkMaxPIDController pid, double kP, double kI, double kD, double kIz) {
@@ -193,13 +188,5 @@ public class ArmSubsystem extends SubsystemBase {
 
 	public boolean isTopLimitSwitch() {
 		return !(upper_limit1.get() && upper_limit2.get());
-	}
-
-	public static ArmSubsystem getInstance() {
-		if (arm == null) {
-			arm = new ArmSubsystem();
-			arm.init();
-		}
-		return arm;
 	}
 }

@@ -2,6 +2,8 @@ package frc.robot.util;
 
 import static java.lang.Math.*;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
@@ -74,11 +76,27 @@ public class Util {
 		return new Transform2d(Constants.FIELD_LENGTH - trans.x, trans.y, PI - trans.theta);
 	}
 
-	public Color dim(Color color, double dimFactor) {
+	public static Color dim(Color color, double dimFactor) {
 		int newRed = (int) (MathUtil.clamp(color.red * dimFactor, 0, 200));
 		int newGreen = (int) (MathUtil.clamp(color.green * dimFactor, 0, 200));
 		int newBlue = (int) (MathUtil.clamp(color.blue * dimFactor, 0, 200));
 
 		return new Color(newRed, newGreen, newBlue);
+	}
+
+	public static double talonToRad(TalonFX talon) {
+		return talon.getSelectedSensorPosition() / 2048. * 2 * PI;
+	}
+
+	public static double talonToRadPerSecond(TalonFX talon) {
+		return talon.getSelectedSensorVelocity() * 10 / 2048. * 2 * PI;
+	}
+
+	public static double neoToRad(CANSparkMax neo) {
+		return neo.getEncoder().getPosition() * 2 * PI;
+	}
+
+	public static double neoToRadPerSecond(CANSparkMax neo) {
+		return neo.getEncoder().getPosition() * 2 * PI / 60.;
 	}
 }

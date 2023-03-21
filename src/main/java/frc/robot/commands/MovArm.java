@@ -1,17 +1,16 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.Util;
 
 public class MovArm extends CommandBase {
 	double st;
 	double vx, vy, t;
-	ArmSubsystem arm = ArmSubsystem.getInstance();
 
 	public MovArm(double vx, double vy, double t) {
 		addRequirements(arm);

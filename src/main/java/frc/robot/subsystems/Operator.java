@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.OperatorConstants.*;
+import static frc.robot.RobotContainer.*;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
@@ -17,7 +18,6 @@ import java.awt.Point;
 // ALL CREDIT GOES TO 303 YOU ABSOLUTE LEGENDS
 
 public class Operator extends SubsystemBase {
-	public final LEDSubsystem leds = LEDSubsystem.getInstance();
 	public static final ShuffleboardTab OPERATOR_TAB = Shuffleboard.getTab("Operator");
 	public static final NetworkTable operator =
 			NetworkTableInstance.getDefault().getTable("Operator");
@@ -65,7 +65,7 @@ public class Operator extends SubsystemBase {
 		}
 	}
 
-	public Operator() {
+	public void init() {
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
 				nodes[i][j] = OPERATOR_TAB
@@ -711,14 +711,5 @@ public class Operator extends SubsystemBase {
 				leds.allRainbow();
 			}
 		}
-	}
-
-	private static Operator instance = null;
-
-	public static Operator getInstance() {
-		if (instance == null) {
-			instance = new Operator();
-		}
-		return instance;
 	}
 }

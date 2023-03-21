@@ -7,10 +7,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-	static IntakeSubsystem intake;
 	CANSparkMax motor = new CANSparkMax(Constants.INTAKE_ID, MotorType.kBrushless);
 
-	public IntakeSubsystem() {
+	public void init() {
 		motor.restoreFactoryDefaults();
 		motor.setIdleMode(IdleMode.kBrake);
 	}
@@ -21,12 +20,5 @@ public class IntakeSubsystem extends SubsystemBase {
 
 	public double getPercentSpeed() {
 		return motor.getEncoder().getVelocity() / Constants.NEO_550_MAX_SPEED_RPM;
-	}
-
-	public static IntakeSubsystem getInstance() {
-		if (intake == null) {
-			intake = new IntakeSubsystem();
-		}
-		return intake;
 	}
 }

@@ -1,11 +1,11 @@
 package frc.robot.commands;
 
+import static frc.robot.RobotContainer.*;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
 
 public class RunIntake extends CommandBase {
-	IntakeSubsystem intake = IntakeSubsystem.getInstance();
 	double speed;
 	double startTime;
 	double mintime, maxtime;

@@ -1,21 +1,17 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.GoToConstants.*;
+import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.HDriveSubsystem;
-import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
 
 public class GoTo extends CommandBase {
-	private HDriveSubsystem drive = HDriveSubsystem.getInstance();
-	private OdomSubsystem odom = OdomSubsystem.getInstance();
-
 	Transform2d target;
 
 	public GoTo(Transform2d target) {
@@ -23,7 +19,7 @@ public class GoTo extends CommandBase {
 	}
 
 	public GoTo(Transform2d target, boolean transformIfRed) {
-		addRequirements(drive);
+		addRequirements(hdrive);
 		this.target = target;
 		if (transformIfRed && DriverStation.getAlliance() == Alliance.Red)
 			this.target = Util.flipTransformAcrossField(this.target);
@@ -59,20 +55,20 @@ public class GoTo extends CommandBase {
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
 		System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
 		System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
-		drive.drive(vf, vs, w);
+		hdrive.drive(vf, vs, w);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		drive.drive(0, 0, 0);
+		hdrive.drive(0, 0, 0);
 	}
 
 	public boolean isFinished() {
 		return abs(odom.now().x - target.x) <= GOTO_XY_TOLERANCE
 				&& abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
 				&& abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_TOLERANCE
-				&& drive.getLeftVel() < GOTO_VEL_TOLERANCE
-				&& drive.getRightVel() < GOTO_VEL_TOLERANCE
-				&& drive.getMidVel() < GOTO_VEL_TOLERANCE;
+				&& hdrive.getLeftVel() < GOTO_VEL_TOLERANCE
+				&& hdrive.getRightVel() < GOTO_VEL_TOLERANCE
+				&& hdrive.getMidVel() < GOTO_VEL_TOLERANCE;
 	}
 }

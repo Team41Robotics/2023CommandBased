@@ -3,16 +3,15 @@ package frc.robot.commands;
 import static edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import static edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.RobotContainer.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.ArmPosition;
 
 public class ArmTo extends CommandBase {
-	static ArmSubsystem arm = ArmSubsystem.getInstance();
 	ArmPosition pos;
 
 	TrapezoidProfile elev_prof;
