@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current if touching ground
+public class HDrive extends SubsystemBase { // TODO sense wheel current if touching ground
 	WPI_TalonFX lef = new WPI_TalonFX(PORT_L1);
 	WPI_TalonFX lef1 = new WPI_TalonFX(PORT_L2);
 	CANSparkMax mid = new CANSparkMax(PORT_M1, MotorType.kBrushless);

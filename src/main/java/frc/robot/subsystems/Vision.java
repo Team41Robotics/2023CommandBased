@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.LEDSubsystem.LEDSegment;
+import frc.robot.subsystems.LEDs.LEDSegment;
 import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class PhotonVisionSubsystem extends SubsystemBase {
+public class Vision extends SubsystemBase {
 	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
 		null,
 		new Transform2d(15.51310, 1.06341, PI),

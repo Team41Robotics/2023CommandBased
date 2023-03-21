@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.RobotContainer.*;
-import static frc.robot.subsystems.LEDSubsystem.LEDSegment.*;
+import static frc.robot.subsystems.LEDs.LEDSegment.*;
 import static java.lang.Math.*;
 
 import com.revrobotics.CANSparkMax;
@@ -24,7 +24,7 @@ import frc.robot.commands.ZeroArm;
 import frc.robot.util.ArmPosition;
 import java.util.Map;
 
-public class ArmSubsystem extends SubsystemBase {
+public class Arm extends SubsystemBase {
 	public CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
 	public CANSparkMax elev1 = new CANSparkMax(ELEV1_ID, MotorType.kBrushless);
 	public CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);

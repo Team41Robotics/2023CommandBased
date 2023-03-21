@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.subsystems.LEDSubsystem.LEDSegment.*;
+import static frc.robot.subsystems.LEDs.LEDSegment.*;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LEDSubsystem extends SubsystemBase {
+public class LEDs extends SubsystemBase {
 	public static int timeStep = 0;
 	public static AddressableLED led = new AddressableLED(0);
 	public static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(108);

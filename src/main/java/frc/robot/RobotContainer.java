@@ -1,13 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.HDriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.OdomSubsystem;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.HDrive;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.Odometry;
 import frc.robot.subsystems.Operator;
-import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.Vision;
 
 public final class RobotContainer {
 	public static Robot robot;
@@ -17,12 +17,12 @@ public final class RobotContainer {
 	public static Joystick DS = new Joystick(2);
 	public static IMU imu = new IMU();
 
-	public static HDriveSubsystem hdrive = new HDriveSubsystem();
-	public static OdomSubsystem odom = new OdomSubsystem();
-	public static PhotonVisionSubsystem pv = new PhotonVisionSubsystem();
-	public static ArmSubsystem arm = new ArmSubsystem();
-	public static LEDSubsystem leds = new LEDSubsystem();
-	public static IntakeSubsystem intake = new IntakeSubsystem();
+	public static HDrive hdrive = new HDrive();
+	public static Odometry odom = new Odometry();
+	public static Vision pv = new Vision();
+	public static Arm arm = new Arm();
+	public static LEDs leds = new LEDs();
+	public static Intake intake = new Intake();
 	public static Operator operator = new Operator();
 
 	public static void initSubsystems() {
