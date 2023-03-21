@@ -3,6 +3,7 @@ package frc.robot;
 import static java.lang.Math.PI;
 
 import edu.wpi.first.math.Pair;
+import frc.robot.util.Transform2d;
 
 public final class Constants {
 	public static final double FALCON_MAX_SPEED = 6380 * 2 * PI / 60;
@@ -54,7 +55,7 @@ public final class Constants {
 		public static final double RIGHT_SPEED_TO_ONE =
 				DrivetrainConstants.RIGHT_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
 		public static final double H_SPEED_TO_ONE = DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED;
-
+		public static final Transform2d firstSubstation = new Transform2d(1.02690 + 1, 2.73981, Math.PI);
 		public static final double RADIUS = 0.6512 / 2;
 	}
 

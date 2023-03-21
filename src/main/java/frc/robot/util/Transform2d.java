@@ -68,4 +68,8 @@ public class Transform2d {
 	public Transform2d inv() {
 		return new Transform2d(-cos * x - sin * y, sin * x - cos * y, cos, -sin, -theta);
 	}
+	@Override
+	public String toString() {
+		return "Transform2d(x: " + x + ", y: " + y + ", theta: " + theta +")";
+	}
 }

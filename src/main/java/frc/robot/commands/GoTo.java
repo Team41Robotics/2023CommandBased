@@ -13,8 +13,8 @@ import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
 
 public class GoTo extends CommandBase {
-	HDriveSubsystem drive = HDriveSubsystem.getInstance();
-	OdomSubsystem odom = OdomSubsystem.getInstance();
+	private HDriveSubsystem drive = HDriveSubsystem.getInstance();
+	private OdomSubsystem odom = OdomSubsystem.getInstance();
 
 	Transform2d target;
 

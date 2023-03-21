@@ -2,10 +2,13 @@ package frc.robot.subsystems;
 
 import static java.lang.Math.*;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.LEDSubsystem.LEDSegment;
 import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
 import org.photonvision.PhotonCamera;
@@ -45,7 +48,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		PhotonCamera cam = cameras[ci];
 		PhotonPipelineResult res = cam.getLatestResult();
 		double time = res.getTimestampSeconds();
-
+		if(!res.hasTargets() && DriverStation.isDisabled()) {
+			LEDSegment.midSide.flashColor(Color.kRed);
+		}if(res.hasTargets() && DriverStation.isDisabled()) {
+			LEDSegment.midSide.setColor(Color.kGreen);
+		}
 		if (time > last_time[ci] && res.hasTargets()) {
 			last_time[ci] = time;
 			for (PhotonTrackedTarget tgt : res.getTargets()) {

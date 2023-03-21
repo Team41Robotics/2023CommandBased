@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -14,6 +15,7 @@ import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
+import frc.robot.commands.GoTo;
 import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ZeroArm;
@@ -24,6 +26,7 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.OdomSubsystem;
 import frc.robot.subsystems.Operator;
 import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.util.Transform2d;
 
 public class Robot extends TimedRobot {
 	public static Joystick leftjs = new Joystick(0);
@@ -31,15 +34,15 @@ public class Robot extends TimedRobot {
 	public static Joystick DS = new Joystick(2);
 	public static IMU imu = new IMU();
 
-	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
-	public boolean FOD;
-	OdomSubsystem odom = OdomSubsystem.getInstance();
-	PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
-	ArmSubsystem arm = ArmSubsystem.getInstance();
+	private HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
+	private boolean FOD;
+	private OdomSubsystem odom = OdomSubsystem.getInstance();
+	private PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
+	private ArmSubsystem arm = ArmSubsystem.getInstance();
 	private Command autonomousCommand;
-	LEDSubsystem lights = LEDSubsystem.getInstance();
-	IntakeSubsystem intake = IntakeSubsystem.getInstance();
-	Operator operator = Operator.getInstance();
+	private LEDSubsystem lights = LEDSubsystem.getInstance();
+	private IntakeSubsystem intake = IntakeSubsystem.getInstance();
+	private Operator operator = Operator.getInstance();
 
 	private void schedule(Command cmd) {
 		CommandScheduler.getInstance().schedule(cmd);
@@ -90,7 +93,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		arm.set(0.0, 0, 0);
+		//arm.set(0.0, 0, 0);
 		odom.start();
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
@@ -99,10 +102,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		// if (leftjs.getRawButton(1)) hdrive.drive(OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
-		// else if (rightjs.getRawButton(1)) hdrive.drive(-OperatorConstants.FWD_DRIVE_VELOCITY / 20, 0, 0);
-		// else hdrive.drive(0, 0, 0);
-		// if (leftjs.getRawButton(1)) schedule(new GoTo(new Transform2d(1, 0, PI)));
+		
 	}
 
 	public void configureButtons() {
@@ -110,21 +110,26 @@ public class Robot extends TimedRobot {
 		new POVButton(leftjs, 90).onTrue(new InstantCommand(operator::moveRight));
 		new POVButton(leftjs, 180).onTrue(new InstantCommand(operator::moveDown));
 		new POVButton(leftjs, 270).onTrue(new InstantCommand(operator::moveLeft));
-		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(operator::setPiece));
-		new JoystickButton(leftjs, 3).onTrue(new InstantCommand(operator::queuePlacement));
+		new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
+		//new JoystickButton(leftjs, 3).onTrue(new InstantCommand(operator::queuePlacement));
 		
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
 		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
 		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6));
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
+
+		new JoystickButton(leftjs, 3).onTrue(new ProxyCommand(() -> new GoTo(new Transform2d(1.02690 + 1,
+		(operator.queuedValue != null ? operator.queuedValue.getY() : 0)*0.5588  + 2.73981, Math.PI)
+		)));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(()->arm.set(.2,0,0)));
 		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
 		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
-		new JoystickButton(new Joystick(3), 1)
-				.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
-						+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
+		//new JoystickButton(new Joystick(3), 1)
+	//			.onTrue(new InstantCommand(() -> System.out.println("new ArmPosition(" + arm.getElevPos() + ","
+	//					+ arm.getJoint1Pos() + "," + arm.getJoint2Pos() + ")")));
+	
 		/*
 		new POVButton(leftjs, 270).onTrue(new RunCommand(() -> lights.flash(leftSide, Color.kYellow), lights));
 		new POVButton(leftjs, 0).onTrue(new RunCommand(() -> lights.flash(midSide, Color.kYellow), lights));
