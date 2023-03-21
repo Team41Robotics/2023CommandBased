@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
+import static frc.robot.util.Util.*;
 import static java.lang.Math.*;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.revrobotics.CANSparkMax;
@@ -15,10 +15,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current if touching ground
-	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
-
-	static HDriveSubsystem hdrive;
-
 	WPI_TalonFX lef = new WPI_TalonFX(PORT_L1);
 	WPI_TalonFX lef1 = new WPI_TalonFX(PORT_L2);
 	CANSparkMax mid = new CANSparkMax(PORT_M1, MotorType.kBrushless);
@@ -30,24 +26,24 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 	PIDController mpid = new PIDController(.5, 0, 0);
 	PIDController rpid = new PIDController(.5, 0, 0);
 
-	double lff = 1.5;
+	double lff = 1.5; // TODO sysid
 	double mff = 1.5;
 	double rff = 1.5;
 
 	double vl, vr, vm;
 	double lo, mo, ro;
 
-	private void configureMotors() {
-		lef1.follow(lef);
-		mid1.follow(mid);
-		rgt1.follow(rgt);
-
+	public void init() {
 		lef.configFactoryDefault();
 		lef1.configFactoryDefault();
 		rgt.configFactoryDefault();
 		rgt1.configFactoryDefault();
 		mid.restoreFactoryDefaults();
 		mid1.restoreFactoryDefaults();
+
+		lef1.follow(lef);
+		mid1.follow(mid);
+		rgt1.follow(rgt);
 
 		lef.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms);
 		lef.configVelocityMeasurementWindow(8);
@@ -57,10 +53,8 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 		rgt.configVelocityMeasurementWindow(8);
 	}
 
-	public HDriveSubsystem() {
-		super();
-
-		configureMotors();
+	public void initShuffleboard() {
+		ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
 
 		dttab.add(this);
 		dttab.addNumber("l Encoder", () -> getLeftPos());
@@ -139,22 +133,6 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 		mid.set(-mo * H_SPEED_TO_ONE);
 	}
 
-	private double talonToRad(TalonFX talon) {
-		return talon.getSelectedSensorPosition() / 2048. * 2 * PI;
-	}
-
-	private double talonToRadPerSecond(TalonFX talon) {
-		return talon.getSelectedSensorVelocity() * 10 / 2048. * 2 * PI;
-	}
-
-	private double neoToRad(CANSparkMax neo) {
-		return neo.getEncoder().getPosition() * 2 * PI;
-	}
-
-	private double neoToRadPerSecond(CANSparkMax neo) {
-		return neo.getEncoder().getPosition() * 2 * PI / 60.;
-	}
-
 	public double getRightPos() {
 		return talonToRad(rgt) / RIGHT_RAD_PER_METER;
 	}
@@ -177,12 +155,5 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 
 	public double getMidVel() {
 		return -neoToRadPerSecond(mid) / H_RAD_PER_METER;
-	}
-
-	public static HDriveSubsystem getInstance() {
-		if (hdrive == null) {
-			hdrive = new HDriveSubsystem();
-		}
-		return hdrive;
 	}
 }

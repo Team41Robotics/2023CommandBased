@@ -16,7 +16,7 @@ public class LEDSubsystem extends SubsystemBase {
 	public static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(108);
 	ShuffleboardTab lightTab = Shuffleboard.getTab("LEDS");
 
-	public LEDSubsystem() {
+	public void init() {
 		led.setLength(ledBuffer.getLength());
 		led.setData(ledBuffer);
 		led.start();
@@ -52,15 +52,6 @@ public class LEDSubsystem extends SubsystemBase {
 		leftSide.setRainbow();
 		rightSide.setNone();
 		midSide.setRainbow();
-	}
-
-	static LEDSubsystem instance;
-
-	public static LEDSubsystem getInstance() {
-		if (instance == null) {
-			instance = new LEDSubsystem();
-		}
-		return instance;
 	}
 
 	public static enum ledModes {

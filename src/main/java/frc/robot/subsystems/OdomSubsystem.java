@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -8,7 +9,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
 import java.util.ArrayList;
@@ -19,14 +19,16 @@ public class OdomSubsystem extends SubsystemBase {
 	Field2d field = new Field2d();
 	Transform2d origin = new Transform2d(); // just use apriltags TODO indicate
 
-	static OdomSubsystem odom;
-
-	ShuffleboardTab odomstab = Shuffleboard.getTab("Odom");
-	HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
-
-	public OdomSubsystem() {
+	public void init() {
 		times.ensureCapacity(7000);
 		odoms.ensureCapacity(7000);
+
+		odoms.add(new Transform2d(0, 0, 0));
+		times.add(Timer.getFPGATimestamp());
+	}
+
+	public void initShuffleboard() {
+		ShuffleboardTab odomstab = Shuffleboard.getTab("Odom");
 
 		odomstab.addNumber("x", () -> now().x);
 		odomstab.addNumber("y", () -> now().y);
@@ -40,9 +42,6 @@ public class OdomSubsystem extends SubsystemBase {
 		odomstab.addNumber("Ay", () -> acc().y);
 		odomstab.addNumber("Atheta", () -> acc().theta);
 		odomstab.add("Field", field);
-
-		odoms.add(new Transform2d(0, 0, 0));
-		times.add(Timer.getFPGATimestamp());
 	}
 
 	public boolean isStarted = false;
@@ -51,7 +50,7 @@ public class OdomSubsystem extends SubsystemBase {
 		isStarted = true;
 	}
 
-	double ptheta = Robot.imu.getAngle();
+	double ptheta = imu.getAngle();
 	double pl_enc = hdrive.getLeftPos();
 	double pm_enc = hdrive.getMidPos();
 	double pr_enc = hdrive.getRightPos();
@@ -59,7 +58,7 @@ public class OdomSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		field.setRobotPose(now().x, now().y, Rotation2d.fromRadians(now().theta));
-		double theta = Robot.imu.getAngle();
+		double theta = imu.getAngle();
 		double dtheta = theta - ptheta;
 		ptheta = theta;
 
@@ -126,12 +125,5 @@ public class OdomSubsystem extends SubsystemBase {
 
 	public Transform2d origin_if(Transform2d pose, double time) {
 		return pose.mul(raw_get(time).inv());
-	}
-
-	public static OdomSubsystem getInstance() {
-		if (odom == null) {
-			odom = new OdomSubsystem();
-		}
-		return odom;
 	}
 }

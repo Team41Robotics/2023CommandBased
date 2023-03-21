@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
+import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.LEDSubsystem.LEDSegment;
 import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
@@ -16,13 +16,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
-	private static final double THETA_THRESHOLD = 10 / 180. * PI;
-
-	static PhotonVisionSubsystem pv;
-
-	OdomSubsystem odom = OdomSubsystem.getInstance();
-	ShuffleboardTab camtab = Shuffleboard.getTab("Camera");
-
 	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
 		null,
 		new Transform2d(15.51310, 1.06341, PI),
@@ -43,6 +36,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 	double[] times = new double[32];
 	double[] areas = new double[32];
 	int ptr = 0;
+
+	public void init() {}
 
 	public void update(int ci) {
 		PhotonCamera cam = cameras[ci];
@@ -71,13 +66,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
 				if (tgt.getPoseAmbiguity() < 0.03
-						|| abs(Util.normRot(pose.theta - odom.now().theta)) < THETA_THRESHOLD) {
+						|| abs(Util.normRot(pose.theta - odom.now().theta)) < Constants.VISION_THETA_THRESHOLD) {
 					// mod 32; overwrites first estimate if ovf; 99% not needed or used
 					poses[ptr % 32] = pose;
 					times[ptr % 32] = time;
 					areas[ptr % 32] = tgt.getArea();
 					ptr++;
-				} else if (abs(Util.normRot(altpose.theta - odom.now().theta)) < THETA_THRESHOLD) {
+				} else if (abs(Util.normRot(altpose.theta - odom.now().theta)) < Constants.VISION_THETA_THRESHOLD) {
 					poses[ptr % 32] = altpose;
 					times[ptr % 32] = time;
 					areas[ptr % 32] = tgt.getArea();
@@ -117,12 +112,5 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 	public void periodic() {
 		for (int i = 0; i < cameras.length; i++) update(i);
 		if (Timer.getFPGATimestamp() > last_eval_time + 0.2) evaluate();
-	}
-
-	public static PhotonVisionSubsystem getInstance() {
-		if (pv == null) {
-			pv = new PhotonVisionSubsystem();
-		}
-		return pv;
 	}
 }
