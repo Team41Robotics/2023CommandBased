@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
+import static frc.robot.Constants.*;
 import static frc.robot.util.Util.*;
 import static java.lang.Math.*;
 
@@ -30,6 +31,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	double mff = 1.5;
 	double rff = 1.5;
 
+        double dvl, dvr, dvm;
 	double vl, vr, vm;
 	double lo, mo, ro;
 
@@ -86,28 +88,28 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	}
 
 	public void drive(double vx, double vy, double w, boolean preserve) { // TODO add accel
-		vl = vx - w * RADIUS;
-		vr = vx + w * RADIUS;
-		vm = vy;
+		dvl = vx - w * RADIUS;
+		dvr = vx + w * RADIUS;
+		dvm = vy;
 
-		double max = 0;
-		if (max < abs(vl * LEFT_SPEED_TO_ONE)) max = abs(vl * LEFT_SPEED_TO_ONE);
-		if (max < abs(vr * RIGHT_SPEED_TO_ONE)) max = abs(vr * RIGHT_SPEED_TO_ONE);
-		if (max < abs(vm * H_SPEED_TO_ONE)) max = abs(vm * H_SPEED_TO_ONE);
+		double max = 1;
+		if (max < abs(dvl * LEFT_SPEED_TO_ONE)) max = abs(dvl * LEFT_SPEED_TO_ONE);
+		if (max < abs(dvr * RIGHT_SPEED_TO_ONE)) max = abs(dvr * RIGHT_SPEED_TO_ONE);
+		if (max < abs(dvm * H_SPEED_TO_ONE)) max = abs(dvm * H_SPEED_TO_ONE);
 
-		if (preserve && max > 1) {
-			vx /= max;
-			vy /= max;
-			w /= max;
-			vl = vx - w * RADIUS;
-			vr = vx + w * RADIUS;
-			vm = vy;
+		if (preserve) {
+			dvl /= max;
+			dvr /= max;
+			dvm /= max;
 		}
 	}
 
 	@Override
 	public void periodic() {
-		if (DriverStation.isEnabled()) {
+		if (DriverStation.isEnabled()) { // TODO refactor ramp times out
+                        // TODO make this cleaner too
+                        vm = Math.abs(dvm - vm) < LOOP_TIME * 0.5 ? dvm : vm + signum(dvm-vm)*LOOP_TIME * 0.5;
+                        vl = dvl; vr = dvr;
 			setLeft(vl);
 			setMid(vm);
 			setRight(vr);
