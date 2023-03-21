@@ -38,7 +38,8 @@ public class RunIntake extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
-		return (Math.abs(intake.getSpeed()) <= Math.abs(speed) / 2 && Timer.getFPGATimestamp() - startTime > mintime)
+		return (Math.abs(intake.getPercentSpeed()) <= Math.abs(speed) / 2
+						&& Timer.getFPGATimestamp() - startTime > mintime)
 				|| Timer.getFPGATimestamp() - startTime > maxtime;
 	}
 }

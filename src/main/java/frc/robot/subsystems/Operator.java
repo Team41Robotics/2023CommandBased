@@ -31,14 +31,14 @@ public class Operator extends SubsystemBase {
 	public boolean queueManualOverride = false;
 	public boolean suggestManualOverride = false;
 	public Point hoverValue = new Point(0, 0);
-	public Point 
-	queuedValue;
+	public Point queuedValue;
 	private final Alert logQueueOnFilledNode = new Alert(
 			"Operator Terminal", "Attempted to queue on already-filled node, queue not performed", AlertType.WARNING);
 	private final Alert logNoMorePieceSpaceCones =
 			new Alert("Operator Terminal", "No more space to place cones, queue canceled", AlertType.WARNING);
 	private final Alert logNoMorePieceSpaceCubes =
 			new Alert("Operator Terminal", "No more space to place cubes, queue canceled", AlertType.WARNING);
+	public static HeldObject heldObject = HeldObject.NONE;
 
 	public static enum NodeState {
 		NONE(0),
@@ -221,6 +221,7 @@ public class Operator extends SubsystemBase {
 			}
 		}
 	}
+
 	@SuppressWarnings("unused")
 	private boolean partOfCompleteLink(int i, int j) {
 		int baseNineIndex = 9 * i + j;
@@ -689,29 +690,27 @@ public class Operator extends SubsystemBase {
 		}
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
-				if(nodeSuperStateValues[i][j] == NodeSuperState.INVALID.value){
+				if (nodeSuperStateValues[i][j] == NodeSuperState.INVALID.value) {
 					nodes[i][j].setInteger(nodeSuperStateValues[i][j]);
 
-				}
-				else if (nodeStateValues[i][j] == NodeSuperState.NONE.value) {
+				} else if (nodeStateValues[i][j] == NodeSuperState.NONE.value) {
 					nodes[i][j].setInteger(nodeSuperStateValues[i][j]);
 				} else {
 					nodes[i][j].setInteger(nodeStateValues[i][j]);
 				}
-				
 			}
 		}
-		if(DriverStation.isEnabled()){
-		if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value) {
-			leds.flash(Color.kYellow);
+		if (DriverStation.isEnabled()) {
+			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value) {
+				leds.flash(Color.kYellow);
+			}
+			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value) {
+				leds.flash(Color.kPurple);
+			}
+			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value) {
+				leds.allRainbow();
+			}
 		}
-		if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value) {
-			leds.flash(Color.kPurple);
-		}
-		if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value) {
-			leds.allRainbow();
-		}
-	}
 	}
 
 	private static Operator instance = null;

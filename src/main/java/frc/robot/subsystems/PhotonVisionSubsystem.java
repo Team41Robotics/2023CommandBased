@@ -48,9 +48,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 		PhotonCamera cam = cameras[ci];
 		PhotonPipelineResult res = cam.getLatestResult();
 		double time = res.getTimestampSeconds();
-		if(!res.hasTargets() && DriverStation.isDisabled()) {
+		if (!res.hasTargets() && DriverStation.isDisabled()) {
 			LEDSegment.midSide.flashColor(Color.kRed);
-		}if(res.hasTargets() && DriverStation.isDisabled()) {
+		}
+		if (res.hasTargets() && DriverStation.isDisabled()) {
 			LEDSegment.midSide.setColor(Color.kGreen);
 		}
 		if (time > last_time[ci] && res.hasTargets()) {

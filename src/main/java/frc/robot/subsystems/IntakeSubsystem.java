@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
 		motor.set(x);
 	}
 
-	public double getSpeed() {
+	public double getPercentSpeed() {
 		return motor.getEncoder().getVelocity() / Constants.NEO_550_MAX_SPEED_RPM;
 	}
 

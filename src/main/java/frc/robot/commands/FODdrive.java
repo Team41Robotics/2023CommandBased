@@ -32,7 +32,7 @@ public class FODdrive extends CommandBase {
 		if (DriverStation.getAlliance() == Alliance.Red) robot_angle = PI - robot_angle;
 		double vx = cos(robot_angle) * vf + sin(robot_angle) * vs;
 		double vy = -sin(robot_angle) * vf + cos(robot_angle) * vs;
-		int d = (rightjs.getRawButton(2)? 1 : 2);
+		int d = (rightjs.getRawButton(2) ? 1 : 2);
 
 		drive.drive(vx / d, vy / d, w / d);
 	}

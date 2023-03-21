@@ -17,7 +17,6 @@ public final class Constants {
 			NONE
 		}
 
-		public static HeldObject heldObject = HeldObject.NONE;
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		public static final int LEFT_JOYSTICK_PORT = 1;
 		public static final int RIGHT_JOYSTICK_PORT = 0;
@@ -30,7 +29,6 @@ public final class Constants {
 	}
 
 	public static class DrivetrainConstants {
-
 		public static final int PORT_L1 = 1;
 		public static final int PORT_L2 = 2;
 		public static final int PORT_M1 = 5;
