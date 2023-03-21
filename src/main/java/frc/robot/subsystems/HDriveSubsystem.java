@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.SendableDouble;
 
 public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current if touching ground
 	public ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
@@ -31,9 +30,9 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 	PIDController mpid = new PIDController(.5, 0, 0);
 	PIDController rpid = new PIDController(.5, 0, 0);
 
-	SendableDouble lff = new SendableDouble(1.5);
-	SendableDouble mff = new SendableDouble(1.5);
-	SendableDouble rff = new SendableDouble(1.5);
+	double lff = 1.5;
+	double mff = 1.5;
+	double rff = 1.5;
 
 	double vl, vr, vm;
 	double lo, mo, ro;
@@ -70,10 +69,6 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 		dttab.add("l", lpid);
 		dttab.add("m", mpid);
 		dttab.add("r", rpid);
-
-		dttab.add("lff", lff);
-		dttab.add("mff", mff);
-		dttab.add("rff", rff);
 
 		dttab.addNumber("l PID err", () -> lpid.getPositionError());
 		dttab.addNumber("m PID err", () -> mpid.getPositionError());
@@ -130,17 +125,17 @@ public class HDriveSubsystem extends SubsystemBase { // TODO sense wheel current
 	}
 
 	public void setLeft(double vel) { // TODO when SYSID
-		lo = lff.x * vel + lpid.calculate(getLeftVel(), vel);
+		lo = lff * vel + lpid.calculate(getLeftVel(), vel);
 		lef.set(-lo * LEFT_SPEED_TO_ONE);
 	}
 
 	public void setRight(double vel) {
-		ro = rff.x * vel + rpid.calculate(getRightVel(), vel);
+		ro = rff * vel + rpid.calculate(getRightVel(), vel);
 		rgt.set(ro * RIGHT_SPEED_TO_ONE);
 	}
 
 	public void setMid(double vel) {
-		mo = mff.x * vel + mpid.calculate(getMidVel(), vel);
+		mo = mff * vel + mpid.calculate(getMidVel(), vel);
 		mid.set(-mo * H_SPEED_TO_ONE);
 	}
 

@@ -34,15 +34,15 @@ public class Robot extends TimedRobot {
 	public static Joystick DS = new Joystick(2);
 	public static IMU imu = new IMU();
 
-	private HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
-	private boolean FOD;
-	private OdomSubsystem odom = OdomSubsystem.getInstance();
-	private PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
-	private ArmSubsystem arm = ArmSubsystem.getInstance();
-	private Command autonomousCommand;
-	private LEDSubsystem lights = LEDSubsystem.getInstance();
-	private IntakeSubsystem intake = IntakeSubsystem.getInstance();
-	private Operator operator = Operator.getInstance();
+	public HDriveSubsystem hdrive = HDriveSubsystem.getInstance();
+	public boolean FOD;
+	public OdomSubsystem odom = OdomSubsystem.getInstance();
+	public PhotonVisionSubsystem pv = PhotonVisionSubsystem.getInstance();
+	public ArmSubsystem arm = ArmSubsystem.getInstance();
+	public Command autonomousCommand;
+	public LEDSubsystem lights = LEDSubsystem.getInstance();
+	public IntakeSubsystem intake = IntakeSubsystem.getInstance();
+	public Operator operator = Operator.getInstance();
 
 	private void schedule(Command cmd) {
 		CommandScheduler.getInstance().schedule(cmd);

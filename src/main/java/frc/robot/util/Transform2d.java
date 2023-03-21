@@ -46,7 +46,7 @@ public class Transform2d {
 	 * Print transform
 	 */
 	public void print() {
-		System.out.println("x = " + x + " y = " + y + " theta = " + theta);
+		System.out.println(toString());
 	}
 
 	/**

@@ -8,7 +8,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.ArmPosition;
 
@@ -47,13 +46,11 @@ public class ArmTo extends CommandBase {
 		jt2_pid.reset();
 	}
 
-	double vel;
-
 	@Override
 	public void execute() {
-		State elevs = elev_prof.calculate(Timer.getFPGATimestamp() - st + Constants.LOOP_TIME);
-		State jt1s = jt1_prof.calculate(Timer.getFPGATimestamp() - st + Constants.LOOP_TIME);
-		State jt2s = jt2_prof.calculate(Timer.getFPGATimestamp() - st + Constants.LOOP_TIME);
+		State elevs = elev_prof.calculate(Timer.getFPGATimestamp() - st);
+		State jt1s = jt1_prof.calculate(Timer.getFPGATimestamp() - st);
+		State jt2s = jt2_prof.calculate(Timer.getFPGATimestamp() - st);
 
 		double dt = 1e-6;
 		double elev_a = (elev_prof.calculate(Timer.getFPGATimestamp() - st + dt).velocity - elevs.velocity) / dt;
@@ -64,7 +61,7 @@ public class ArmTo extends CommandBase {
 		double jt1_fb = jt1_pid.calculate(arm.getJoint1Pos(), jt1s.position);
 		double jt2_fb = jt2_pid.calculate(arm.getJoint2Pos(), jt2s.position);
 
-		vel = elevs.velocity + elev_fb;
+		double vel = elevs.velocity + elev_fb;
 		if (arm.isTopLimitSwitch() && vel > 0) vel = 0;
 		if (arm.isBotLimitSwitch() && vel < 0) vel = 0;
 		arm.set(vel, jt1_fb + jt1s.velocity, jt2_fb + jt2s.velocity, elev_a, jt1_a, jt2_a);

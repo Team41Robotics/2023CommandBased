@@ -2,9 +2,6 @@ package frc.robot;
 
 import static java.lang.Math.PI;
 
-import edu.wpi.first.math.Pair;
-import frc.robot.util.Transform2d;
-
 public final class Constants {
 	public static final double FALCON_MAX_SPEED = 6380 * 2 * PI / 60;
 	public static final double NEO_MAX_SPEED = 5676 * 2 * PI / 60;
@@ -17,7 +14,6 @@ public final class Constants {
 			NONE
 		}
 
-		public static final int DRIVER_CONTROLLER_PORT = 0;
 		public static final int LEFT_JOYSTICK_PORT = 1;
 		public static final int RIGHT_JOYSTICK_PORT = 0;
 
@@ -36,9 +32,10 @@ public final class Constants {
 		public static final int PORT_R1 = 3;
 		public static final int PORT_R2 = 4;
 
-		private static final double MECHANICAL_DRIFT_COMP = 0.95; // TODO: figure out cause of this // sysid may fix
+		public static final double MECHANICAL_DRIFT_COMP = 0.95; // TODO: figure out cause of this // sysid may fix
 		public static final double LEFT_RATIO = 9.75;
-		public static final double RIGHT_RATIO = LEFT_RATIO * 14.0 / 12.0 * MECHANICAL_DRIFT_COMP;
+		public static final double RIGHT_RATIO =
+				LEFT_RATIO * 14.0 / 12.0 * MECHANICAL_DRIFT_COMP; // TODO: can we replace pinions?
 		public static final double H_RATIO = 10.65;
 
 		public static final double FWD_WHEEL_RADIUS = 3 * 2.54 / 100;
@@ -52,8 +49,8 @@ public final class Constants {
 				DrivetrainConstants.LEFT_RAD_PER_METER / Constants.FALCON_MAX_SPEED; // TODO SYSID
 		public static final double RIGHT_SPEED_TO_ONE =
 				DrivetrainConstants.RIGHT_RAD_PER_METER / Constants.FALCON_MAX_SPEED;
+
 		public static final double H_SPEED_TO_ONE = DrivetrainConstants.H_RAD_PER_METER / Constants.NEO_MAX_SPEED;
-		public static final Transform2d firstSubstation = new Transform2d(1.02690 + 1, 2.73981, Math.PI);
 		public static final double RADIUS = 0.6512 / 2;
 	}
 
@@ -69,11 +66,11 @@ public final class Constants {
 		public static final int UPPERLIMIT2_ID = 1;
 
 		public static final double ELEV_RATIO = 5;
-		public static final double JOINT1_RATIO = 81 * 84 / 16.;
+		public static final double JOINT1_RATIO = 81 * 84 / 16.; // TODO change
 		public static final double JOINT2_RATIO = 81 * 84 / 16.;
 
 		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 / 2 * 2;
-		public static final double TEMP = ELEV_METERS_PER_AXLE_RAD * 2 * PI;
+		public static final double TEMP = ELEV_METERS_PER_AXLE_RAD * 2 * PI; // TODO this is only for sysid convenience
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
 
 		public static final double ELEV_THETA = 50 / 180. * PI;
@@ -105,7 +102,7 @@ public final class Constants {
 		public static final double ELEVATOR_TOLERANCE = 0.03;
 		public static final double JOINT_TOLERANCE = 2 / 180. * PI;
 
-		public static final double JOINT1_ZERO_THRES = 0.1;
+		public static final double JOINT1_ZERO_THRES = 0.1; // TODO we should have limit switches soon
 		public static final double JOINT1_ZERO_ANGLE = 16.15 / 180. * PI;
 		public static final double JOINT1_UPPER_BOUND = 15 / 180. * PI;
 		public static final double JOINT1_LOWER_BOUND = -90 / 180. * PI;
@@ -115,17 +112,6 @@ public final class Constants {
 		public static final double GOTO_XY_TOLERANCE = 0.03;
 		public static final double GOTO_TURN_TOLERANCE = .5 / 180. * PI;
 		public static final double GOTO_VEL_TOLERANCE = 0.2;
-	}
-
-	public static class LEDConstants {
-
-		public static final int LEFT_LENGTH = 44;
-		public static final int MID_LENGTH = 20;
-		public static final int RIGHT_LENGTH = 44;
-
-		public static final Pair<Integer, Integer> LEFT = new Pair<>(0, 45);
-		public static final Pair<Integer, Integer> MID = new Pair<>(45, 65);
-		public static final Pair<Integer, Integer> RIGHT = new Pair<>(66, 66 + 42);
 	}
 
 	public static enum LEDLocations {
