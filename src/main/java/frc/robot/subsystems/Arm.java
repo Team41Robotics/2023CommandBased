@@ -19,21 +19,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Ports;
 import frc.robot.commands.ArmTo;
 import frc.robot.commands.ZeroArm;
 import frc.robot.util.ArmPosition;
 import java.util.Map;
 
 public class Arm extends SubsystemBase {
-	public CANSparkMax elev = new CANSparkMax(ELEV_ID, MotorType.kBrushless);
-	public CANSparkMax elev1 = new CANSparkMax(ELEV1_ID, MotorType.kBrushless);
-	public CANSparkMax jt1 = new CANSparkMax(JOINT1_ID, MotorType.kBrushless);
-	public CANSparkMax jt2 = new CANSparkMax(JOINT2_ID, MotorType.kBrushless);
+	public CANSparkMax elev = new CANSparkMax(Ports.CAN_ELEV, MotorType.kBrushless);
+	public CANSparkMax elev1 = new CANSparkMax(Ports.CAN_ELEV1, MotorType.kBrushless);
+	public CANSparkMax jt1 = new CANSparkMax(Ports.CAN_JOINT1, MotorType.kBrushless);
+	public CANSparkMax jt2 = new CANSparkMax(Ports.CAN_JOINT2, MotorType.kBrushless);
 
-	public DigitalInput lower_limit1 = new DigitalInput(LOWERLIMIT1_ID);
-	public DigitalInput lower_limit2 = new DigitalInput(LOWERLIMIT2_ID);
-	public DigitalInput upper_limit1 = new DigitalInput(UPPERLIMIT1_ID);
-	public DigitalInput upper_limit2 = new DigitalInput(UPPERLIMIT2_ID);
+	public DigitalInput lower_limit1 = new DigitalInput(Ports.DIO_LOWERLIMIT1);
+	public DigitalInput lower_limit2 = new DigitalInput(Ports.DIO_LOWERLIMIT2);
+	public DigitalInput upper_limit1 = new DigitalInput(Ports.DIO_UPPERLIMIT1);
+	public DigitalInput upper_limit2 = new DigitalInput(Ports.DIO_UPPERLIMIT2);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();
 	SparkMaxPIDController elev1_vpid = elev1.getPIDController();

@@ -30,12 +30,7 @@ public final class Constants {
 	}
 
 	public static class DrivetrainConstants {
-		public static final int PORT_L1 = 1;
-		public static final int PORT_L2 = 2;
-		public static final int PORT_M1 = 5;
-		public static final int PORT_M2 = 6;
-		public static final int PORT_R1 = 3;
-		public static final int PORT_R2 = 4;
+		// TODO: can we replace pinions? then we can consolidate
 
 		public static final double MECHANICAL_DRIFT_COMP = 0.95; // TODO: figure out cause of this // sysid may fix
 		public static final double LEFT_RATIO = 9.75;
@@ -60,16 +55,6 @@ public final class Constants {
 	}
 
 	public static class ArmConstants {
-		public static final int ELEV_ID = 8;
-		public static final int ELEV1_ID = 9;
-		public static final int JOINT1_ID = 10;
-		public static final int JOINT2_ID = 13;
-
-		public static final int LOWERLIMIT1_ID = 2;
-		public static final int LOWERLIMIT2_ID = 3;
-		public static final int UPPERLIMIT1_ID = 0;
-		public static final int UPPERLIMIT2_ID = 1;
-
 		public static final double ELEV_RATIO = 5;
 		public static final double JOINT1_RATIO = 81 * 84 / 16.; // TODO change
 		public static final double JOINT2_RATIO = 81 * 84 / 16.;
@@ -126,8 +111,29 @@ public final class Constants {
 		NONE;
 	}
 
+	public static class Ports {
+		public static final int CAN_DT_L1 = 1;
+		public static final int CAN_DT_L2 = 2;
+		public static final int CAN_DT_M1 = 5;
+		public static final int CAN_DT_M2 = 6;
+		public static final int CAN_DT_R1 = 3;
+		public static final int CAN_DT_R2 = 4;
+
+		public static final int CAN_ELEV = 8;
+		public static final int CAN_ELEV1 = 9;
+		public static final int CAN_JOINT1 = 10;
+		public static final int CAN_JOINT11 = 0;
+		public static final int CAN_JOINT2 = 13;
+
+		public static final int CAN_INTAKE = 12;
+
+		public static final int DIO_LOWERLIMIT1 = 2;
+		public static final int DIO_LOWERLIMIT2 = 3;
+		public static final int DIO_UPPERLIMIT1 = 0;
+		public static final int DIO_UPPERLIMIT2 = 1;
+	}
+
 	public static final double LOOP_TIME = 0.02;
-	public static final int INTAKE_ID = 12;
 
 	public static final double FIELD_LENGTH = 16.54;
 	public static final double FIELD_WIDTH = 8;
