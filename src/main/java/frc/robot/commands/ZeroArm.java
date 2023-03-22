@@ -28,6 +28,6 @@ public class ZeroArm extends CommandBase {
 	@Override
 	public boolean isFinished() {
 		return true;
-		//return arm.jt1.getEncoder().getVelocity() / 60. * 2 * PI / JOINT1_RATIO < JOINT1_ZERO_THRES && prev_above;
+		// return arm.jt1.getEncoder().getVelocity() / 60. * 2 * PI / JOINT1_RATIO < JOINT1_ZERO_THRES && prev_above;
 	}
 }

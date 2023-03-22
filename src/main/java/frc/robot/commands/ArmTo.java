@@ -47,7 +47,7 @@ public class ArmTo extends CommandBase {
 
 	@Override
 	public void execute() {
-		/* 
+		/*
 		State elevs = elev_prof.calculate(Timer.getFPGATimestamp() - st);
 		State jt1s = jt1_prof.calculate(Timer.getFPGATimestamp() - st);
 		State jt2s = jt2_prof.calculate(Timer.getFPGATimestamp() - st);
@@ -70,13 +70,13 @@ public class ArmTo extends CommandBase {
 
 	@Override
 	public void end(boolean interrupted) {
-		//arm.set(0, 0, 0);
+		// arm.set(0, 0, 0);
 	}
 
 	@Override
 	public boolean isFinished() {
 		return true;
-	/* 
+		/*
 		if (elev_prof.isFinished(Timer.getFPGATimestamp() - st)
 				&& jt1_prof.isFinished(Timer.getFPGATimestamp() - st)
 				&& jt2_prof.isFinished(Timer.getFPGATimestamp() - st)) {

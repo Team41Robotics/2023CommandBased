@@ -125,7 +125,7 @@ public class LEDs extends SubsystemBase {
 		}
 
 		private void flicker() {
-			for (int j = startIndex; j <= startIndex + segmentSize; j++){
+			for (int j = startIndex; j <= startIndex + segmentSize; j++) {
 				buffer.setLED(j, (timeStep % 20 >= 7 ? color : Color.kBlack));
 			}
 		}

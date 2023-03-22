@@ -53,8 +53,8 @@ public class GoTo extends CommandBase {
 		double robot_angle = odom.now().theta;
 		double vf = cos(robot_angle) * vx + sin(robot_angle) * vy;
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
-		//System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
-		//System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
+		// System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
+		// System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
 		hdrive.drive(vf, vs, w);
 	}
 

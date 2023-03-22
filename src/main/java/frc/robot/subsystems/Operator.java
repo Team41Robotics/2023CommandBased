@@ -78,12 +78,19 @@ public class Operator extends SubsystemBase {
 			}
 		}
 		heldObject = HeldObject.NONE;
-		System.out.println(heldObject
-		);
-		OPERATOR_TAB.addString("Current Game Piece",() -> (heldObject != null ? heldObject.name : "NONE" )).withPosition(2, 0);
-		OPERATOR_TAB.add("Cube", new InstantCommand(() -> heldObjectIn = HeldObject.CUBE)).withPosition(3, 0);
-		OPERATOR_TAB.add("None", new InstantCommand(() -> heldObjectIn = HeldObject.NONE)).withPosition(4, 0);
-		OPERATOR_TAB.add("Cone", new InstantCommand(() -> heldObjectIn = HeldObject.CONE)).withPosition(5, 0);
+		System.out.println(heldObject);
+		OPERATOR_TAB
+				.addString("Current Game Piece", () -> (heldObject != null ? heldObject.name : "NONE"))
+				.withPosition(2, 0);
+		OPERATOR_TAB
+				.add("Cube", new InstantCommand(() -> heldObjectIn = HeldObject.CUBE))
+				.withPosition(3, 0);
+		OPERATOR_TAB
+				.add("None", new InstantCommand(() -> heldObjectIn = HeldObject.NONE))
+				.withPosition(4, 0);
+		OPERATOR_TAB
+				.add("Cone", new InstantCommand(() -> heldObjectIn = HeldObject.CONE))
+				.withPosition(5, 0);
 
 		heldObjectChooser.addOption("None", HeldObject.NONE);
 		heldObjectChooser.addOption("Cube", HeldObject.CUBE);

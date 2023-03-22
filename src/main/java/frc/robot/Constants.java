@@ -13,7 +13,8 @@ public final class Constants {
 			CONE("Cone"),
 			NONE("None");
 			public String name;
-			private HeldObject(String name){
+
+			private HeldObject(String name) {
 				this.name = name;
 			}
 		}

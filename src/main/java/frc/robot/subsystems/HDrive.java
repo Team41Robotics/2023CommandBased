@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.DrivetrainConstants.*;
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.DrivetrainConstants.*;
 import static frc.robot.util.Util.*;
 import static java.lang.Math.*;
 
@@ -32,7 +32,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	double mff = 1.5;
 	double rff = 1.5;
 
-        double dvl, dvr, dvm;
+	double dvl, dvr, dvm;
 	double vl, vr, vm;
 	double lo, mo, ro;
 
@@ -94,9 +94,9 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		dvm = vy;
 
 		double max = 1;
-		if (max < abs(dvl * LEFT_SPEED_TO_ONE*4)) max = abs(dvl * LEFT_SPEED_TO_ONE*4);
-		if (max < abs(dvr * RIGHT_SPEED_TO_ONE*4)) max = abs(dvr * RIGHT_SPEED_TO_ONE*4);
-		if (max < abs(dvm * H_SPEED_TO_ONE*4)) max = abs(dvm * H_SPEED_TO_ONE*4);
+		if (max < abs(dvl * LEFT_SPEED_TO_ONE * 4)) max = abs(dvl * LEFT_SPEED_TO_ONE * 4);
+		if (max < abs(dvr * RIGHT_SPEED_TO_ONE * 4)) max = abs(dvr * RIGHT_SPEED_TO_ONE * 4);
+		if (max < abs(dvm * H_SPEED_TO_ONE * 4)) max = abs(dvm * H_SPEED_TO_ONE * 4);
 
 		if (preserve) {
 			dvl /= max;
@@ -108,11 +108,12 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	@Override
 	public void periodic() {
 		if (DriverStation.isEnabled()) { // TODO refactor ramp times out
-                        // TODO make this cleaner too
-						if(true || getCurrentCommand() instanceof GoTo){
-                        vm = abs(dvm - vm) < LOOP_TIME * 1  || abs(dvm) < abs(vm)? dvm : vm + signum(dvm-vm)*LOOP_TIME * 1;
-						}else vm = dvm;
-		vl = dvl; vr = dvr;
+			// TODO make this cleaner too
+			if (true || getCurrentCommand() instanceof GoTo) {
+				vm = abs(dvm - vm) < LOOP_TIME * 1 || abs(dvm) < abs(vm) ? dvm : vm + signum(dvm - vm) * LOOP_TIME * 1;
+			} else vm = dvm;
+			vl = dvl;
+			vr = dvr;
 			setLeft(vl);
 			setMid(vm);
 			setRight(vr);
