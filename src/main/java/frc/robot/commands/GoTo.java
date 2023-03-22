@@ -26,8 +26,8 @@ public class GoTo extends CommandBase {
 		wPID.enableContinuousInput(-PI, PI);
 	}
 
-	PIDController xPID = new PIDController(2, 0, 0.5);
-	PIDController yPID = new PIDController(2, 0, 0.5);
+	PIDController xPID = new PIDController(2, 0, 0);
+	PIDController yPID = new PIDController(3, 0, 0.4);
 	PIDController wPID = new PIDController(1.3, 0, 0);
 
 	@Override
@@ -39,11 +39,11 @@ public class GoTo extends CommandBase {
 
 	@Override
 	public void execute() {
-		if (abs(xPID.getPositionError()) < 0.1) xPID.setI(0.5);
+		if (abs(xPID.getPositionError()) < 0.2) xPID.setI(0.5);
 		else xPID.setI(0);
-		if (abs(yPID.getPositionError()) < 0.1) yPID.setI(0.5);
+		if (abs(yPID.getPositionError()) < 0.2) yPID.setI(0.5);
 		else yPID.setI(0);
-		if (abs(wPID.getPositionError()) < 10 * PI / 180) wPID.setI(1);
+		if (abs(wPID.getPositionError()) < 20 * PI / 180) wPID.setI(1);
 		else wPID.setI(0);
 
 		double vx = xPID.calculate(odom.now().x, target.x);
@@ -53,8 +53,8 @@ public class GoTo extends CommandBase {
 		double robot_angle = odom.now().theta;
 		double vf = cos(robot_angle) * vx + sin(robot_angle) * vy;
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
-		System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
-		System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
+		//System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
+		//System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
 		hdrive.drive(vf, vs, w);
 	}
 

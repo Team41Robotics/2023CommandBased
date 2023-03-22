@@ -15,16 +15,19 @@ public class ZeroArm extends CommandBase {
 
 	@Override
 	public void execute() {
+		/* =
 		if (arm.jt1.getEncoder().getVelocity() / 60. * 2 * PI / JOINT1_RATIO > JOINT1_ZERO_THRES) prev_above = true;
 		if (arm.jt1.getEncoder().getVelocity() / 60. * 2 * PI / JOINT1_RATIO < JOINT1_ZERO_THRES && prev_above)
 			arm.jt1.getEncoder().setPosition(JOINT1_ZERO_ANGLE / 2 / PI * JOINT1_RATIO);
 		arm.jt1.set(0.4);
 		if (arm.getJoint2Pos() > 0) arm.jt2.set(-1);
 		else arm.jt2.setVoltage(JOINT2_kG);
+		*/
 	}
 
 	@Override
 	public boolean isFinished() {
-		return arm.jt1.getEncoder().getVelocity() / 60. * 2 * PI / JOINT1_RATIO < JOINT1_ZERO_THRES && prev_above;
+		return true;
+		//return arm.jt1.getEncoder().getVelocity() / 60. * 2 * PI / JOINT1_RATIO < JOINT1_ZERO_THRES && prev_above;
 	}
 }

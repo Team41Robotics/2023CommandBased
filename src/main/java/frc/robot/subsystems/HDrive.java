@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.GoTo;
 
 public class HDrive extends SubsystemBase { // TODO sense wheel current if touching ground
 	WPI_TalonFX lef = new WPI_TalonFX(PORT_L1);
@@ -93,9 +94,9 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		dvm = vy;
 
 		double max = 1;
-		if (max < abs(dvl * LEFT_SPEED_TO_ONE)) max = abs(dvl * LEFT_SPEED_TO_ONE);
-		if (max < abs(dvr * RIGHT_SPEED_TO_ONE)) max = abs(dvr * RIGHT_SPEED_TO_ONE);
-		if (max < abs(dvm * H_SPEED_TO_ONE)) max = abs(dvm * H_SPEED_TO_ONE);
+		if (max < abs(dvl * LEFT_SPEED_TO_ONE*4)) max = abs(dvl * LEFT_SPEED_TO_ONE*4);
+		if (max < abs(dvr * RIGHT_SPEED_TO_ONE*4)) max = abs(dvr * RIGHT_SPEED_TO_ONE*4);
+		if (max < abs(dvm * H_SPEED_TO_ONE*4)) max = abs(dvm * H_SPEED_TO_ONE*4);
 
 		if (preserve) {
 			dvl /= max;
@@ -108,8 +109,10 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	public void periodic() {
 		if (DriverStation.isEnabled()) { // TODO refactor ramp times out
                         // TODO make this cleaner too
-                        vm = Math.abs(dvm - vm) < LOOP_TIME * 0.5 ? dvm : vm + signum(dvm-vm)*LOOP_TIME * 0.5;
-                        vl = dvl; vr = dvr;
+						if(true || getCurrentCommand() instanceof GoTo){
+                        vm = abs(dvm - vm) < LOOP_TIME * 1  || abs(dvm) < abs(vm)? dvm : vm + signum(dvm-vm)*LOOP_TIME * 1;
+						}else vm = dvm;
+		vl = dvl; vr = dvr;
 			setLeft(vl);
 			setMid(vm);
 			setRight(vr);

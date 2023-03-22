@@ -21,8 +21,8 @@ public class Autonomous {
 						new GoTo(new Transform2d(1.02690 + 1, 2.73981, PI)), // TODO fix & tune length later
 						new ArmTo("BALL TOP"),
 						new RunIntake(-.6, 1),
-						new GoTo(new Transform2d(1.02690 + 5, 2.73981, 0)),
-						new GoTo(new Transform2d(1.02690 + 3, 2.73981, 0)),
+						new GoTo(new Transform2d(1.02690 + 5, 2.73981, PI)),
+						new GoTo(new Transform2d(1.02690 + 3, 2.73981, PI)),
 						new Balance()));
 		create(
 				"HP SIDE Auton",
