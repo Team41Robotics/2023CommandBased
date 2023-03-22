@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class IMU {
 	private AHRS ahrs = new AHRS(SPI.Port.kMXP, (byte) 66);
-	ShuffleboardTab imutab = Shuffleboard.getTab("Inertial");
 
-	public IMU() {
+	public void initShuffleboard() {
+		ShuffleboardTab imutab = Shuffleboard.getTab("Inertial");
 		imutab.addNumber("roll", () -> getRoll() * 180 / PI);
 		imutab.addNumber("pitch", () -> getPitch() * 180 / PI);
 		imutab.addNumber("yaw", () -> getYaw() * 180 / PI);

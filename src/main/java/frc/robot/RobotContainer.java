@@ -33,8 +33,9 @@ public final class RobotContainer {
 		leds.init();
 		intake.init();
 		operator.init();
-		hdrive.initShuffleboard();
-		odom.initShuffleboard();
-		arm.initShuffleboard();
+		// hdrive.initShuffleboard();
+		// odom.initShuffleboard();
+		// arm.initShuffleboard();
+		// imu.initShuffleboard();
 	}
 }
