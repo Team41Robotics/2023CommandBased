@@ -65,7 +65,12 @@ public class Vision extends SubsystemBase {
 						altt.getX(), altt.getY(), altt.getRotation().getZ());
 				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
 
-				if (tgt.getPoseAmbiguity() < 0.03
+				if (!robot.hasBeenEnabled && ptr < 32 && tgt.getPoseAmbiguity() < .1) {
+					poses[ptr % 32] = pose;
+					times[ptr % 32] = time;
+					areas[ptr % 32] = tgt.getArea();
+					ptr++;
+				} else if (tgt.getPoseAmbiguity() < 0.03
 						|| abs(Util.normRot(pose.theta - odom.now().theta)) < Constants.VISION_THETA_THRESHOLD) {
 					// mod 32; overwrites first estimate if ovf; 99% not needed or used
 					poses[ptr % 32] = pose;

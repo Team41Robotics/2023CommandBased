@@ -24,8 +24,9 @@ import frc.robot.commands.ZeroArm;
 import frc.robot.util.Transform2d;
 
 public class Robot extends TimedRobot {
-	public boolean FOD;
+	public boolean FOD = false;
 	public Command autonomousCommand;
+	public boolean hasBeenEnabled = false;
 
 	public void schedule(Command cmd) {
 		CommandScheduler.getInstance().schedule(cmd);
@@ -49,6 +50,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		hasBeenEnabled = true;
 		odom.start();
 
 		autonomousCommand = AutonomousRoutine.AUTO_CHOOSER.getSelected().construct();
@@ -66,6 +68,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		hasBeenEnabled = true;
 		odom.start();
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
