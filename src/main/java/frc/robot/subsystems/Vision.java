@@ -91,10 +91,12 @@ public class Vision extends SubsystemBase {
 		double tsin = 0; // orz
 		double tcos = 0;
 
-		int sz = min(32, ptr);
+		int sz = 0;
 		double totarea = 0;
-		if (sz == 0) return;
+		if (ptr == 0) return;
 		for (int i = 0; i < 32 && i < ptr; i++) {
+                        if(Timer.getFPGATimestamp() - times[i] > 0.5) continue;
+                        sz++;
 			Transform2d o = odom.origin_if(poses[i], times[i]);
 			tx += o.x * areas[i];
 			ty += o.y * areas[i];
@@ -102,15 +104,14 @@ public class Vision extends SubsystemBase {
 			tcos += o.cos * areas[i];
 			totarea += areas[i];
 		}
-		ptr = 0;
 		double norm = sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / totarea, ty / totarea, tcos / norm, tsin / norm);
-		odom.update_origin(avg);
+		if(sz > 3) odom.update_origin(avg);
 	}
 
 	@Override
 	public void periodic() {
 		for (int i = 0; i < cameras.length; i++) update(i);
-		if (Timer.getFPGATimestamp() > last_eval_time + 0.2) evaluate();
+		evaluate();
 	}
 }
