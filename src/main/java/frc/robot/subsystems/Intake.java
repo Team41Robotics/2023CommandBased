@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static java.lang.Math.*;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -19,6 +21,6 @@ public class Intake extends SubsystemBase {
 	}
 
 	public double getPercentSpeed() {
-		return motor.getEncoder().getVelocity() / Constants.NEO_550_MAX_SPEED_RPM;
+		return motor.getEncoder().getVelocity() * 2 * PI / 60 / Constants.NEO_550_MAX_SPEED;
 	}
 }
