@@ -26,7 +26,7 @@ public class GoTo extends CommandBase {
 		wPID.enableContinuousInput(-PI, PI);
 	}
 
-	PIDController xPID = new PIDController(2, 0, 0);
+	PIDController xPID = new PIDController(3, 0, 0.4);
 	PIDController yPID = new PIDController(3, 0, 0.4);
 	PIDController wPID = new PIDController(1.3, 0, 0);
 
@@ -55,7 +55,7 @@ public class GoTo extends CommandBase {
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
 		// System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
 		// System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
-		hdrive.drive(vf, vs, w);
+		hdrive.drive(vf, vs, w, 4); // TODO refactor into parameter
 	}
 
 	@Override

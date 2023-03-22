@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.GoTo;
 
 public class HDrive extends SubsystemBase { // TODO sense wheel current if touching ground
 	WPI_TalonFX lef = new WPI_TalonFX(PORT_L1);
@@ -85,20 +84,20 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	}
 
 	public void drive(double vx, double vy, double w) {
-		drive(vx, vy, w, true);
+		drive(vx, vy, w, 1);
 	}
 
-	public void drive(double vx, double vy, double w, boolean preserve) { // TODO add accel
+	public void drive(double vx, double vy, double w, double preserve) { // TODO add accel
 		dvl = vx - w * RADIUS;
 		dvr = vx + w * RADIUS;
 		dvm = vy;
 
-		double max = 1;
-		if (max < abs(dvl * LEFT_SPEED_TO_ONE * 4)) max = abs(dvl * LEFT_SPEED_TO_ONE * 4);
-		if (max < abs(dvr * RIGHT_SPEED_TO_ONE * 4)) max = abs(dvr * RIGHT_SPEED_TO_ONE * 4);
-		if (max < abs(dvm * H_SPEED_TO_ONE * 4)) max = abs(dvm * H_SPEED_TO_ONE * 4);
+		double max = 1; // TODO when sysid refactor preserve into max speed parameter
+		if (max < abs(dvl * LEFT_SPEED_TO_ONE * preserve)) max = abs(dvl * LEFT_SPEED_TO_ONE * preserve);
+		if (max < abs(dvr * RIGHT_SPEED_TO_ONE * preserve)) max = abs(dvr * RIGHT_SPEED_TO_ONE * preserve);
+		if (max < abs(dvm * H_SPEED_TO_ONE * preserve)) max = abs(dvm * H_SPEED_TO_ONE * preserve);
 
-		if (preserve) {
+		if (preserve != 0) {
 			dvl /= max;
 			dvr /= max;
 			dvm /= max;
@@ -108,10 +107,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	@Override
 	public void periodic() {
 		if (DriverStation.isEnabled()) { // TODO refactor ramp times out
-			// TODO make this cleaner too
-			if (true || getCurrentCommand() instanceof GoTo) {
-				vm = abs(dvm - vm) < LOOP_TIME * 1 || abs(dvm) < abs(vm) ? dvm : vm + signum(dvm - vm) * LOOP_TIME * 1;
-			} else vm = dvm;
+			vm = abs(dvm - vm) < LOOP_TIME * 1 || abs(dvm) < abs(vm) ? dvm : vm + signum(dvm - vm) * LOOP_TIME * 1;
 			vl = dvl;
 			vr = dvr;
 			setLeft(vl);
