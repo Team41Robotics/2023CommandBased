@@ -61,7 +61,11 @@ public class Vision extends SubsystemBase {
 						new Transform3d(
 								new Translation3d(camlocs[ci].x, camlocs[ci].y, 0),
 								new Rotation3d(0, 0, camlocs[ci].theta)));
+
 				poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+				if (odom.origin.x == 0 && odom.origin.y == 0 && odom.origin.theta == 0)
+					poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+
 				poseestimator.setReferencePose(
 						new Pose2d(odom.now().x, odom.now().y, new Rotation2d(odom.now().theta)));
 				EstimatedRobotPose pose = poseestimator.update(res).orElse(null);
@@ -105,7 +109,7 @@ public class Vision extends SubsystemBase {
 		Transform2d avg = new Transform2d(tx / totarea, ty / totarea, tcos / norm, tsin / norm);
 
 		if (sz > 3 && DriverStation.isDisabled()) LEDSegment.midSide.setColor(Color.kGreen);
-                else if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
+		else if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
 		if (sz > 3) odom.update_origin(avg);
 	}
 
