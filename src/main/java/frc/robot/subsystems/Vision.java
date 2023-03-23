@@ -51,8 +51,6 @@ public class Vision extends SubsystemBase {
 		PhotonPipelineResult res = cam.getLatestResult();
 		double time = res.getTimestampSeconds();
 
-		if (res.hasTargets() && DriverStation.isDisabled()) LEDSegment.midSide.setColor(Color.kGreen);
-
 		if (time > last_time[ci] && res.hasTargets()) {
 			last_time[ci] = time;
 			try {
@@ -85,10 +83,7 @@ public class Vision extends SubsystemBase {
 		}
 	}
 
-	double last_eval_time = Timer.getFPGATimestamp();
-
 	public void evaluate() { // assume all tags are correct and then unweighted avg
-		last_eval_time = Timer.getFPGATimestamp();
 		double tx = 0;
 		double ty = 0;
 		double tsin = 0; // orz
@@ -108,12 +103,14 @@ public class Vision extends SubsystemBase {
 		ptr = 0;
 		double norm = sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / totarea, ty / totarea, tcos / norm, tsin / norm);
-		odom.update_origin(avg);
+
+		if (sz > 3 && DriverStation.isDisabled()) LEDSegment.midSide.setColor(Color.kGreen);
+                else if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
+		if (sz > 3) odom.update_origin(avg);
 	}
 
 	@Override
 	public void periodic() {
-		if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
 		for (int i = 0; i < cameras.length; i++) update(i);
 		if (Timer.getFPGATimestamp() > last_eval_time + 0.2) evaluate();
 	}
