@@ -3,17 +3,24 @@ package frc.robot.subsystems;
 import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.LEDs.LEDSegment;
 import frc.robot.util.Transform2d;
-import frc.robot.util.Util;
+import java.io.IOException;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
 	Transform2d[] taglocs = new Transform2d[] { // CHANGE WITH COORD SYSTEM
@@ -29,7 +36,7 @@ public class Vision extends SubsystemBase {
 	};
 
 	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("HD_USB_Camera")};
-	Transform2d[] camlocs = new Transform2d[] {new Transform2d(-14 * 2.54 / 100, 11.5 * 2.54 / 100, 0)};
+	Transform2d[] camlocs = new Transform2d[] {new Transform2d(14 * 2.54 / 100, -11.5 * 2.54 / 100, 0)};
 	double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
 	Transform2d[] poses = new Transform2d[32];
@@ -43,46 +50,37 @@ public class Vision extends SubsystemBase {
 		PhotonCamera cam = cameras[ci];
 		PhotonPipelineResult res = cam.getLatestResult();
 		double time = res.getTimestampSeconds();
-		if (!res.hasTargets() && DriverStation.isDisabled()) {
-			LEDSegment.midSide.flashColor(Color.kRed);
-		}
-		if (res.hasTargets() && DriverStation.isDisabled()) {
-			LEDSegment.midSide.setColor(Color.kGreen);
-		}
+
+		if (res.hasTargets() && DriverStation.isDisabled()) LEDSegment.midSide.setColor(Color.kGreen);
+
 		if (time > last_time[ci] && res.hasTargets()) {
 			last_time[ci] = time;
-			for (PhotonTrackedTarget tgt : res.getTargets()) {
-				int id = tgt.getFiducialId();
-				if (id == 0 || id >= taglocs.length) continue;
-
-				var bestt = tgt.getBestCameraToTarget().inverse();
-				Transform2d best = new Transform2d(
-						bestt.getX(), bestt.getY(), bestt.getRotation().getZ());
-				Transform2d pose = taglocs[id].mul(best.mul(camlocs[ci]));
-
-				var altt = tgt.getAlternateCameraToTarget().inverse();
-				Transform2d alt = new Transform2d(
-						altt.getX(), altt.getY(), altt.getRotation().getZ());
-				Transform2d altpose = taglocs[id].mul(alt.mul(camlocs[ci]));
-
-				if (!robot.hasBeenEnabled && ptr < 32 && tgt.getPoseAmbiguity() < .1) {
-					poses[ptr % 32] = pose;
+			try {
+				PhotonPoseEstimator poseestimator = new PhotonPoseEstimator(
+						AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile),
+						PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP,
+						cam,
+						new Transform3d(
+								new Translation3d(camlocs[ci].x, camlocs[ci].y, 0),
+								new Rotation3d(0, 0, camlocs[ci].theta)));
+				poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+				poseestimator.setReferencePose(
+						new Pose2d(odom.now().x, odom.now().y, new Rotation2d(odom.now().theta)));
+				EstimatedRobotPose pose = poseestimator.update(res).orElse(null);
+				if (pose != null) {
+					poses[ptr % 32] = new Transform2d(
+							pose.estimatedPose.getX(),
+							pose.estimatedPose.getY(),
+							pose.estimatedPose.getRotation().getZ());
 					times[ptr % 32] = time;
-					areas[ptr % 32] = tgt.getArea();
-					ptr++;
-				} else if (tgt.getPoseAmbiguity() < 0.03
-						|| abs(Util.normRot(pose.theta - odom.now().theta)) < Constants.VISION_THETA_THRESHOLD) {
-					// mod 32; overwrites first estimate if ovf; 99% not needed or used
-					poses[ptr % 32] = pose;
-					times[ptr % 32] = time;
-					areas[ptr % 32] = tgt.getArea();
-					ptr++;
-				} else if (abs(Util.normRot(altpose.theta - odom.now().theta)) < Constants.VISION_THETA_THRESHOLD) {
-					poses[ptr % 32] = altpose;
-					times[ptr % 32] = time;
-					areas[ptr % 32] = tgt.getArea();
+					areas[ptr % 32] = pose.targetsUsed.stream()
+							.mapToDouble(x -> x.getArea())
+							.sum();
 					ptr++;
 				}
+			} catch (IOException e) {
+				// Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -116,6 +114,7 @@ public class Vision extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
 		for (int i = 0; i < cameras.length; i++) update(i);
 		evaluate();
 	}

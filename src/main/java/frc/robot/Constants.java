@@ -131,6 +131,4 @@ public final class Constants {
 
 	public static final double FIELD_LENGTH = 16.54;
 	public static final double FIELD_WIDTH = 8;
-
-	public static final double VISION_THETA_THRESHOLD = 10 / 180. * PI;
 }
