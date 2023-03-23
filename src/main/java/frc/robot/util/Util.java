@@ -6,8 +6,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.Constants;
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.OperatorConstants;
 
 public class Util {
 	/**
