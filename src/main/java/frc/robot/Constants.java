@@ -115,7 +115,7 @@ public final class Constants {
 
 	public static class GoToConstants {
 		public static final double GOTO_XY_TOLERANCE = 0.07;
-		public static final double GOTO_TURN_TOLERANCE = .5 / 180. * PI;
+		public static final double GOTO_TURN_TOLERANCE = 2 / 180. * PI;
 		public static final double GOTO_VEL_TOLERANCE = 0.2;
 	}
 

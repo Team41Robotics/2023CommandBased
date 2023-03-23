@@ -94,12 +94,10 @@ public class Vision extends SubsystemBase {
 		double tsin = 0; // orz
 		double tcos = 0;
 
-		int sz = 0;
+		int sz = min(32, ptr);
 		double totarea = 0;
-		if (ptr == 0) return;
+		if (sz == 0) return;
 		for (int i = 0; i < 32 && i < ptr; i++) {
-			if (Timer.getFPGATimestamp() - times[i] > 0.5) continue;
-			sz++;
 			Transform2d o = odom.origin_if(poses[i], times[i]);
 			tx += o.x * areas[i];
 			ty += o.y * areas[i];
@@ -107,15 +105,16 @@ public class Vision extends SubsystemBase {
 			tcos += o.cos * areas[i];
 			totarea += areas[i];
 		}
+		ptr = 0;
 		double norm = sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / totarea, ty / totarea, tcos / norm, tsin / norm);
-		if (sz > 3) odom.update_origin(avg);
+		odom.update_origin(avg);
 	}
 
 	@Override
 	public void periodic() {
 		if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
 		for (int i = 0; i < cameras.length; i++) update(i);
-		evaluate();
+		if (Timer.getFPGATimestamp() > last_eval_time + 0.2) evaluate();
 	}
 }

@@ -22,6 +22,7 @@ import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ZeroArm;
 import frc.robot.util.Transform2d;
+import java.util.HashMap; // :)
 
 public class Robot extends TimedRobot {
 	public boolean FOD = false;
@@ -97,7 +98,7 @@ public class Robot extends TimedRobot {
 				.onTrue(new ProxyCommand(() -> new GoTo(new Transform2d(
 								1.02690 + 1.5,
 								(operator.queuedValue != null ? operator.queuedValue.getY() - 1 : -1) * -0.5588
-										+ 2.73981,
+										+ 4.41621,
 								Math.PI)))
 						.until(() -> rightjs.getRawButton(3)));
 		// new JoystickButton(DS, 1).onTrue(new ArmTo(new ArmPosition(.5, 0, 0)));
