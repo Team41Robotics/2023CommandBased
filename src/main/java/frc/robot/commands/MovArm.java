@@ -1,16 +1,18 @@
 package frc.robot.commands;
 
-import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.RobotContainer.*;
+import static frc.robot.constants.MechanicalConstants.ArmConstants.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.Constants;
 import frc.robot.util.Util;
 
 public class MovArm extends CommandBase {
 	double st;
 	double vx, vy, t;
+	double e, j1, j2;
 
 	public MovArm(double vx, double vy, double t) {
 		addRequirements(arm);
@@ -23,6 +25,9 @@ public class MovArm extends CommandBase {
 	@Override
 	public void initialize() {
 		st = Timer.getFPGATimestamp();
+		e = arm.getElevPos();
+		j1 = arm.getJoint1Pos();
+		j2 = arm.getJoint2Pos();
 	}
 
 	@Override
@@ -33,21 +38,24 @@ public class MovArm extends CommandBase {
 		double v = sec * (vx * cos(alpha) + vy * sin(alpha));
 		double omega = sec / ARM_LEN * (-vx * sin(theta) + vy * cos(theta));
 
-		double max = 0;
-		if (abs(v) > ELEV_MAX_SPEED) max = max(max, abs(v) / ELEV_MAX_SPEED);
-		if (abs(omega) > JOINT1_MAX_SPEED) max = max(max, abs(omega) / JOINT1_MAX_SPEED);
-		if (abs(omega) > JOINT2_MAX_SPEED) max = max(max, abs(omega) / JOINT2_MAX_SPEED);
+		double max = 1;
+		max = max(max, abs(v) / ELEV_CONSTRAINTS.maxVelocity);
+		max = max(max, abs(omega) / JOINT1_CONSTRAINTS.maxVelocity);
+		max = max(max, abs(omega) / JOINT2_CONSTRAINTS.maxVelocity);
 
-		if (max > 1) {
-			v /= max;
-			omega /= max;
-		}
-		arm.set(v, omega, -omega);
+		v /= max;
+		omega /= max;
+
+		e += v * Constants.LOOP_TIME;
+		j1 += omega * Constants.LOOP_TIME;
+		j2 -= omega * Constants.LOOP_TIME;
+
+		arm.set(e, j1, j2, v, omega, -omega);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		arm.set(0, 0, 0);
+		arm.hold();
 	}
 
 	@Override

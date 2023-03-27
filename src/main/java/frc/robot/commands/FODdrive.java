@@ -6,7 +6,7 @@ import static java.lang.Math.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.util.Util;
 
 public class FODdrive extends CommandBase {

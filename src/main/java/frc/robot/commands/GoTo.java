@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
-import static frc.robot.Constants.GoToConstants.*;
 import static frc.robot.RobotContainer.*;
+import static frc.robot.constants.Constants.GoToConstants.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -22,7 +22,7 @@ public class GoTo extends CommandBase {
 		addRequirements(hdrive);
 		this.target = target;
 		if (transformIfRed && DriverStation.getAlliance() == Alliance.Red)
-			this.target = Util.flipTransformAcrossField(this.target);
+			this.target = Util.flipPoseAcrossField(this.target);
 		wPID.enableContinuousInput(-PI, PI);
 	}
 

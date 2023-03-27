@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.DrivetrainConstants.*;
+import static frc.robot.constants.Constants.*;
+import static frc.robot.constants.MechanicalConstants.DrivetrainConstants.*;
 import static frc.robot.util.Util.*;
 import static java.lang.Math.*;
 
@@ -16,24 +16,19 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HDrive extends SubsystemBase { // TODO sense wheel current if touching ground
-	WPI_TalonFX lef = new WPI_TalonFX(PORT_L1);
-	WPI_TalonFX lef1 = new WPI_TalonFX(PORT_L2);
-	CANSparkMax mid = new CANSparkMax(PORT_M1, MotorType.kBrushless);
-	CANSparkMax mid1 = new CANSparkMax(PORT_M2, MotorType.kBrushless);
-	WPI_TalonFX rgt = new WPI_TalonFX(PORT_R1);
-	WPI_TalonFX rgt1 = new WPI_TalonFX(PORT_R2);
+	WPI_TalonFX lef = new WPI_TalonFX(Ports.CAN_DT_L1);
+	WPI_TalonFX lef1 = new WPI_TalonFX(Ports.CAN_DT_L2);
+	CANSparkMax mid = new CANSparkMax(Ports.CAN_DT_M1, MotorType.kBrushless);
+	CANSparkMax mid1 = new CANSparkMax(Ports.CAN_DT_M2, MotorType.kBrushless);
+	WPI_TalonFX rgt = new WPI_TalonFX(Ports.CAN_DT_R1);
+	WPI_TalonFX rgt1 = new WPI_TalonFX(Ports.CAN_DT_R2);
 
 	PIDController lpid = new PIDController(.5, 0, 0);
 	PIDController mpid = new PIDController(.5, 0, 0);
 	PIDController rpid = new PIDController(.5, 0, 0);
 
-	double lff = 1.5; // TODO sysid
-	double mff = 1.5;
-	double rff = 1.5;
-
 	double dvl, dvr, dvm;
 	double vl, vr, vm;
-	double lo, mo, ro;
 
 	public void init() {
 		lef.configFactoryDefault();
@@ -77,10 +72,6 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		dttab.addNumber("l motor setpoint", () -> vl);
 		dttab.addNumber("r motor setpoint", () -> vr);
 		dttab.addNumber("m motor setpoint", () -> vm);
-
-		dttab.addNumber("l motor output", () -> lo);
-		dttab.addNumber("m motor output", () -> mo);
-		dttab.addNumber("r motor output", () -> ro);
 	}
 
 	public void drive(double vx, double vy, double w) {
@@ -92,10 +83,10 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		dvr = vx + w * RADIUS;
 		dvm = vy;
 
-		double max = 1; // TODO when sysid refactor preserve into max speed parameter
-		if (max < abs(dvl * LEFT_SPEED_TO_ONE * preserve)) max = abs(dvl * LEFT_SPEED_TO_ONE * preserve);
-		if (max < abs(dvr * RIGHT_SPEED_TO_ONE * preserve)) max = abs(dvr * RIGHT_SPEED_TO_ONE * preserve);
-		if (max < abs(dvm * H_SPEED_TO_ONE * preserve)) max = abs(dvm * H_SPEED_TO_ONE * preserve);
+		double max = 1;
+		max = max(max, abs(dvl / FWD_CONSTRAINTS.maxVelocity * preserve));
+		max = max(max, abs(dvr / FWD_CONSTRAINTS.maxVelocity * preserve));
+		max = max(max, abs(dvm / MID_CONSTRAINTS.maxVelocity * preserve));
 
 		if (preserve != 0) {
 			dvl /= max;
@@ -106,13 +97,18 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 
 	@Override
 	public void periodic() {
-		if (DriverStation.isEnabled()) { // TODO refactor ramp times out
-			vm = abs(dvm - vm) < LOOP_TIME * 1 || abs(dvm) < abs(vm) ? dvm : vm + signum(dvm - vm) * LOOP_TIME * 1;
+		if (DriverStation.isEnabled()) {
+			double am = 0;
+			if (abs(dvm - vm) > LOOP_TIME * MID_CONSTRAINTS.maxAcceleration) {
+				vm += signum(dvm - vm) * LOOP_TIME * MID_CONSTRAINTS.maxAcceleration;
+				am = signum(dvm - vm) * MID_CONSTRAINTS.maxAcceleration;
+			}
+
 			vl = dvl;
 			vr = dvr;
-			setLeft(vl);
-			setMid(vm);
-			setRight(vr);
+			setLeft(vl, 0);
+			setMid(vm, am);
+			setRight(vr, 0);
 		} else {
 			lpid.reset();
 			mpid.reset();
@@ -120,42 +116,39 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		}
 	}
 
-	public void setLeft(double vel) { // TODO when SYSID
-		lo = lff * vel + lpid.calculate(getLeftVel(), vel);
-		lef.set(-lo * LEFT_SPEED_TO_ONE);
+	public void setLeft(double vel, double acc) { // TODO when SYSID
+		lef.setVoltage(FWD_IDENTF.getOutput(0, vel, acc));
 	}
 
-	public void setRight(double vel) {
-		ro = rff * vel + rpid.calculate(getRightVel(), vel);
-		rgt.set(ro * RIGHT_SPEED_TO_ONE);
+	public void setRight(double vel, double acc) {
+		rgt.setVoltage(FWD_IDENTF.getOutput(0, vel, acc));
 	}
 
-	public void setMid(double vel) {
-		mo = mff * vel + mpid.calculate(getMidVel(), vel);
-		mid.set(-mo * H_SPEED_TO_ONE);
+	public void setMid(double vel, double acc) {
+		mid.setVoltage(MID_IDENTF.getOutput(0, vel, acc));
 	}
 
 	public double getRightPos() {
-		return talonToRad(rgt) / RIGHT_RAD_PER_METER;
+		return talonToRad(rgt) * FWD_METER_PER_RAD;
 	}
 
 	public double getLeftPos() {
-		return -talonToRad(lef) / LEFT_RAD_PER_METER;
+		return -talonToRad(lef) * FWD_METER_PER_RAD;
 	}
 
 	public double getMidPos() {
-		return -neoToRad(mid) / H_RAD_PER_METER;
+		return -neoToRad(mid) * H_METER_PER_RAD;
 	}
 
 	public double getRightVel() {
-		return talonToRadPerSecond(rgt) / RIGHT_RAD_PER_METER;
+		return talonToRadPerSecond(rgt) * FWD_METER_PER_RAD;
 	}
 
 	public double getLeftVel() {
-		return -talonToRadPerSecond(lef) / LEFT_RAD_PER_METER;
+		return -talonToRadPerSecond(lef) * FWD_METER_PER_RAD;
 	}
 
 	public double getMidVel() {
-		return -neoToRadPerSecond(mid) / H_RAD_PER_METER;
+		return -neoToRadPerSecond(mid) * H_METER_PER_RAD;
 	}
 }

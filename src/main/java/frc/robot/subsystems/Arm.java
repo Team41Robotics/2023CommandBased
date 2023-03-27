@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.ArmConstants.*;
-import static frc.robot.RobotContainer.*;
-import static frc.robot.subsystems.LEDs.LEDSegment.*;
+import static frc.robot.constants.MechanicalConstants.ArmConstants.*;
 import static java.lang.Math.*;
 
 import com.revrobotics.CANSparkMax;
@@ -11,17 +9,15 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Ports;
 import frc.robot.commands.ArmTo;
-import frc.robot.commands.ZeroArm;
+import frc.robot.constants.Constants.Ports;
 import frc.robot.util.ArmPosition;
 import java.util.Map;
 
@@ -31,27 +27,34 @@ public class Arm extends SubsystemBase {
 	public CANSparkMax jt1 = new CANSparkMax(Ports.CAN_JOINT1, MotorType.kBrushless);
 	public CANSparkMax jt2 = new CANSparkMax(Ports.CAN_JOINT2, MotorType.kBrushless);
 
-	public DigitalInput lower_limit1 = new DigitalInput(Ports.DIO_LOWERLIMIT1);
-	public DigitalInput lower_limit2 = new DigitalInput(Ports.DIO_LOWERLIMIT2);
-	public DigitalInput upper_limit1 = new DigitalInput(Ports.DIO_UPPERLIMIT1);
-	public DigitalInput upper_limit2 = new DigitalInput(Ports.DIO_UPPERLIMIT2);
+	// TODO plug limit switches into spark max?
+	DigitalInput lower_limit1 = new DigitalInput(Ports.DIO_LOWERLIMIT1);
+	DigitalInput lower_limit2 = new DigitalInput(Ports.DIO_LOWERLIMIT2);
+	DigitalInput upper_limit1 = new DigitalInput(Ports.DIO_UPPERLIMIT1);
+	DigitalInput upper_limit2 = new DigitalInput(Ports.DIO_UPPERLIMIT2);
+
+        DigitalInput joint2_limit = new DigitalInput(Ports.DIO_JOINT2_LIMIT);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();
 	SparkMaxPIDController elev1_vpid = elev1.getPIDController();
 	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
+	PIDController elev_pid = new PIDController(4, 0, 0); // TODO ppid tuning
+	PIDController jt1_pid = new PIDController(0, 0, 0);
+	PIDController jt2_pid = new PIDController(0, 0, 0);
+
 	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
 	public Map<String, ArmPosition> positions = Map.of(
 			"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
 			"BALL TOP", new ArmPosition(1.031, 0.038, 1.203),
 			"BALL MID", new ArmPosition(0.833, -0.574, 0.869),
-			"ALL  BOT", new ArmPosition(0.116, -0.850, 1.172),
+			"ALL BOT", new ArmPosition(0.116, -0.850, 1.172),
 			"CONE MID", new ArmPosition(0.500, 0.183, 0.374),
 			"CONE TOP", new ArmPosition(1.040, 0.104, 0.753),
 			"CONE PICKUP", new ArmPosition(0.141, 0.095, -0.661),
-			"BALL HMN ST", new ArmPosition(0.950, 0.249, 0.55),
-			"CONE HMN ST", new ArmPosition(0.950, 0.249, 0.0));
+			"BALL PLATFORM", new ArmPosition(0.950, 0.249, 0.55),
+			"CONE PLATFORM", new ArmPosition(0.950, 0.249, 0.0));
 
 	public void init() {
 		elev.restoreFactoryDefaults();
@@ -62,11 +65,14 @@ public class Arm extends SubsystemBase {
 		elev1.setIdleMode(IdleMode.kBrake);
 		jt1.setIdleMode(IdleMode.kBrake);
 		jt2.setIdleMode(IdleMode.kCoast);
+                elev.getEncoder().setPosition(0);
+                jt2.setInverted(true);
 
-		setPID(elev_vpid, 0, 0, 0, 0); // TODO actually have vpids
+		setPID(elev_vpid, 0, 0, 0, 0); // TODO actually have vpids (use LQR gains?)
 		setPID(elev1_vpid, 0, 0, 0, 0);
 		setPID(jt1_vpid, 0, 0, 0, 0);
 		setPID(jt2_vpid, 0, 0, 0, 0);
+		// TODO maybe config vel meas filter
 	}
 
 	public void initShuffleboard() {
@@ -78,6 +84,7 @@ public class Arm extends SubsystemBase {
 		armtab.addNumber("joint 2 pos", () -> getJoint2Pos());
 		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
 		armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
+                armtab.addBoolean("joint2 limit switch", () -> !joint2_limit.get());
 
 		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
 			armposes.addOption(entry.getKey(), entry.getValue());
@@ -85,16 +92,15 @@ public class Arm extends SubsystemBase {
 		createShuffleboardPosition("BALL PICKUP", 1, 1);
 		createShuffleboardPosition("BALL TOP", 1, 2);
 		createShuffleboardPosition("BALL MID", 1, 3);
-		createShuffleboardPosition("BALL HMN ST", 1, 5);
+		createShuffleboardPosition("BALL PLATFORM", 1, 5);
 
-		createShuffleboardPosition("ALL  BOT", 2, 1);
+		createShuffleboardPosition("ALL BOT", 2, 1);
 
 		createShuffleboardPosition("CONE PICKUP", 3, 1);
 		createShuffleboardPosition("CONE TOP", 3, 2);
 		createShuffleboardPosition("CONE MID", 3, 3);
-		createShuffleboardPosition("CONE HMN ST", 3, 5);
+		createShuffleboardPosition("CONE PLATFORM", 3, 5);
 
-		armtab.add("ZERO ARM", new ZeroArm());
 		armtab.add(armposes);
 		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));
 	}
@@ -114,61 +120,45 @@ public class Arm extends SubsystemBase {
 		pid.setReference(vel, ControlType.kVelocity, 0, ff, ArbFFUnits.kVoltage);
 	}
 
-	public void set(double elev_vel, double jt1_vel, double jt2_vel) {
-		set(elev_vel, jt1_vel, jt2_vel, 0, 0, 0);
+	public void hold() {
+		set(getElevPos(), getJoint1Pos(), getJoint2Pos(), 0, 0, 0);
 	}
 
-	public void set(double elev_v, double jt1_v, double jt2_v, double elev_a, double jt1_a, double jt2_a) {
-		setMotor(
-				elev_vpid,
-				elev_v * ELEV_RAD_PER_METER / 2 / PI,
-				ELEV_kG + ELEV_kS * signum(elev_v) + ELEV_kV * elev_v + ELEV_kA * elev_a);
-		setMotor(
-				elev1_vpid,
-				elev_v * ELEV_RAD_PER_METER / 2 / PI,
-				ELEV_kG + ELEV_kS * signum(elev_v) + ELEV_kV * elev_v + ELEV_kA * elev_a);
-		setMotor(
-				jt1_vpid,
-				jt1_v * JOINT1_RATIO / 2 / PI,
-				JOINT1_kG * cos(getJoint1Pos()) + JOINT1_kS * signum(jt1_v) + JOINT1_kV * jt1_v + JOINT1_kA * jt1_a);
-		setMotor(
-				jt2_vpid,
-				jt2_v * JOINT2_RATIO / 2 / PI,
-				JOINT2_kG * cos(getJoint1Pos() + getJoint2Pos())
-						+ JOINT2_kS * signum(jt2_v)
-						+ JOINT2_kV * jt2_v
-						+ JOINT2_kA * jt2_a);
+	public void set(double elev_pos, double jt1_pos, double jt2_pos, double elev_vel, double jt1_vel, double jt2_vel) {
+		set(elev_pos, jt1_pos, jt2_pos, elev_vel, jt1_vel, jt2_vel, 0, 0, 0);
 	}
 
-	private boolean jtLock = false;
-	private boolean p_upper_limit2 = false;
+	public void set(
+			double elev_pos,
+			double jt1_pos,
+			double jt2_pos,
+			double elev_v,
+			double jt1_v,
+			double jt2_v,
+			double elev_a,
+			double jt1_a,
+			double jt2_a) {
+		double elev_fb = elev_pid.calculate(getElevPos(), elev_pos);
+		double jt1_fb = jt1_pid.calculate(getJoint1Pos(), jt1_pos);
+		double jt2_fb = jt2_pid.calculate(getJoint2Pos(), jt2_pos);
+
+		double jt1_cos = cos(getJoint1Pos());
+		double jt2_cos = sin(getJoint2Pos() + getJoint1Pos());
+
+		setMotor(elev_vpid, elev_v * ELEV_RAD_PER_METER / 2 / PI, ELEV_IDENTF.getOutput(1, elev_v + elev_fb, elev_a));
+		setMotor(elev1_vpid, elev_v * ELEV_RAD_PER_METER / 2 / PI, ELEV_IDENTF.getOutput(1, elev_v + elev_fb, elev_a));
+		setMotor(jt1_vpid, jt1_v * JOINT1_RATIO / 2 / PI, JOINT1_IDENTF.getOutput(jt1_cos, jt1_v + jt1_fb, jt1_a));
+		//setMotor(jt2_vpid, jt2_v * JOINT2_RATIO / 2 / PI, JOINT2_IDENTF.getOutput(jt2_cos, jt2_v + jt2_fb, jt2_a));
+                setMotor(jt2_vpid, 0, 4);
+	}
 
 	@Override
 	public void periodic() {
-		if (!DriverStation.isEnabled()) {
-			if (!upper_limit1.get()) {
-				arm.jt2.getEncoder().setPosition(0);
-				leftSide.setColor(Color.kGreen);
-			}
-			if (!p_upper_limit2 && !upper_limit2.get()) {
-				jtLock = !jtLock;
-				jt2.setIdleMode((jtLock ? IdleMode.kBrake : IdleMode.kCoast));
+		// TODO automatic zeroing at start
+		if (isTopLimitSwitch()) elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
+		if (isBotLimitSwitch()) elev.getEncoder().setPosition(0);
 
-				rightSide.setColor(jtLock ? Color.kGreen : Color.kRed);
-			}
-			p_upper_limit2 = !upper_limit2.get();
-		}
-		// if (DriverStation.isEnabled() && isTopLimitSwitch())
-		// elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
-
-		// TODO dynamic zeroing
-		// if (elev.getEncoder().getVelocity() > 0 && isTopLimitSwitch()) set(0, 0, 0);
-		// if (elev.getEncoder().getVelocity() < 0 && isBotLimitSwitch()) set(0, 0, 0);
-
-		// if (!(getCurrentCommand() instanceof ZeroArm)) {
-		// if (jt1.getEncoder().getVelocity() > 0 && getJoint1Pos() > JOINT1_UPPER_BOUND) set(0, 0, 0);
-		// if (jt1.getEncoder().getVelocity() < 0 && getJoint1Pos() < JOINT1_LOWER_BOUND) set(0, 0, 0);
-		// }
+		// TODO limits (use sparkmax builtins?)
 	}
 
 	public double getElevPos() {
