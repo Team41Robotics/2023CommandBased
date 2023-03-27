@@ -5,8 +5,6 @@ import static frc.robot.subsystems.LEDs.LEDSegment.*;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -14,7 +12,6 @@ public class LEDs extends SubsystemBase {
 	public static int timeStep = 0;
 	public static AddressableLED led = new AddressableLED(0);
 	public static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(108);
-	ShuffleboardTab lightTab = Shuffleboard.getTab("LEDS");
 
 	public void init() {
 		led.setLength(ledBuffer.getLength());

@@ -1,13 +1,10 @@
 package frc.robot.subsystems;
 
-import static java.lang.Math.*;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.Ports;
+import frc.robot.constants.Constants.Ports;
 
 public class Intake extends SubsystemBase {
 	CANSparkMax motor = new CANSparkMax(Ports.CAN_INTAKE, MotorType.kBrushless);
@@ -22,6 +19,6 @@ public class Intake extends SubsystemBase {
 	}
 
 	public double getPercentSpeed() {
-		return motor.getEncoder().getVelocity() * 2 * PI / 60 / Constants.NEO_550_MAX_SPEED;
+		return motor.getEncoder().getVelocity() / 11710;
 	}
 }

@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.OperatorConstants.*;
 import static frc.robot.RobotContainer.*;
+import static frc.robot.constants.Constants.OperatorConstants.*;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
