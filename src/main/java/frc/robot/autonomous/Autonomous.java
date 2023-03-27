@@ -13,7 +13,6 @@ import frc.robot.util.Transform2d;
 public class Autonomous {
 	public static void initAutos() {
 		// TODO test all
-		create("TAXI", () -> new GoTo(new Transform2d(1.02690 + 5, 2.73981, 0)));
 		create("SCORE BALL", () -> new SequentialCommandGroup(new ArmTo("BALL TOP"), new RunIntake(.6, 1)));
 		create(
 				"Middle Auton",
