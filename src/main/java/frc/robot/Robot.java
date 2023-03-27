@@ -53,7 +53,6 @@ public class Robot extends TimedRobot {
 
 		autonomousCommand = AutonomousRoutine.AUTO_CHOOSER.getSelected().construct();
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
-		arm.elev.getEncoder().setPosition(0);
 		if (autonomousCommand != null) {
 			SequentialCommandGroup cmd =
 					new SequentialCommandGroup(new WaitCommand(delay), new ZeroArm(), autonomousCommand);
@@ -70,7 +69,7 @@ public class Robot extends TimedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		// arm.set(0.0, 0, 0); // TODO add when arm is actually installed
+		arm.hold();
 	}
 
 	@Override
