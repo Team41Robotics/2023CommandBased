@@ -27,7 +27,7 @@ public class Operator extends SubsystemBase {
 	public static final int[][] nodeSuperStateValues = new int[3][9];
 	public static boolean[] linkComplete = new boolean[21];
 	public static boolean coopertitionBonusAchieved;
-	public static HeldObject heldObjectIn;
+	public static HeldObject heldObjectIn = HeldObject.NONE;
 	public boolean queueManualOverride = false;
 	public boolean suggestManualOverride = false;
 	public Point hoverValue = new Point(0, 0);
@@ -78,7 +78,7 @@ public class Operator extends SubsystemBase {
 		heldObject = HeldObject.NONE;
 		System.out.println(heldObject);
 		OPERATOR_TAB
-				.addString("Current Game Piece", () -> (heldObject != null ? heldObject.name : "NONE"))
+				.addString("Current Game Piece", () -> (heldObject != null ? heldObject.name() : "NONE"))
 				.withPosition(2, 0);
 		OPERATOR_TAB
 				.add("Cube", new InstantCommand(() -> heldObjectIn = HeldObject.CUBE))
@@ -693,14 +693,17 @@ public class Operator extends SubsystemBase {
 							queueManualOverride = false;
 
 							setPiece();
+							autoSuggestPiece();
 							System.out.println(nodeSuperStateValues[i][j]);
 							break;
 					}
+					nodes[i][j].setInteger(0);
 				}
 			}
 		}
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
+				if(nodes[i][j].getInteger(0) == 6) continue;
 				if (nodeSuperStateValues[i][j] == NodeSuperState.INVALID.value) {
 					nodes[i][j].setInteger(nodeSuperStateValues[i][j]);
 

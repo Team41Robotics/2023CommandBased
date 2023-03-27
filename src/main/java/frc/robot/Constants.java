@@ -9,14 +9,9 @@ public final class Constants {
 
 	public static class OperatorConstants {
 		public static enum HeldObject {
-			CUBE("Cube"),
-			CONE("Cone"),
-			NONE("None");
-			public String name;
-
-			private HeldObject(String name) {
-				this.name = name;
-			}
+			CUBE,
+			CONE,
+			NONE;
 		}
 
 		public static final int LEFT_JOYSTICK_PORT = 1;
@@ -37,10 +32,8 @@ public final class Constants {
 		public static final int PORT_R1 = 3;
 		public static final int PORT_R2 = 4;
 
-		public static final double MECHANICAL_DRIFT_COMP = 0.95; // TODO: figure out cause of this // sysid may fix
-		public static final double LEFT_RATIO = 9.75;
-		public static final double RIGHT_RATIO =
-				LEFT_RATIO * 14.0 / 12.0 * MECHANICAL_DRIFT_COMP; // TODO: can we replace pinions?
+		public static final double LEFT_RATIO = 9.75 * 14.0 / 12.0;
+		public static final double RIGHT_RATIO = 9.75 * 14.0 / 12.0;
 		public static final double H_RATIO = 10.65;
 
 		public static final double FWD_WHEEL_RADIUS = 3 * 2.54 / 100;
@@ -62,8 +55,10 @@ public final class Constants {
 	public static class ArmConstants {
 		public static final int ELEV_ID = 8;
 		public static final int ELEV1_ID = 9;
-		public static final int JOINT1_ID = 10;
-		public static final int JOINT2_ID = 13;
+		public static final int JOINT1L_ID = 11;
+		public static final int JOINT1R_ID = 10;
+
+		public static final int JOINT2_ID = 12;
 
 		public static final int LOWERLIMIT1_ID = 2;
 		public static final int LOWERLIMIT2_ID = 3;
@@ -71,7 +66,7 @@ public final class Constants {
 		public static final int UPPERLIMIT2_ID = 1;
 
 		public static final double ELEV_RATIO = 5;
-		public static final double JOINT1_RATIO = 81 * 84 / 16.; // TODO change
+		public static final double JOINT1_RATIO = 9 * 84 / 16.; // TODO change
 		public static final double JOINT2_RATIO = 81 * 84 / 16.;
 
 		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 / 2 * 2;
@@ -82,10 +77,10 @@ public final class Constants {
 		public static final double ELEV_LEN = 1;
 		public static final double ARM_LEN = 14.75 * 2.54 / 100;
 
-		public static final double ELEV_kV = 2.6369;
-		public static final double ELEV_kS = 0.075079;
-		public static final double ELEV_kA = 0.14281;
-		public static final double ELEV_kG = 0.42523;
+		public static final double ELEV_kV = 2.5254;
+		public static final double ELEV_kS = 0.058679;
+		public static final double ELEV_kA = 0.24247;
+		public static final double ELEV_kG = 0.27759;
 
 		public static final double JOINT1_kV = 4.7816;
 		public static final double JOINT1_kS = 0.25931;
@@ -127,7 +122,7 @@ public final class Constants {
 	}
 
 	public static final double LOOP_TIME = 0.02;
-	public static final int INTAKE_ID = 12;
+	public static final int INTAKE_ID = 13;
 
 	public static final double FIELD_LENGTH = 16.54;
 	public static final double FIELD_WIDTH = 8;
