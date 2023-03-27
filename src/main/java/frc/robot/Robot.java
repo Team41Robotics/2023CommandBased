@@ -22,7 +22,7 @@ import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ZeroArm;
 import frc.robot.util.Transform2d;
-import java.util.HashMap; // :)
+// :)
 
 public class Robot extends TimedRobot {
 	public boolean FOD = false;
