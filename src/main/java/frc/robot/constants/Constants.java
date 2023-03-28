@@ -2,6 +2,8 @@ package frc.robot.constants;
 
 import static java.lang.Math.PI;
 
+import frc.robot.util.ArmPosition;
+
 public final class Constants {
 	public static class OperatorConstants {
 		public static enum HeldObject {
@@ -31,6 +33,29 @@ public final class Constants {
 		RIGHT,
 		MID,
 		NONE;
+	}
+
+	public static enum ArmPos {
+		BALL_TOP(1.000, 0.038, 1.203),
+		BALL_MID(0.833, -0.574, 0.869),
+		ALL_BOT(0.116, -0.850, 1.172),
+		CONE_MID(0.500, 0.183, 0.374),
+		CONE_TOP(1.000, 0.104, 0.753),
+		CONE_PICKUP(0.141, 0.095, -0.661),
+		BALL_PICKUP(0.000, -0.900, 0.900),
+		BALL_PLATFORM(0.950, 0.249, 0.55),
+		CONE_PLATFORM(0.950, 0.249, 0.0);
+		public double e, j1, j2;
+
+		private ArmPos(double e, double j1, double j2) {
+			this.e = e;
+			this.j1 = j1;
+			this.j2 = j2;
+		}
+
+		public ArmPosition asPostion() {
+			return new ArmPosition(this.e, this.j1, this.j2);
+		}
 	}
 
 	public static class Ports {

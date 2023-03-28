@@ -1,6 +1,7 @@
 package frc.robot;
 
 import static frc.robot.RobotContainer.*;
+import static frc.robot.constants.Constants.ArmPos.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -94,13 +95,13 @@ public class Robot extends TimedRobot {
 								.getEncoder()
 								.setPosition(16.15 / 180. * PI / 2 / PI * ArmConstants.JOINT1_RATIO)),
 						new InstantCommand(() -> arm.jt1.set(0))),
-				new ArmTo("BALL TOP").asProxy(),
+				new ArmTo(BALL_TOP).asProxy(),
 				new WaitCommand(2),
-				new ArmTo("BALL MID").asProxy(),
+				new ArmTo(BALL_MID).asProxy(),
 				new WaitCommand(2),
-				new ArmTo("CONE MID").asProxy(),
+				new ArmTo(CONE_MID).asProxy(),
 				new WaitCommand(2),
-				new ArmTo("CONE TOP").asProxy()));
+				new ArmTo(CONE_TOP).asProxy()));
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.constants.Constants.*;
+import static frc.robot.constants.Constants.ArmPos.*;
 import static frc.robot.constants.MechanicalConstants.ArmConstants.*;
 import static java.lang.Math.*;
 
@@ -18,8 +20,6 @@ import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.ArmTo;
 import frc.robot.constants.Constants.Ports;
-import frc.robot.util.ArmPosition;
-import java.util.Map;
 
 public class Arm extends SubsystemBase {
 	public CANSparkMax elev = new CANSparkMax(Ports.CAN_ELEV, MotorType.kBrushless);
@@ -44,17 +44,7 @@ public class Arm extends SubsystemBase {
 	public PIDController jt1_pid = new PIDController(3, 0, 0);
 	public PIDController jt2_pid = new PIDController(5, 0, 0);
 
-	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
-	public Map<String, ArmPosition> positions = Map.of(
-			"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
-			"BALL TOP", new ArmPosition(1.000, 0.038, 1.203),
-			"BALL MID", new ArmPosition(0.833, -0.574, 0.869),
-			"ALL BOT", new ArmPosition(0.116, -0.850, 1.172),
-			"CONE MID", new ArmPosition(0.500, 0.183, 0.374),
-			"CONE TOP", new ArmPosition(1.000, 0.104, 0.753),
-			"CONE PICKUP", new ArmPosition(0.141, 0.095, -0.661),
-			"BALL PLATFORM", new ArmPosition(0.950, 0.249, 0.55),
-			"CONE PLATFORM", new ArmPosition(0.950, 0.249, 0.0));
+	SendableChooser<ArmPos> armposes = new SendableChooser<>();
 
 	public void init() {
 		elev.restoreFactoryDefaults();
@@ -86,27 +76,27 @@ public class Arm extends SubsystemBase {
 		armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
 		armtab.addBoolean("joint2 limit switch", () -> !joint2_limit.get());
 
-		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
-			armposes.addOption(entry.getKey(), entry.getValue());
+		for (ArmPos pos : ArmPos.values()) {
+			armposes.addOption(pos.name(), pos);
 		}
-		createShuffleboardPosition("BALL PICKUP", 1, 1);
-		createShuffleboardPosition("BALL TOP", 1, 2);
-		createShuffleboardPosition("BALL MID", 1, 3);
-		createShuffleboardPosition("BALL PLATFORM", 1, 5);
+		createShuffleboardPosition(BALL_PICKUP, 1, 1);
+		createShuffleboardPosition(BALL_TOP, 1, 2);
+		createShuffleboardPosition(BALL_MID, 1, 3);
+		createShuffleboardPosition(BALL_PLATFORM, 1, 5);
 
-		createShuffleboardPosition("ALL BOT", 2, 1);
+		createShuffleboardPosition(ALL_BOT, 2, 1);
 
-		createShuffleboardPosition("CONE PICKUP", 3, 1);
-		createShuffleboardPosition("CONE TOP", 3, 2);
-		createShuffleboardPosition("CONE MID", 3, 3);
-		createShuffleboardPosition("CONE PLATFORM", 3, 5);
+		createShuffleboardPosition(CONE_PICKUP, 3, 1);
+		createShuffleboardPosition(CONE_TOP, 3, 2);
+		createShuffleboardPosition(CONE_MID, 3, 3);
+		createShuffleboardPosition(CONE_PLATFORM, 3, 5);
 
 		armtab.add(armposes);
 		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));
 	}
 
-	private void createShuffleboardPosition(String name, int y, int x) {
-		Shuffleboard.getTab("arm").add(name, new ArmTo(name)).withPosition(x, y);
+	private void createShuffleboardPosition(ArmPos pos, int y, int x) {
+		Shuffleboard.getTab("arm").add(pos.name(), new ArmTo(pos)).withPosition(x, y);
 	}
 
 	private void setPID(SparkMaxPIDController pid, double kP, double kI, double kD, double kIz) {

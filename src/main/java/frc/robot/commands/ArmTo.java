@@ -4,14 +4,15 @@ import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.Constants.*;
 import frc.robot.constants.MechanicalConstants.ArmConstants;
 import frc.robot.util.ArmPosition;
 
 public class ArmTo extends CommandBase { // TODO future trapezoid profile?
 	ArmPosition pos;
 
-	public ArmTo(String pos) {
-		this(arm.positions.get(pos));
+	public ArmTo(ArmPos pos) {
+		this(pos.asPostion());
 	}
 
 	public ArmTo(ArmPosition pos) {
