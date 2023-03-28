@@ -55,7 +55,7 @@ public class GoTo extends CommandBase {
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
 		// System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
 		// System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
-		hdrive.drive(vf, vs, w, 4); // TODO refactor into parameter
+		hdrive.drive(vf, vs, w, 2); // TODO refactor into parameter
 	}
 
 	@Override

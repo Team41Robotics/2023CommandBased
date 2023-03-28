@@ -16,7 +16,7 @@ public class Balance extends CommandBase {
 	}
 
 	public void execute() {
-		if (Math.abs(bal_pid.getPositionError()) < 0.1) bal_pid.setI(0.1); // TODO maybe higher izone
+		if (Math.abs(bal_pid.getPositionError()) < 0.1) bal_pid.setI(0.1);
 		else bal_pid.setI(0);
 		hdrive.drive(bal_pid.calculate(imu.getPitch(), 0), 0, 0);
 

@@ -17,7 +17,7 @@ public class Autonomous {
 		create(
 				"Middle Auton",
 				() -> new SequentialCommandGroup(
-						new GoTo(new Transform2d(1.02690 + 1, 2.73981, PI)), // TODO fix & tune length later
+						new GoTo(new Transform2d(1.02690 + 1, 2.73981, PI)),
 						new ArmTo("BALL TOP"),
 						new RunIntake(-.6, 1),
 						new GoTo(new Transform2d(1.02690 + 5, 2.73981, PI)),

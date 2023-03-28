@@ -32,7 +32,7 @@ public class MechanicalConstants {
 
 		public static final double ELEV_METERS_PER_AXLE_RAD = 0.0459 / 2 * 2;
 		public static final double ELEV_RAD_PER_METER = ELEV_RATIO / ELEV_METERS_PER_AXLE_RAD;
-		// TODO DELETE this is only for sysid convenience
+		// this is only for sysid convenience
 		public static final double METERS_PER_ROTATION = ELEV_METERS_PER_AXLE_RAD * 2 * PI;
 
 		public static final double ELEV_THETA = 50 / 180. * PI;

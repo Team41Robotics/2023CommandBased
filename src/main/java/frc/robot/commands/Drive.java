@@ -17,7 +17,7 @@ public class Drive extends CommandBase {
 		double vs = -Util.curvedDeadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
 		double w = -Util.curvedDeadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
 		int d = (rightjs.getRawButton(2) ? 1 : 2);
-		hdrive.drive(vf / d, vs / d, w / d); // TODO maybe turbo mode
+		hdrive.drive(vf / d, vs / d, w / d);
 	}
 
 	@Override

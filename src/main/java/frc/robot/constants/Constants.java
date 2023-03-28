@@ -5,14 +5,9 @@ import static java.lang.Math.PI;
 public final class Constants {
 	public static class OperatorConstants {
 		public static enum HeldObject {
-			CUBE("Cube"),
-			CONE("Cone"),
-			NONE("None");
-			public String name;
-
-			private HeldObject(String name) {
-				this.name = name;
-			}
+			CUBE,
+			CONE,
+			NONE;
 		}
 
 		public static final int LEFT_JOYSTICK_PORT = 1;
@@ -64,6 +59,4 @@ public final class Constants {
 
 	public static final double FIELD_LENGTH = 16.54;
 	public static final double FIELD_WIDTH = 8;
-
-	public static final double VISION_THETA_THRESHOLD = 10 / 180. * PI;
 }

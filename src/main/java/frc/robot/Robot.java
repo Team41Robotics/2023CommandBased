@@ -1,7 +1,6 @@
 package frc.robot;
 
 import static frc.robot.RobotContainer.*;
-import static frc.robot.constants.MechanicalConstants.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -12,14 +11,22 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.ArmTo;
+import frc.robot.commands.Balance;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
+import frc.robot.commands.GoTo;
 import frc.robot.commands.HoldArm;
+import frc.robot.commands.MovArm;
+import frc.robot.commands.RunIntake;
+import frc.robot.constants.MechanicalConstants.ArmConstants;
+import frc.robot.util.Transform2d;
 
 public class Robot extends TimedRobot {
 	public boolean FOD;
@@ -30,10 +37,8 @@ public class Robot extends TimedRobot {
 		try {
 			PIDController.class.getDeclaredField("m_totalError").setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -89,13 +94,13 @@ public class Robot extends TimedRobot {
 								.getEncoder()
 								.setPosition(16.15 / 180. * PI / 2 / PI * ArmConstants.JOINT1_RATIO)),
 						new InstantCommand(() -> arm.jt1.set(0))),
-				new ArmTo("BALL TOP"),
+				new ArmTo("BALL TOP").asProxy(),
 				new WaitCommand(2),
-				new ArmTo("BALL MID"),
+				new ArmTo("BALL MID").asProxy(),
 				new WaitCommand(2),
-				new ArmTo("CONE MID"),
+				new ArmTo("CONE MID").asProxy(),
 				new WaitCommand(2),
-				new ArmTo("CONE TOP")));
+				new ArmTo("CONE TOP").asProxy()));
 	}
 
 	@Override
@@ -116,5 +121,22 @@ public class Robot extends TimedRobot {
 	}
 
 	public void configureButtons() { // TODO remap
+		new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
+
+		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
+		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
+		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
+		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6));
+		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
+
+		new JoystickButton(leftjs, 3)
+				.onTrue(new ProxyCommand(() -> new GoTo(new Transform2d(
+								1.02690 + 1.5,
+								(operator.queuedValue != null ? operator.queuedValue.getY() - 1 : -1) * -0.5588
+										+ 4.41621,
+								Math.PI)))
+						.until(() -> rightjs.getRawButton(3)));
+		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
+		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
 	}
 }

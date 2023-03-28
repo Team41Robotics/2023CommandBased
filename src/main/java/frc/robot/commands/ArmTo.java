@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.MechanicalConstants.ArmConstants;
 import frc.robot.util.ArmPosition;
 
-public class ArmTo extends CommandBase {
+public class ArmTo extends CommandBase { // TODO future trapezoid profile?
 	ArmPosition pos;
 
 	public ArmTo(String pos) {

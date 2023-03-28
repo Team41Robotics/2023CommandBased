@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,14 +21,13 @@ public class Operator extends SubsystemBase {
 	public static final ShuffleboardTab OPERATOR_TAB = Shuffleboard.getTab("Operator");
 	public static final NetworkTable operator =
 			NetworkTableInstance.getDefault().getTable("Operator");
-	public static final SendableChooser<HeldObject> heldObjectChooser = new SendableChooser<HeldObject>();
 	public static final GenericEntry[][] nodes = new GenericEntry[3][9];
 	public static GenericEntry hpSuggestion;
 	public static final int[][] nodeStateValues = new int[3][9];
 	public static final int[][] nodeSuperStateValues = new int[3][9];
 	public static boolean[] linkComplete = new boolean[21];
 	public static boolean coopertitionBonusAchieved;
-	public static HeldObject heldObjectIn;
+	public static HeldObject heldObjectIn = HeldObject.NONE;
 	public boolean queueManualOverride = false;
 	public boolean suggestManualOverride = false;
 	public Point hoverValue = new Point(0, 0);
@@ -79,9 +77,7 @@ public class Operator extends SubsystemBase {
 		}
 		heldObject = HeldObject.NONE;
 		System.out.println(heldObject);
-		OPERATOR_TAB
-				.addString("Current Game Piece", () -> (heldObject != null ? heldObject.name : "NONE"))
-				.withPosition(2, 0);
+		OPERATOR_TAB.addString("Current Game Piece", () -> heldObject.name()).withPosition(2, 0);
 		OPERATOR_TAB
 				.add("Cube", new InstantCommand(() -> heldObjectIn = HeldObject.CUBE))
 				.withPosition(3, 0);
@@ -92,10 +88,6 @@ public class Operator extends SubsystemBase {
 				.add("Cone", new InstantCommand(() -> heldObjectIn = HeldObject.CONE))
 				.withPosition(5, 0);
 
-		heldObjectChooser.addOption("None", HeldObject.NONE);
-		heldObjectChooser.addOption("Cube", HeldObject.CUBE);
-		heldObjectChooser.addOption("Cone", HeldObject.CONE);
-		OPERATOR_TAB.add("Held Object Chooser", heldObjectChooser).withPosition(1, 0);
 		hpSuggestion = OPERATOR_TAB
 				.add("HP Suggestion", 0)
 				.withPosition(8, 0)

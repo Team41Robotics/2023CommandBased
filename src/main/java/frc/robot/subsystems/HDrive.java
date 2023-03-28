@@ -78,7 +78,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		drive(vx, vy, w, 1);
 	}
 
-	public void drive(double vx, double vy, double w, double preserve) { // TODO add accel
+	public void drive(double vx, double vy, double w, double preserve) {
 		dvl = vx - w * RADIUS;
 		dvr = vx + w * RADIUS;
 		dvm = vy;
@@ -107,7 +107,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 			vl = dvl;
 			vr = dvr;
 			setLeft(vl, 0);
-			setMid(vm, am);
+			setMid(vm, am); // TODO does this even work properly
 			setRight(vr, 0);
 		} else {
 			lpid.reset();
@@ -116,7 +116,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		}
 	}
 
-	public void setLeft(double vel, double acc) { // TODO when SYSID
+	public void setLeft(double vel, double acc) {
 		lef.setVoltage(FWD_IDENTF.getOutput(0, vel, acc));
 	}
 
