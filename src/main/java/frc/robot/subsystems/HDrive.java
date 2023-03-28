@@ -16,16 +16,16 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HDrive extends SubsystemBase { // TODO sense wheel current if touching ground
-	WPI_TalonFX lef = new WPI_TalonFX(Ports.CAN_DT_L1);
-	WPI_TalonFX lef1 = new WPI_TalonFX(Ports.CAN_DT_L2);
-	CANSparkMax mid = new CANSparkMax(Ports.CAN_DT_M1, MotorType.kBrushless);
-	CANSparkMax mid1 = new CANSparkMax(Ports.CAN_DT_M2, MotorType.kBrushless);
-	WPI_TalonFX rgt = new WPI_TalonFX(Ports.CAN_DT_R1);
-	WPI_TalonFX rgt1 = new WPI_TalonFX(Ports.CAN_DT_R2);
+	final WPI_TalonFX lef = new WPI_TalonFX(Ports.CAN_DT_L1);
+	final WPI_TalonFX lef1 = new WPI_TalonFX(Ports.CAN_DT_L2);
+	final CANSparkMax mid = new CANSparkMax(Ports.CAN_DT_M1, MotorType.kBrushless);
+	final CANSparkMax mid1 = new CANSparkMax(Ports.CAN_DT_M2, MotorType.kBrushless);
+	final WPI_TalonFX rgt = new WPI_TalonFX(Ports.CAN_DT_R1);
+	final WPI_TalonFX rgt1 = new WPI_TalonFX(Ports.CAN_DT_R2);
 
-	PIDController lpid = new PIDController(.5, 0, 0);
-	PIDController mpid = new PIDController(.5, 0, 0);
-	PIDController rpid = new PIDController(.5, 0, 0);
+	final PIDController lpid = new PIDController(.5, 0, 0);
+	final PIDController mpid = new PIDController(.5, 0, 0);
+	final PIDController rpid = new PIDController(.5, 0, 0);
 
 	double dvl, dvr, dvm;
 	double vl, vr, vm;

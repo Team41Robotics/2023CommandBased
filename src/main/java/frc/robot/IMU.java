@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class IMU {
-	private AHRS ahrs = new AHRS(SPI.Port.kMXP, (byte) 66);
+	private final AHRS ahrs = new AHRS(SPI.Port.kMXP, (byte) 66);
 
 	public void initShuffleboard() {
 		ShuffleboardTab imutab = Shuffleboard.getTab("Inertial");

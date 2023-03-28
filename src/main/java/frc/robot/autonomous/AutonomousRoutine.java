@@ -17,7 +17,7 @@ public class AutonomousRoutine {
 	public static final ShuffleboardTab AUTO_TAB = Shuffleboard.getTab("Autonomous");
 
 	/** A chooser to select which auto to run */
-	public static SendableChooser<AutonomousRoutine> AUTO_CHOOSER = new SendableChooser<>();
+	public static final SendableChooser<AutonomousRoutine> AUTO_CHOOSER = new SendableChooser<>();
 
 	/** Chooser to select autonomous delay (seconds) */
 	public static final SendableChooser<Double> AUTO_DELAY_CHOOSER = new SendableChooser<>();

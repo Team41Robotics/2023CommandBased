@@ -9,9 +9,10 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Operator;
 
 public class RunIntake extends CommandBase {
-	double speed;
+	final double speed;
 	double startTime;
-	double mintime, maxtime;
+	final double mintime;
+	final double maxtime;
 	boolean preseve;
 
 	public RunIntake(double d, boolean preserve) {

@@ -26,9 +26,9 @@ public class GoTo extends CommandBase {
 		wPID.enableContinuousInput(-PI, PI);
 	}
 
-	PIDController xPID = new PIDController(3, 0, 0.4);
-	PIDController yPID = new PIDController(3, 0, 0.4);
-	PIDController wPID = new PIDController(1.3, 0, 0);
+	final PIDController xPID = new PIDController(3, 0, 0.4);
+	final PIDController yPID = new PIDController(3, 0, 0.4);
+	final PIDController wPID = new PIDController(1.3, 0, 0);
 
 	@Override
 	public void initialize() {

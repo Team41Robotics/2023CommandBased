@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.Ports;
 
 public class Intake extends SubsystemBase {
-	CANSparkMax motor = new CANSparkMax(Ports.CAN_INTAKE, MotorType.kBrushless);
+	final CANSparkMax motor = new CANSparkMax(Ports.CAN_INTAKE, MotorType.kBrushless);
 
 	public void init() {
 		motor.restoreFactoryDefaults();

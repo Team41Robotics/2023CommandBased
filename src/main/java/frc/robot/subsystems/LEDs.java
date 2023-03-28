@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
 	public static int timeStep = 0;
-	public static AddressableLED led = new AddressableLED(0);
-	public static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(108);
+	public static final AddressableLED led = new AddressableLED(0);
+	public static final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(108);
 
 	public void init() {
 		led.setLength(ledBuffer.getLength());
@@ -51,14 +51,14 @@ public class LEDs extends SubsystemBase {
 		midSide.setRainbow();
 	}
 
-	public static enum ledModes {
+	public enum ledModes {
 		SET_COLOR,
 		RAINBOW,
 		FLICKER,
 		NONE
 	}
 
-	public static enum LEDSegment {
+	public enum LEDSegment {
 		leftSide(0, 44, ledBuffer),
 		midSide(44, 21, ledBuffer),
 		rightSide(66, 40, ledBuffer),
@@ -69,7 +69,7 @@ public class LEDs extends SubsystemBase {
 		private ledModes mode = ledModes.SET_COLOR;
 		public Color color = Color.kRed;
 
-		private LEDSegment(int startIndex, int segmentSize, AddressableLEDBuffer buffer) {
+		LEDSegment(int startIndex, int segmentSize, AddressableLEDBuffer buffer) {
 			this.startIndex = startIndex;
 			this.segmentSize = segmentSize;
 			this.buffer = buffer;
@@ -104,7 +104,7 @@ public class LEDs extends SubsystemBase {
 		private void rainbow() {
 			int length = buffer.getLength();
 			for (var i = startIndex; i < startIndex + segmentSize; i++) {
-				int hue = 0;
+				int hue;
 				if (i < Math.abs(offset - length / 2)) {
 					buffer.setRGB(i, 0, 0, 0);
 					buffer.setRGB(-i + length - 1, 0, 0, 0);

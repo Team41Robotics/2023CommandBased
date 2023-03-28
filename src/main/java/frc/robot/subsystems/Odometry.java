@@ -14,9 +14,9 @@ import frc.robot.util.Util;
 import java.util.ArrayList;
 
 public class Odometry extends SubsystemBase {
-	ArrayList<Double> times = new ArrayList<>();
-	ArrayList<Transform2d> odoms = new ArrayList<>();
-	Field2d field = new Field2d();
+	final ArrayList<Double> times = new ArrayList<>();
+	final ArrayList<Transform2d> odoms = new ArrayList<>();
+	final Field2d field = new Field2d();
 	Transform2d origin = new Transform2d();
 
 	public void init() {

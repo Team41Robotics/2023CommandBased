@@ -3,7 +3,10 @@ package frc.robot.util;
 import static java.lang.Math.*;
 
 public class SystemIdentification {
-	public double kG, kS, kV, kA;
+	public final double kG;
+    public final double kS;
+    public final double kV;
+    public final double kA;
 
 	public SystemIdentification(double kG, double kS, double kV, double kA) {
 		this.kG = kG;

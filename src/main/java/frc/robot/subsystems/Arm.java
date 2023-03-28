@@ -22,29 +22,29 @@ import frc.robot.commands.ArmTo;
 import frc.robot.constants.Constants.Ports;
 
 public class Arm extends SubsystemBase {
-	public CANSparkMax elev = new CANSparkMax(Ports.CAN_ELEV, MotorType.kBrushless);
-	public CANSparkMax elev1 = new CANSparkMax(Ports.CAN_ELEV1, MotorType.kBrushless);
-	public CANSparkMax jt1 = new CANSparkMax(Ports.CAN_JOINT1, MotorType.kBrushless);
-	public CANSparkMax jt2 = new CANSparkMax(Ports.CAN_JOINT2, MotorType.kBrushless);
+	public final CANSparkMax elev = new CANSparkMax(Ports.CAN_ELEV, MotorType.kBrushless);
+	public final CANSparkMax elev1 = new CANSparkMax(Ports.CAN_ELEV1, MotorType.kBrushless);
+	public final CANSparkMax jt1 = new CANSparkMax(Ports.CAN_JOINT1, MotorType.kBrushless);
+	public final CANSparkMax jt2 = new CANSparkMax(Ports.CAN_JOINT2, MotorType.kBrushless);
 
 	// TODO plug limit switches into spark max?
-	DigitalInput lower_limit1 = new DigitalInput(Ports.DIO_LOWERLIMIT1);
-	DigitalInput lower_limit2 = new DigitalInput(Ports.DIO_LOWERLIMIT2);
-	DigitalInput upper_limit1 = new DigitalInput(Ports.DIO_UPPERLIMIT1);
-	DigitalInput upper_limit2 = new DigitalInput(Ports.DIO_UPPERLIMIT2);
+	final DigitalInput lower_limit1 = new DigitalInput(Ports.DIO_LOWERLIMIT1);
+	final DigitalInput lower_limit2 = new DigitalInput(Ports.DIO_LOWERLIMIT2);
+	final DigitalInput upper_limit1 = new DigitalInput(Ports.DIO_UPPERLIMIT1);
+	final DigitalInput upper_limit2 = new DigitalInput(Ports.DIO_UPPERLIMIT2);
 
-	public DigitalInput joint2_limit = new DigitalInput(Ports.DIO_JOINT2_LIMIT);
+	public final DigitalInput joint2_limit = new DigitalInput(Ports.DIO_JOINT2_LIMIT);
 
-	SparkMaxPIDController elev_vpid = elev.getPIDController();
-	SparkMaxPIDController elev1_vpid = elev1.getPIDController();
-	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
-	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
+	final SparkMaxPIDController elev_vpid = elev.getPIDController();
+	final SparkMaxPIDController elev1_vpid = elev1.getPIDController();
+	final SparkMaxPIDController jt1_vpid = jt1.getPIDController();
+	final SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
-	public PIDController elev_pid = new PIDController(4, 0, 0); // TODO ppid tuning
-	public PIDController jt1_pid = new PIDController(3, 0, 0);
-	public PIDController jt2_pid = new PIDController(5, 0, 0);
+	public final PIDController elev_pid = new PIDController(4, 0, 0); // TODO ppid tuning
+	public final PIDController jt1_pid = new PIDController(3, 0, 0);
+	public final PIDController jt2_pid = new PIDController(5, 0, 0);
 
-	SendableChooser<ArmPos> armposes = new SendableChooser<>();
+	final SendableChooser<ArmPos> armposes = new SendableChooser<>();
 
 	public void init() {
 		elev.restoreFactoryDefaults();

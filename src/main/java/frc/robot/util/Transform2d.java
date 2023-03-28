@@ -3,7 +3,11 @@ package frc.robot.util;
 import org.ejml.data.DMatrix3x3;
 
 public class Transform2d {
-	public double theta, cos, sin, x, y;
+	public double theta;
+	public final double cos;
+	public final double sin;
+	public final double x;
+	public final double y;
 
 	public Transform2d() {
 		cos = 1;
@@ -46,7 +50,7 @@ public class Transform2d {
 	 * Print transform
 	 */
 	public void print() {
-		System.out.println(toString());
+		System.out.println(to);
 	}
 
 	/**

@@ -9,7 +9,7 @@ import frc.robot.constants.MechanicalConstants.ArmConstants;
 import frc.robot.util.ArmPosition;
 
 public class ArmTo extends CommandBase { // TODO future trapezoid profile?
-	ArmPosition pos;
+	final ArmPosition pos;
 
 	public ArmTo(ArmPos pos) {
 		this(pos.asPostion());

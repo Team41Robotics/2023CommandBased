@@ -25,12 +25,12 @@ public class Operator extends SubsystemBase {
 	public static GenericEntry hpSuggestion;
 	public static final int[][] nodeStateValues = new int[3][9];
 	public static final int[][] nodeSuperStateValues = new int[3][9];
-	public static boolean[] linkComplete = new boolean[21];
+	public static final boolean[] linkComplete = new boolean[21];
 	public static boolean coopertitionBonusAchieved;
 	public static HeldObject heldObjectIn = HeldObject.NONE;
 	public boolean queueManualOverride = false;
 	public boolean suggestManualOverride = false;
-	public Point hoverValue = new Point(0, 0);
+	public final Point hoverValue = new Point(0, 0);
 	public Point queuedValue;
 	private final Alert logQueueOnFilledNode = new Alert(
 			"Operator Terminal", "Attempted to queue on already-filled node, queue not performed", AlertType.WARNING);
@@ -40,19 +40,19 @@ public class Operator extends SubsystemBase {
 			new Alert("Operator Terminal", "No more space to place cubes, queue canceled", AlertType.WARNING);
 	public static HeldObject heldObject = HeldObject.NONE;
 
-	public static enum NodeState {
+	public enum NodeState {
 		NONE(0),
 		CONE(1),
 		CUBE(2);
 
 		public final int value;
 
-		private NodeState(int value) {
+		NodeState(int value) {
 			this.value = value;
 		}
 	}
 
-	public static enum NodeSuperState {
+	public enum NodeSuperState {
 		NONE(0),
 		HOVER(3),
 		QUEUED(4),
@@ -60,7 +60,7 @@ public class Operator extends SubsystemBase {
 
 		public final int value;
 
-		private NodeSuperState(int value) {
+		NodeSuperState(int value) {
 			this.value = value;
 		}
 	}
@@ -618,7 +618,7 @@ public class Operator extends SubsystemBase {
 						linkComplete[7 * i + (j - 3)] = false;
 					}
 					if (j < 4) {
-						j = ((j - 1) / 3 + 1) * 3 + 1;
+						j = 4;
 					} else {
 						j = 8;
 					}

@@ -35,13 +35,13 @@ public class Vision extends SubsystemBase {
 		new Transform2d(1.02690, 1.06341, 0),
 	};
 
-	PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("HD_USB_Camera")};
-	Transform2d[] camlocs = new Transform2d[] {new Transform2d(14 * 2.54 / 100, -11.5 * 2.54 / 100, 0)};
-	double[] last_time = new double[] {Timer.getFPGATimestamp()};
+	final PhotonCamera[] cameras = new PhotonCamera[] {new PhotonCamera("HD_USB_Camera")};
+	final Transform2d[] camlocs = new Transform2d[] {new Transform2d(14 * 2.54 / 100, -11.5 * 2.54 / 100, 0)};
+	final double[] last_time = new double[] {Timer.getFPGATimestamp()};
 
-	Transform2d[] poses = new Transform2d[32];
-	double[] times = new double[32];
-	double[] areas = new double[32];
+	final Transform2d[] poses = new Transform2d[32];
+	final double[] times = new double[32];
+	final double[] areas = new double[32];
 	int ptr = 0;
 
 	AprilTagFieldLayout field;

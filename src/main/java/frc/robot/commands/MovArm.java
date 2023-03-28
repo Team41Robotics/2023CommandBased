@@ -11,7 +11,9 @@ import frc.robot.util.Util;
 
 public class MovArm extends CommandBase {
 	double st;
-	double vx, vy, t;
+	final double vx;
+	final double vy;
+	final double t;
 	double e, j1, j2;
 
 	public MovArm(double vx, double vy, double t) {
