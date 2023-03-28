@@ -39,8 +39,8 @@ public final class Constants {
 		BALL_TOP(1.000, 0.038, 1.203),
 		BALL_MID(0.833, -0.574, 0.869),
 		ALL_BOT(0.116, -0.850, 1.172),
-		CONE_MID(0.500, 0.183, 0.374),
 		CONE_TOP(1.000, 0.104, 0.753),
+		CONE_MID(0.500, 0.183, 0.374),
 		CONE_PICKUP(0.141, 0.095, -0.661),
 		BALL_PICKUP(0.000, -0.900, 0.900),
 		BALL_PLATFORM(0.950, 0.249, 0.55),
@@ -83,5 +83,7 @@ public final class Constants {
 	public static final double LOOP_TIME = 0.02;
 
 	public static final double FIELD_LENGTH = 16.54;
+	public static final boolean[] isCone = new boolean[] {true, false, true, true, false, true, true, false, true};
+
 	public static final double FIELD_WIDTH = 8;
 }

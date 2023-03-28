@@ -1,6 +1,7 @@
 package frc.robot;
 
 import static frc.robot.RobotContainer.*;
+import static frc.robot.constants.Constants.*;
 import static frc.robot.constants.Constants.ArmPos.*;
 import static java.lang.Math.*;
 
@@ -26,6 +27,7 @@ import frc.robot.commands.GoTo;
 import frc.robot.commands.HoldArm;
 import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
+import frc.robot.constants.Constants;
 import frc.robot.constants.MechanicalConstants.ArmConstants;
 import frc.robot.util.Transform2d;
 
@@ -120,7 +122,11 @@ public class Robot extends TimedRobot {
 		// arm.set(.5,0,0,0,0,0,0,0,0);
 		arm.hold();
 	}
-
+	public ArmPos getCurrentArm(){
+		int x = (operator.queuedValue != null ? operator.queuedValue.x : 0);
+		if(x == 0) return ALL_BOT;
+		return ArmPos.values()[x + (isCone[x] ? 3 : 0)];
+	}
 	public void configureButtons() { // TODO remap
 		new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
 
@@ -135,7 +141,7 @@ public class Robot extends TimedRobot {
 								1.02690 + 1.5,
 								(operator.queuedValue != null ? operator.queuedValue.getY() - 1 : -1) * -0.5588
 										+ 4.41621,
-								Math.PI)))
+								Math.PI))).andThen(new ArmTo(getCurrentArm()).asProxy()).andThen(new RunIntake(-.6, (operator.queuedValue != null ? operator.queuedValue.getY()  : 0)))
 						.until(() -> rightjs.getRawButton(3)));
 		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
 		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
