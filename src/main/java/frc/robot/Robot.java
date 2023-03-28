@@ -27,7 +27,6 @@ import frc.robot.commands.GoTo;
 import frc.robot.commands.HoldArm;
 import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
-import frc.robot.constants.Constants;
 import frc.robot.constants.MechanicalConstants.ArmConstants;
 import frc.robot.util.Transform2d;
 
@@ -78,7 +77,7 @@ public class Robot extends TimedRobot {
 			// schedule(cmd);
 		}
 		schedule(new SequentialCommandGroup(
-				new InstantCommand(() -> arm.jt2.set(.3)),
+				new InstantCommand(() -> arm.jt2.set(.3),arm),
 				new WaitUntilCommand(() -> !arm.joint2_limit.get()),
 				new InstantCommand(() -> arm.jt2.set(0)),
 				new InstantCommand(
@@ -96,14 +95,10 @@ public class Robot extends TimedRobot {
 						new InstantCommand(() -> arm.jt1
 								.getEncoder()
 								.setPosition(16.15 / 180. * PI / 2 / PI * ArmConstants.JOINT1_RATIO)),
-						new InstantCommand(() -> arm.jt1.set(0))),
-				new ArmTo(BALL_TOP).asProxy(),
-				new WaitCommand(2),
-				new ArmTo(BALL_MID).asProxy(),
-				new WaitCommand(2),
-				new ArmTo(CONE_MID).asProxy(),
-				new WaitCommand(2),
-				new ArmTo(CONE_TOP).asProxy()));
+						new InstantCommand(() -> arm.jt1.set(0)))).asProxy().andThen(
+
+
+				new ArmTo(CONE_MID).asProxy()));
 	}
 
 	@Override
@@ -122,18 +117,20 @@ public class Robot extends TimedRobot {
 		// arm.set(.5,0,0,0,0,0,0,0,0);
 		arm.hold();
 	}
-	public ArmPos getCurrentArm(){
+
+	public ArmPos getCurrentArm() {
 		int x = (operator.queuedValue != null ? operator.queuedValue.x : 0);
-		if(x == 0) return ALL_BOT;
+		if (x == 0) return ALL_BOT;
 		return ArmPos.values()[x + (isCone[x] ? 3 : 0)];
 	}
+
 	public void configureButtons() { // TODO remap
 		new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
 
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
-		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6));
-		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6));
+		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6,true));
+		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6,true));
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
 
 		new JoystickButton(leftjs, 3)
@@ -141,7 +138,9 @@ public class Robot extends TimedRobot {
 								1.02690 + 1.5,
 								(operator.queuedValue != null ? operator.queuedValue.getY() - 1 : -1) * -0.5588
 										+ 4.41621,
-								Math.PI))).andThen(new ArmTo(getCurrentArm()).asProxy()).andThen(new RunIntake(-.6, (operator.queuedValue != null ? operator.queuedValue.getY()  : 0)))
+								Math.PI)))
+						.andThen(new ArmTo(getCurrentArm()).asProxy())
+						.andThen(new RunIntake(-.6, true))
 						.until(() -> rightjs.getRawButton(3)));
 		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
 		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));

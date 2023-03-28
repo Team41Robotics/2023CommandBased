@@ -5,14 +5,20 @@ import static frc.robot.constants.Constants.isCone;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.Operator;
 
 public class RunIntake extends CommandBase {
 	double speed;
 	double startTime;
 	double mintime, maxtime;
-	public RunIntake(double d, int y){
-		this.speed = (isCone[y] ? d : -d);
+	boolean preseve;
+
+	public RunIntake(double d, boolean preserve) {
+		this(d,.5,99);
+		preseve = preserve;
 	}
+
 	public RunIntake(double d) {
 		this(d, .5, 99);
 	}
@@ -31,7 +37,8 @@ public class RunIntake extends CommandBase {
 	@Override
 	public void initialize() {
 		startTime = Timer.getFPGATimestamp();
-		intake.run(speed);
+		if(preseve) intake.run(speed *(isCone[operator.queuedValue != null ? (int) operator.queuedValue.getY() : 0] ? 1 : -1));
+		else intake.run(speed);
 	}
 
 	@Override
