@@ -117,7 +117,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	}
 
 	public void setLeft(double vel, double acc) {
-		lef.setVoltage(FWD_IDENTF.getOutput(0, vel, acc));
+		lef.setVoltage(-FWD_IDENTF.getOutput(0, vel, acc));
 	}
 
 	public void setRight(double vel, double acc) {
@@ -125,7 +125,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	}
 
 	public void setMid(double vel, double acc) {
-		mid.setVoltage(MID_IDENTF.getOutput(0, vel, acc));
+		mid.setVoltage(-MID_IDENTF.getOutput(0, vel, acc));
 	}
 
 	public double getRightPos() {

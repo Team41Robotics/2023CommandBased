@@ -130,7 +130,7 @@ public class Arm extends SubsystemBase {
 			double jt2_a) {
 		if (abs(elev_pos - getElevPos()) > 0.1) {
 			try {
-				PIDController.class.getField("m_totalError").setDouble(elev_pid, 0);
+				PIDController.class.getDeclaredField("m_totalError").setDouble(elev_pid, 0);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

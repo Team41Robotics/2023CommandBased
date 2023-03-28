@@ -16,10 +16,6 @@ public final class Constants {
 		public static final int RIGHT_JOYSTICK_PORT = 0;
 
 		public static final double JOYSTICK_DEADZONE = 0.2;
-
-		// TODO tuning based on theoretical sysid'd values
-		public static final double FWD_DRIVE_VELOCITY = 0;
-		public static final double TURN_VELOCITY = 0;
 	}
 
 	public static class GoToConstants {

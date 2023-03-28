@@ -6,7 +6,8 @@ import static java.lang.Math.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.constants.MechanicalConstants;
+import frc.robot.constants.MechanicalConstants.DrivetrainConstants;
 import frc.robot.util.Util;
 
 public class FODdrive extends CommandBase {
@@ -15,9 +16,13 @@ public class FODdrive extends CommandBase {
 	}
 
 	public void execute() {
-		double vf = -Util.deadZone(leftjs.getY()) * OperatorConstants.FWD_DRIVE_VELOCITY;
-		double vs = -Util.deadZone(leftjs.getX()) * OperatorConstants.FWD_DRIVE_VELOCITY;
-		double w = -Util.deadZone(rightjs.getX()) * OperatorConstants.TURN_VELOCITY;
+		double vf = -Util.curvedDeadZone(leftjs.getY())
+				* MechanicalConstants.DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity;
+		double vs = -Util.curvedDeadZone(leftjs.getX())
+				* MechanicalConstants.DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity;
+		double w = -Util.curvedDeadZone(rightjs.getX())
+				* DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity
+				/ DrivetrainConstants.RADIUS;
 
 		double robot_angle = odom.now().theta;
 		if (DriverStation.getAlliance() == Alliance.Red) robot_angle = PI - robot_angle;

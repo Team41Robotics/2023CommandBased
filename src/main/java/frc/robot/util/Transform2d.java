@@ -50,7 +50,7 @@ public class Transform2d {
 	 * Print transform
 	 */
 	public void print() {
-		System.out.println(to);
+		System.out.println(this);
 	}
 
 	/**

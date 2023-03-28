@@ -7,22 +7,24 @@ import frc.robot.util.SystemIdentification;
 
 public class MechanicalConstants {
 	public static class DrivetrainConstants {
-		public static final double FWD_RATIO = 9.75;
+		public static final double FWD_RATIO = 9.75 / 12 * 14;
 		public static final double H_RATIO = 10.65;
 
 		public static final double FWD_WHEEL_RADIUS = 3 * 2.54 / 100;
+		public static final double FWD_METERS_PER_ROT = FWD_WHEEL_RADIUS * 2 * PI;
 		public static final double H_WHEEL_RADIUS = 2 * 2.54 / 100;
 
 		public static final double FWD_METER_PER_RAD = FWD_WHEEL_RADIUS / FWD_RATIO;
 		public static final double H_METER_PER_RAD = H_WHEEL_RADIUS / H_RATIO;
 
-		public static final SystemIdentification FWD_IDENTF = new SystemIdentification(0, 0, 0, 0);
+		public static final SystemIdentification FWD_IDENTF = new SystemIdentification(0, 0.20494, 2.6016, 0.13941);
 		public static final SystemIdentification MID_IDENTF = new SystemIdentification(0, 0, 0, 0);
 
-		public static final Constraints FWD_CONSTRAINTS = new Constraints(0, 0);
+		public static final Constraints FWD_CONSTRAINTS = new Constraints(4, 100);
 		public static final Constraints MID_CONSTRAINTS = new Constraints(0, 0);
 
-		public static final double RADIUS = 0.6512 / 2;
+		// public static final double RADIUS = 0.6512 / 2;
+		public static final double RADIUS = 0.50833;
 	}
 
 	public static class ArmConstants {
