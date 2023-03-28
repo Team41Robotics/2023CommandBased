@@ -54,11 +54,6 @@ public class MovArm extends CommandBase {
 	}
 
 	@Override
-	public void end(boolean interrupted) {
-		arm.hold();
-	}
-
-	@Override
 	public boolean isFinished() {
 		double alpha = arm.getJoint1Pos();
 		double theta = ELEV_THETA;

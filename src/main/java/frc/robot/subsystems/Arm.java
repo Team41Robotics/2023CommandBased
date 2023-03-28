@@ -33,25 +33,25 @@ public class Arm extends SubsystemBase {
 	DigitalInput upper_limit1 = new DigitalInput(Ports.DIO_UPPERLIMIT1);
 	DigitalInput upper_limit2 = new DigitalInput(Ports.DIO_UPPERLIMIT2);
 
-        DigitalInput joint2_limit = new DigitalInput(Ports.DIO_JOINT2_LIMIT);
+	public DigitalInput joint2_limit = new DigitalInput(Ports.DIO_JOINT2_LIMIT);
 
 	SparkMaxPIDController elev_vpid = elev.getPIDController();
 	SparkMaxPIDController elev1_vpid = elev1.getPIDController();
 	SparkMaxPIDController jt1_vpid = jt1.getPIDController();
 	SparkMaxPIDController jt2_vpid = jt2.getPIDController();
 
-	PIDController elev_pid = new PIDController(4, 0, 0); // TODO ppid tuning
-	PIDController jt1_pid = new PIDController(0, 0, 0);
-	PIDController jt2_pid = new PIDController(0, 0, 0);
+	public PIDController elev_pid = new PIDController(4, 0, 0); // TODO ppid tuning
+	public PIDController jt1_pid = new PIDController(3, 0, 0);
+	public PIDController jt2_pid = new PIDController(5, 0, 0);
 
 	SendableChooser<ArmPosition> armposes = new SendableChooser<>();
 	public Map<String, ArmPosition> positions = Map.of(
 			"BALL PICKUP", new ArmPosition(0.000, -0.900, 0.900),
-			"BALL TOP", new ArmPosition(1.031, 0.038, 1.203),
+			"BALL TOP", new ArmPosition(1.000, 0.038, 1.203),
 			"BALL MID", new ArmPosition(0.833, -0.574, 0.869),
 			"ALL BOT", new ArmPosition(0.116, -0.850, 1.172),
 			"CONE MID", new ArmPosition(0.500, 0.183, 0.374),
-			"CONE TOP", new ArmPosition(1.040, 0.104, 0.753),
+			"CONE TOP", new ArmPosition(1.000, 0.104, 0.753),
 			"CONE PICKUP", new ArmPosition(0.141, 0.095, -0.661),
 			"BALL PLATFORM", new ArmPosition(0.950, 0.249, 0.55),
 			"CONE PLATFORM", new ArmPosition(0.950, 0.249, 0.0));
@@ -65,8 +65,8 @@ public class Arm extends SubsystemBase {
 		elev1.setIdleMode(IdleMode.kBrake);
 		jt1.setIdleMode(IdleMode.kBrake);
 		jt2.setIdleMode(IdleMode.kCoast);
-                elev.getEncoder().setPosition(0);
-                jt2.setInverted(true);
+		elev.getEncoder().setPosition(0);
+		jt2.setInverted(true);
 
 		setPID(elev_vpid, 0, 0, 0, 0); // TODO actually have vpids (use LQR gains?)
 		setPID(elev1_vpid, 0, 0, 0, 0);
@@ -84,7 +84,7 @@ public class Arm extends SubsystemBase {
 		armtab.addNumber("joint 2 pos", () -> getJoint2Pos());
 		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
 		armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
-                armtab.addBoolean("joint2 limit switch", () -> !joint2_limit.get());
+		armtab.addBoolean("joint2 limit switch", () -> !joint2_limit.get());
 
 		for (Map.Entry<String, ArmPosition> entry : positions.entrySet()) {
 			armposes.addOption(entry.getKey(), entry.getValue());
@@ -138,6 +138,24 @@ public class Arm extends SubsystemBase {
 			double elev_a,
 			double jt1_a,
 			double jt2_a) {
+		if (abs(elev_pos - getElevPos()) > 0.1) {
+			try {
+				PIDController.class.getField("m_totalError").setDouble(elev_pid, 0);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			elev_pid.setI(0);
+		} else elev_pid.setI(1);
 		double elev_fb = elev_pid.calculate(getElevPos(), elev_pos);
 		double jt1_fb = jt1_pid.calculate(getJoint1Pos(), jt1_pos);
 		double jt2_fb = jt2_pid.calculate(getJoint2Pos(), jt2_pos);
@@ -148,8 +166,8 @@ public class Arm extends SubsystemBase {
 		setMotor(elev_vpid, elev_v * ELEV_RAD_PER_METER / 2 / PI, ELEV_IDENTF.getOutput(1, elev_v + elev_fb, elev_a));
 		setMotor(elev1_vpid, elev_v * ELEV_RAD_PER_METER / 2 / PI, ELEV_IDENTF.getOutput(1, elev_v + elev_fb, elev_a));
 		setMotor(jt1_vpid, jt1_v * JOINT1_RATIO / 2 / PI, JOINT1_IDENTF.getOutput(jt1_cos, jt1_v + jt1_fb, jt1_a));
-		//setMotor(jt2_vpid, jt2_v * JOINT2_RATIO / 2 / PI, JOINT2_IDENTF.getOutput(jt2_cos, jt2_v + jt2_fb, jt2_a));
-                setMotor(jt2_vpid, 0, 4);
+		setMotor(jt2_vpid, jt2_v * JOINT2_RATIO / 2 / PI, JOINT2_IDENTF.getOutput(jt2_cos, jt2_v + jt2_fb, jt2_a));
+		// setMotor(jt2_vpid, 0, 4);
 	}
 
 	@Override

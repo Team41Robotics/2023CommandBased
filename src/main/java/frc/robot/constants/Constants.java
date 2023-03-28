@@ -57,7 +57,7 @@ public final class Constants {
 		public static final int DIO_LOWERLIMIT2 = 3;
 		public static final int DIO_UPPERLIMIT1 = 0;
 		public static final int DIO_UPPERLIMIT2 = 1;
-                public static final int DIO_JOINT2_LIMIT = 5;
+		public static final int DIO_JOINT2_LIMIT = 5;
 	}
 
 	public static final double LOOP_TIME = 0.02;

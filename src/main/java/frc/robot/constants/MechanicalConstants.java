@@ -39,13 +39,16 @@ public class MechanicalConstants {
 		public static final double ELEV_LEN = 1;
 		public static final double ARM_LEN = 14.75 * 2.54 / 100;
 
-		public static final SystemIdentification ELEV_IDENTF = new SystemIdentification(0.40411, 0.01766, 2.4782, 0.10277);
-		public static final SystemIdentification JOINT1_IDENTF = new SystemIdentification(0.69883, 0.27973, 4.042, 0.098954);
-		public static final SystemIdentification JOINT2_IDENTF = new SystemIdentification(0, 0, 0, 0);
+		public static final SystemIdentification ELEV_IDENTF =
+				new SystemIdentification(0.40411, 0.01766, 2.4782, 0.10277);
+		public static final SystemIdentification JOINT1_IDENTF =
+				new SystemIdentification(0.69883, 0.27973, 4.042, 0.098954);
+		public static final SystemIdentification JOINT2_IDENTF =
+				new SystemIdentification(0.16105, 0.11592, 4.145, 0.0929);
 
-		public static final Constraints ELEV_CONSTRAINTS = new Constraints(1, 40);
-		public static final Constraints JOINT1_CONSTRAINTS = new Constraints(0, 0);
-		public static final Constraints JOINT2_CONSTRAINTS = new Constraints(0, 0);
+		public static final Constraints ELEV_CONSTRAINTS = new Constraints(.2, 40);
+		public static final Constraints JOINT1_CONSTRAINTS = new Constraints(.2, 40);
+		public static final Constraints JOINT2_CONSTRAINTS = new Constraints(.2, 40);
 
 		public static final double ELEVATOR_TOLERANCE = 0.03;
 		public static final double JOINT_TOLERANCE = 2 / 180. * PI;
