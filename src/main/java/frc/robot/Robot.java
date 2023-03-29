@@ -77,28 +77,29 @@ public class Robot extends TimedRobot {
 			// schedule(cmd);
 		}
 		schedule(new SequentialCommandGroup(
-				new InstantCommand(() -> arm.jt2.set(.3),arm),
-				new WaitUntilCommand(() -> !arm.joint2_limit.get()),
-				new InstantCommand(() -> arm.jt2.set(0)),
-				new InstantCommand(
-						() -> arm.jt2.getEncoder().setPosition(2.5362667 * ArmConstants.JOINT2_RATIO / 2 / PI)),
-				new ParallelCommandGroup(new SequentialCommandGroup(
-						new InstantCommand(() -> arm.jt2.set(-.5)),
-						new WaitUntilCommand(() -> arm.getJoint2Pos() < 1.2),
-						new InstantCommand(() -> arm.jt2.set(0)))),
-				new SequentialCommandGroup(
-						new InstantCommand(() -> arm.jt1.set(.5)),
-						new WaitUntilCommand(() ->
-								arm.jt1.getEncoder().getVelocity() / 60 * 2 * PI / ArmConstants.JOINT1_RATIO > 0.1),
-						new WaitUntilCommand(() ->
-								arm.jt1.getEncoder().getVelocity() / 60 * 2 * PI / ArmConstants.JOINT1_RATIO < 0.1),
-						new InstantCommand(() -> arm.jt1
-								.getEncoder()
-								.setPosition(16.15 / 180. * PI / 2 / PI * ArmConstants.JOINT1_RATIO)),
-						new InstantCommand(() -> arm.jt1.set(0)))).asProxy().andThen(
-
-
-				new ArmTo(CONE_MID).asProxy()));
+						new InstantCommand(() -> arm.jt2.set(.3), arm),
+						new WaitUntilCommand(() -> !arm.joint2_limit.get()),
+						new InstantCommand(() -> arm.jt2.set(0)),
+						new InstantCommand(
+								() -> arm.jt2.getEncoder().setPosition(2.5362667 * ArmConstants.JOINT2_RATIO / 2 / PI)),
+						new ParallelCommandGroup(new SequentialCommandGroup(
+								new InstantCommand(() -> arm.jt2.set(-.5)),
+								new WaitUntilCommand(() -> arm.getJoint2Pos() < 1.2),
+								new InstantCommand(() -> arm.jt2.set(0)))),
+						new SequentialCommandGroup(
+								new InstantCommand(() -> arm.jt1.set(.5)),
+								new WaitUntilCommand(() ->
+										arm.jt1.getEncoder().getVelocity() / 60 * 2 * PI / ArmConstants.JOINT1_RATIO
+												> 0.1),
+								new WaitUntilCommand(() ->
+										arm.jt1.getEncoder().getVelocity() / 60 * 2 * PI / ArmConstants.JOINT1_RATIO
+												< 0.1),
+								new InstantCommand(() -> arm.jt1
+										.getEncoder()
+										.setPosition(16.15 / 180. * PI / 2 / PI * ArmConstants.JOINT1_RATIO)),
+								new InstantCommand(() -> arm.jt1.set(0))))
+				.asProxy()
+				.andThen(new ArmTo(CONE_MID).asProxy()));
 	}
 
 	@Override
@@ -129,8 +130,8 @@ public class Robot extends TimedRobot {
 
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
-		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6,true));
-		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6,true));
+		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6, true));
+		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6, true));
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
 
 		new JoystickButton(leftjs, 3)

@@ -12,7 +12,7 @@ public class ArmTo extends CommandBase { // TODO future trapezoid profile?
 	final ArmPosition pos;
 
 	public ArmTo(ArmPos pos) {
-		this(pos.asPostion());
+		this(pos.asPosition());
 	}
 
 	public ArmTo(ArmPosition pos) {

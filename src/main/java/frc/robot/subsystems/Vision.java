@@ -61,36 +61,29 @@ public class Vision extends SubsystemBase {
 
 		if (time > last_time[ci] && res.hasTargets()) {
 			last_time[ci] = time;
-			try {
-				PhotonPoseEstimator poseestimator = new PhotonPoseEstimator(
-						AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile),
-						PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP,
-						cam,
-						new Transform3d(
-								new Translation3d(camlocs[ci].x, camlocs[ci].y, 0),
-								new Rotation3d(0, 0, camlocs[ci].theta)));
+			PhotonPoseEstimator poseestimator = new PhotonPoseEstimator(
+					field,
+					PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP,
+					cam,
+					new Transform3d(
+							new Translation3d(camlocs[ci].x, camlocs[ci].y, 0),
+							new Rotation3d(0, 0, camlocs[ci].theta)));
 
-				poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
-				if (odom.origin.x == 0 && odom.origin.y == 0 && odom.origin.theta == 0)
-					poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+			poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+			if (odom.origin.x == 0 && odom.origin.y == 0 && odom.origin.theta == 0)
+				poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
 
-				poseestimator.setReferencePose(
-						new Pose2d(odom.now().x, odom.now().y, new Rotation2d(odom.now().theta)));
-				EstimatedRobotPose pose = poseestimator.update(res).orElse(null);
-				if (pose != null) {
-					poses[ptr % 32] = new Transform2d(
-							pose.estimatedPose.getX(),
-							pose.estimatedPose.getY(),
-							pose.estimatedPose.getRotation().getZ());
-					times[ptr % 32] = time;
-					areas[ptr % 32] = pose.targetsUsed.stream()
-							.mapToDouble(x -> x.getArea())
-							.sum();
-					ptr++;
-				}
-			} catch (IOException e) {
-				// Auto-generated catch block
-				e.printStackTrace();
+			poseestimator.setReferencePose(new Pose2d(odom.now().x, odom.now().y, new Rotation2d(odom.now().theta)));
+			EstimatedRobotPose pose = poseestimator.update(res).orElse(null);
+			if (pose != null) {
+				poses[ptr % 32] = new Transform2d(
+						pose.estimatedPose.getX(),
+						pose.estimatedPose.getY(),
+						pose.estimatedPose.getRotation().getZ());
+				times[ptr % 32] = time;
+				areas[ptr % 32] =
+						pose.targetsUsed.stream().mapToDouble(x -> x.getArea()).sum();
+				ptr++;
 			}
 		}
 	}

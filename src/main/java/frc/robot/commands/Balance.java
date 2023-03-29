@@ -19,7 +19,6 @@ public class Balance extends CommandBase {
 		if (Math.abs(bal_pid.getPositionError()) < 0.1) bal_pid.setI(0.1);
 		else bal_pid.setI(0);
 		hdrive.drive(bal_pid.calculate(imu.getPitch(), 0), 0, 0);
-System.out.println("test");
 		if (Math.abs(imu.getPitch()) > 1.5 / 180 * PI) last_time_valid = Timer.getFPGATimestamp();
 	}
 

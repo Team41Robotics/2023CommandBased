@@ -18,10 +18,10 @@ public class MechanicalConstants {
 		public static final double H_METER_PER_RAD = H_WHEEL_RADIUS / H_RATIO;
 
 		public static final SystemIdentification FWD_IDENTF = new SystemIdentification(0, 0.20494, 2.6016, 0.13941);
-		public static final SystemIdentification MID_IDENTF = new SystemIdentification(0, 0, 0, 0);
+		public static final SystemIdentification MID_IDENTF = new SystemIdentification(0, 0, 1, 0);
 
 		public static final Constraints FWD_CONSTRAINTS = new Constraints(4, 100);
-		public static final Constraints MID_CONSTRAINTS = new Constraints(0, 0);
+		public static final Constraints MID_CONSTRAINTS = new Constraints(6., 6);
 
 		// public static final double RADIUS = 0.6512 / 2;
 		public static final double RADIUS = 0.50833;

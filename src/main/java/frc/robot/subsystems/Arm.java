@@ -83,6 +83,7 @@ public class Arm extends SubsystemBase {
 		createShuffleboardPosition(BALL_TOP, 1, 2);
 		createShuffleboardPosition(BALL_MID, 1, 3);
 		createShuffleboardPosition(BALL_PLATFORM, 1, 5);
+		createShuffleboardPosition(CONE_SLIDE, 1, 6);
 
 		createShuffleboardPosition(ALL_BOT, 2, 1);
 
@@ -128,20 +129,8 @@ public class Arm extends SubsystemBase {
 			double elev_a,
 			double jt1_a,
 			double jt2_a) {
-		if (abs(elev_pos - getElevPos()) > 0.1) {
-			try {
-				PIDController.class.getDeclaredField("m_totalError").setDouble(elev_pid, 0);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
-			elev_pid.setI(0);
-		} else elev_pid.setI(1);
+		if (abs(elev_pos - getElevPos()) > 0.1) elev_pid.setI(0);
+		else elev_pid.setI(1);
 		double elev_fb = elev_pid.calculate(getElevPos(), elev_pos);
 		double jt1_fb = jt1_pid.calculate(getJoint1Pos(), jt1_pos);
 		double jt2_fb = jt2_pid.calculate(getJoint2Pos(), jt2_pos);

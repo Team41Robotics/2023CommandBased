@@ -14,6 +14,9 @@ public class HoldArm extends CommandBase {
 
 	@Override
 	public void initialize() {
+		arm.elev_pid.reset();
+		arm.jt1_pid.reset();
+		arm.jt2_pid.reset();
 		pos = new ArmPosition(arm.getElevPos(), arm.getJoint1Pos(), arm.getJoint2Pos());
 	}
 

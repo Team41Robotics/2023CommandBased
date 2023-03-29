@@ -78,21 +78,24 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		drive(vx, vy, w, 1);
 	}
 
+	public double renormalize(double vx, double vy, double w, double preserve) {
+		double max = 1;
+		max = max(max, abs(dvl / FWD_CONSTRAINTS.maxVelocity * preserve));
+		max = max(max, abs(dvr / FWD_CONSTRAINTS.maxVelocity * preserve));
+		max = max(max, abs(dvm / MID_CONSTRAINTS.maxVelocity * preserve));
+		return max;
+	}
+
 	public void drive(double vx, double vy, double w, double preserve) {
 		dvl = vx - w * RADIUS;
 		dvr = vx + w * RADIUS;
 		dvm = vy;
 
-		double max = 1;
-		max = max(max, abs(dvl / FWD_CONSTRAINTS.maxVelocity * preserve));
-		max = max(max, abs(dvr / FWD_CONSTRAINTS.maxVelocity * preserve));
-		max = max(max, abs(dvm / MID_CONSTRAINTS.maxVelocity * preserve));
+		double max = renormalize(vx, vy, w, preserve);
 
-		if (preserve != 0) {
-			dvl /= max;
-			dvr /= max;
-			dvm /= max;
-		}
+		dvl /= max;
+		dvr /= max;
+		dvm /= max;
 	}
 
 	@Override

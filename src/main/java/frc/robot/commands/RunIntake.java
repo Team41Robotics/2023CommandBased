@@ -2,22 +2,22 @@ package frc.robot.commands;
 
 import static frc.robot.RobotContainer.*;
 import static frc.robot.constants.Constants.isCone;
+import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.constants.Constants;
-import frc.robot.subsystems.Operator;
 
 public class RunIntake extends CommandBase {
 	final double speed;
 	double startTime;
 	final double mintime;
 	final double maxtime;
-	boolean preseve;
+	boolean preserve;
+	double maxVel = 0;
 
 	public RunIntake(double d, boolean preserve) {
-		this(d,.5,99);
-		preseve = preserve;
+		this(d, .5, 99);
+		this.preserve = preserve;
 	}
 
 	public RunIntake(double d) {
@@ -37,9 +37,16 @@ public class RunIntake extends CommandBase {
 
 	@Override
 	public void initialize() {
+		maxVel = 0;
 		startTime = Timer.getFPGATimestamp();
-		if(preseve) intake.run(speed *(isCone[operator.queuedValue != null ? (int) operator.queuedValue.getY() : 0] ? 1 : -1));
+		if (preserve)
+			intake.run(speed * (isCone[operator.queuedValue != null ? (int) operator.queuedValue.getY() : 0] ? 1 : -1));
 		else intake.run(speed);
+	}
+
+	@Override
+	public void execute() {
+		maxVel = max(maxVel, abs(intake.getPercentSpeed()));
 	}
 
 	@Override
@@ -49,8 +56,7 @@ public class RunIntake extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
-		return (Math.abs(intake.getPercentSpeed()) <= Math.abs(speed) / 2
-						&& Timer.getFPGATimestamp() - startTime > mintime)
+		return (abs(intake.getPercentSpeed()) <= maxVel / 2 && Timer.getFPGATimestamp() - startTime > mintime)
 				|| Timer.getFPGATimestamp() - startTime > maxtime;
 	}
 }

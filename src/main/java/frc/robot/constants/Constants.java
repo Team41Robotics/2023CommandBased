@@ -32,15 +32,17 @@ public final class Constants {
 	}
 
 	public enum ArmPos {
-		BALL_TOP(1.000, 0.038, 1.203),
-		BALL_MID(0.833, -0.574, 0.869),
-		ALL_BOT(0.116, -0.850, 1.172),
-		CONE_TOP(1.000, 0.104, 0.423),
-		CONE_MID(0.40, 0.163, 0.294),
-		CONE_PICKUP(0.141, 0.095, -0.661),
-		BALL_PICKUP(0.000, -0.900, 0.900),
+		BALL_TOP(1.000, 0.038, 1.203), // gold
+		BALL_MID(0.833, -0.574, 0.869), // gold
+		ALL_BOT(0.116, -0.850, 1.172), // gold
+		CONE_TOP(1.000, 0.104, 0.423), // gold
+		CONE_MID(0.40, 0.163, 0.294), // gold
+		CONE_PICKUP(0.0, -0.700, 0.740),
+		BALL_PICKUP(0.000, -0.900, 1.000),
 		BALL_PLATFORM(0.950, 0.249, 0.55),
-		CONE_PLATFORM(0.950, 0.249, 0.0);
+		CONE_PLATFORM(0.950, 0.249, 0.0),
+		CONE_SLIDE(0.05, -0.739, 1.808);
+
 		public final double e;
 		public final double j1;
 		public final double j2;
@@ -51,7 +53,7 @@ public final class Constants {
 			this.j2 = j2;
 		}
 
-		public ArmPosition asPostion() {
+		public ArmPosition asPosition() {
 			return new ArmPosition(this.e, this.j1, this.j2);
 		}
 	}

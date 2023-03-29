@@ -13,17 +13,25 @@ import frc.robot.util.Util;
 
 public class GoTo extends CommandBase {
 	Transform2d target;
+	double fvx, fvy;
 
 	public GoTo(Transform2d target) {
 		this(target, true);
 	}
 
 	public GoTo(Transform2d target, boolean transformIfRed) {
+		this(target, transformIfRed, 0, 0);
+	}
+
+	public GoTo(Transform2d target, boolean transformIfRed, double fvx, double fvy) {
 		addRequirements(hdrive);
 		this.target = target;
-		if (transformIfRed && DriverStation.getAlliance() == Alliance.Red)
-			this.target = Util.flipPoseAcrossField(this.target);
+		boolean shift = transformIfRed && DriverStation.getAlliance() == Alliance.Red;
+		if (shift) this.target = Util.flipPoseAcrossField(this.target);
 		wPID.enableContinuousInput(-PI, PI);
+
+		this.fvx = shift ? -fvx : fvx;
+		this.fvy = fvy;
 	}
 
 	final PIDController xPID = new PIDController(3, 0, 0.4);
@@ -53,9 +61,16 @@ public class GoTo extends CommandBase {
 		double robot_angle = odom.now().theta;
 		double vf = cos(robot_angle) * vx + sin(robot_angle) * vy;
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
-		// System.out.println("vx: " + vx + " vy: " + vy + " w: " + w);
-		// System.out.println("vf: " + vf + " vs: " + vs + " w: " + w);
-		hdrive.drive(vf, vs, w, 2); // TODO refactor into parameter
+
+		double max = hdrive.renormalize(vx, vy, w, 2);
+		vf /= max;
+		vs /= max;
+		w /= max;
+
+		double fvf = cos(robot_angle) * fvx + sin(robot_angle) * fvy;
+		double fvs = -sin(robot_angle) * fvx + cos(robot_angle) * fvy;
+
+		hdrive.drive(vf + fvf, vs + fvs, w, 1); // TODO refactor into parameter
 	}
 
 	@Override
