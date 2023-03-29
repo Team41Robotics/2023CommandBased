@@ -5,7 +5,6 @@ import static frc.robot.constants.Constants.*;
 import static frc.robot.constants.Constants.ArmPos.*;
 import static java.lang.Math.*;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,13 +35,6 @@ public class Robot extends TimedRobot {
 
 	public Robot() {
 		super();
-		try {
-			PIDController.class.getDeclaredField("m_totalError").setAccessible(true);
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void schedule(Command cmd) {
@@ -66,9 +58,18 @@ public class Robot extends TimedRobot {
 		CommandScheduler.getInstance().run();
 	}
 
+	boolean has_been_enabled = false;
+
+	public void enabledInit() {
+		if (has_been_enabled) return;
+		has_been_enabled = true;
+		odom.start();
+		arm.elev.getEncoder().setPosition(0);
+	}
+
 	@Override
 	public void autonomousInit() {
-		odom.start();
+		enabledInit();
 
 		autonomousCommand = AutonomousRoutine.AUTO_CHOOSER.getSelected().construct();
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
@@ -99,7 +100,8 @@ public class Robot extends TimedRobot {
 										.setPosition(16.15 / 180. * PI / 2 / PI * ArmConstants.JOINT1_RATIO)),
 								new InstantCommand(() -> arm.jt1.set(0))))
 				.asProxy()
-				.andThen(new ArmTo(CONE_MID).asProxy()));
+				.andThen(new ArmTo(CONE_MID).asProxy())
+				.andThen(new RunIntake(.6, 1)));
 	}
 
 	@Override
@@ -107,7 +109,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		odom.start();
+		enabledInit();
+
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}

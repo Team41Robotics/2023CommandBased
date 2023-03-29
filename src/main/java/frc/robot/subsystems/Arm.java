@@ -79,18 +79,19 @@ public class Arm extends SubsystemBase {
 		for (ArmPos pos : ArmPos.values()) {
 			armposes.addOption(pos.name(), pos);
 		}
-		createShuffleboardPosition(BALL_PICKUP, 1, 1);
-		createShuffleboardPosition(BALL_TOP, 1, 2);
-		createShuffleboardPosition(BALL_MID, 1, 3);
-		createShuffleboardPosition(BALL_PLATFORM, 1, 5);
-		createShuffleboardPosition(CONE_SLIDE, 1, 6);
+		createShuffleboardPosition(BALL_PICKUP, 0, 1);
+		createShuffleboardPosition(BALL_TOP, 0, 2);
+		createShuffleboardPosition(BALL_MID, 0, 3);
+		createShuffleboardPosition(BALL_PLATFORM, 0, 5);
+		createShuffleboardPosition(BALL_SLIDE, 0, 6);
 
-		createShuffleboardPosition(ALL_BOT, 2, 1);
+		createShuffleboardPosition(ALL_BOT, 1, 1);
 
-		createShuffleboardPosition(CONE_PICKUP, 3, 1);
-		createShuffleboardPosition(CONE_TOP, 3, 2);
-		createShuffleboardPosition(CONE_MID, 3, 3);
-		createShuffleboardPosition(CONE_PLATFORM, 3, 5);
+		createShuffleboardPosition(CONE_PICKUP, 2, 1);
+		createShuffleboardPosition(CONE_TOP, 2, 2);
+		createShuffleboardPosition(CONE_MID, 2, 3);
+		createShuffleboardPosition(CONE_PLATFORM, 2, 5);
+		createShuffleboardPosition(CONE_SLIDE, 2, 6);
 
 		armtab.add(armposes);
 		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));

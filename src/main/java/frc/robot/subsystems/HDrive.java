@@ -106,6 +106,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 				vm += signum(dvm - vm) * LOOP_TIME * MID_CONSTRAINTS.maxAcceleration;
 				am = signum(dvm - vm) * MID_CONSTRAINTS.maxAcceleration;
 			}
+                        else vm = dvm;
 
 			vl = dvl;
 			vr = dvr;

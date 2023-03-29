@@ -14,7 +14,7 @@ public class Drive extends CommandBase {
 	@Override
 	public void execute() {
 		double vf = -Util.curvedDeadZone(leftjs.getY()) * DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity;
-		double vs = -Util.curvedDeadZone(leftjs.getX()) * DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity;
+		double vs = -Util.curvedDeadZone(leftjs.getX()) * DrivetrainConstants.MID_CONSTRAINTS.maxVelocity;
 		double w = -Util.curvedDeadZone(rightjs.getX())
 				* DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity
 				/ DrivetrainConstants.RADIUS;

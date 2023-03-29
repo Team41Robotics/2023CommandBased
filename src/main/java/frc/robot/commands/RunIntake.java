@@ -36,7 +36,7 @@ public class RunIntake extends CommandBase {
 	}
 
 	@Override
-	public void initialize() {
+	public void initialize() { // PRESERVE FALSE: -cone +cube intake
 		maxVel = 0;
 		startTime = Timer.getFPGATimestamp();
 		if (preserve)
