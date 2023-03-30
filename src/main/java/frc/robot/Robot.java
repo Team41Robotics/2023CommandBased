@@ -3,7 +3,6 @@ package frc.robot;
 import static frc.robot.RobotContainer.*;
 import static frc.robot.constants.Constants.*;
 import static frc.robot.constants.Constants.ArmPos.*;
-import static java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -11,11 +10,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.ArmTo;
@@ -26,7 +23,6 @@ import frc.robot.commands.GoTo;
 import frc.robot.commands.HoldArm;
 import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
-import frc.robot.constants.MechanicalConstants.ArmConstants;
 import frc.robot.util.Transform2d;
 
 public class Robot extends TimedRobot {
@@ -64,7 +60,6 @@ public class Robot extends TimedRobot {
 		if (has_been_enabled) return;
 		has_been_enabled = true;
 		odom.start();
-		arm.elev.getEncoder().setPosition(0);
 	}
 
 	@Override
@@ -75,33 +70,10 @@ public class Robot extends TimedRobot {
 		double delay = AutonomousRoutine.AUTO_DELAY_CHOOSER.getSelected();
 		if (autonomousCommand != null) {
 			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
-			// schedule(cmd);
+			schedule(cmd);
 		}
-		schedule(new SequentialCommandGroup(
-						new InstantCommand(() -> arm.jt2.set(.3), arm),
-						new WaitUntilCommand(() -> !arm.joint2_limit.get()),
-						new InstantCommand(() -> arm.jt2.set(0)),
-						new InstantCommand(
-								() -> arm.jt2.getEncoder().setPosition(2.5362667 * ArmConstants.JOINT2_RATIO / 2 / PI)),
-						new ParallelCommandGroup(new SequentialCommandGroup(
-								new InstantCommand(() -> arm.jt2.set(-.5)),
-								new WaitUntilCommand(() -> arm.getJoint2Pos() < 1.2),
-								new InstantCommand(() -> arm.jt2.set(0)))),
-						new SequentialCommandGroup(
-								new InstantCommand(() -> arm.jt1.set(.5)),
-								new WaitUntilCommand(() ->
-										arm.jt1.getEncoder().getVelocity() / 60 * 2 * PI / ArmConstants.JOINT1_RATIO
-												> 0.1),
-								new WaitUntilCommand(() ->
-										arm.jt1.getEncoder().getVelocity() / 60 * 2 * PI / ArmConstants.JOINT1_RATIO
-												< 0.1),
-								new InstantCommand(() -> arm.jt1
-										.getEncoder()
-										.setPosition(16.15 / 180. * PI / 2 / PI * ArmConstants.JOINT1_RATIO)),
-								new InstantCommand(() -> arm.jt1.set(0))))
-				.asProxy()
-				.andThen(new ArmTo(CONE_MID).asProxy())
-				.andThen(new RunIntake(.6, 1)));
+		// schedule(new SequentialCommandGroup(
+		// new ZeroArm().asProxy().andThen(new ArmTo(CONE_MID).asProxy()).andThen(new RunIntake(.6, 1))));
 	}
 
 	@Override

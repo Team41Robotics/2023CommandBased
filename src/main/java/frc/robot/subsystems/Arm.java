@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -27,11 +28,7 @@ public class Arm extends SubsystemBase {
 	public final CANSparkMax jt1 = new CANSparkMax(Ports.CAN_JOINT1, MotorType.kBrushless);
 	public final CANSparkMax jt2 = new CANSparkMax(Ports.CAN_JOINT2, MotorType.kBrushless);
 
-	// TODO plug limit switches into spark max?
-	final DigitalInput lower_limit1 = new DigitalInput(Ports.DIO_LOWERLIMIT1);
-	final DigitalInput lower_limit2 = new DigitalInput(Ports.DIO_LOWERLIMIT2);
-	final DigitalInput upper_limit1 = new DigitalInput(Ports.DIO_UPPERLIMIT1);
-	final DigitalInput upper_limit2 = new DigitalInput(Ports.DIO_UPPERLIMIT2);
+	final DigitalInput lower_limit = new DigitalInput(Ports.DIO_LOWERLIMIT);
 
 	public final DigitalInput joint2_limit = new DigitalInput(Ports.DIO_JOINT2_LIMIT);
 
@@ -55,14 +52,16 @@ public class Arm extends SubsystemBase {
 		elev1.setIdleMode(IdleMode.kBrake);
 		jt1.setIdleMode(IdleMode.kBrake);
 		jt2.setIdleMode(IdleMode.kCoast);
-		elev.getEncoder().setPosition(0);
 		jt2.setInverted(true);
+                jt1.setInverted(true);
 
 		setPID(elev_vpid, 0, 0, 0, 0); // TODO actually have vpids (use LQR gains?)
 		setPID(elev1_vpid, 0, 0, 0, 0);
 		setPID(jt1_vpid, 0, 0, 0, 0);
 		setPID(jt2_vpid, 0, 0, 0, 0);
 		// TODO maybe config vel meas filter
+
+                elev.getEncoder().setPosition(0);
 	}
 
 	public void initShuffleboard() {
@@ -73,7 +72,7 @@ public class Arm extends SubsystemBase {
 		armtab.addNumber("joint 1 pos", () -> getJoint1Pos());
 		armtab.addNumber("joint 2 pos", () -> getJoint2Pos());
 		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
-		armtab.addBoolean("top limit switch", this::isTopLimitSwitch);
+                armtab.addBoolean("lower limit", this::isBotLimitSwitch);
 		armtab.addBoolean("joint2 limit switch", () -> !joint2_limit.get());
 
 		for (ArmPos pos : ArmPos.values()) {
@@ -133,7 +132,9 @@ public class Arm extends SubsystemBase {
 		if (abs(elev_pos - getElevPos()) > 0.1) elev_pid.setI(0);
 		else elev_pid.setI(1);
 		double elev_fb = elev_pid.calculate(getElevPos(), elev_pos);
+                elev_fb = MathUtil.clamp(elev_fb, -2, 2);
 		double jt1_fb = jt1_pid.calculate(getJoint1Pos(), jt1_pos);
+		jt1_fb = MathUtil.clamp(jt1_fb, -0.5, 0.5);
 		double jt2_fb = jt2_pid.calculate(getJoint2Pos(), jt2_pos);
 
 		double jt1_cos = cos(getJoint1Pos());
@@ -143,13 +144,11 @@ public class Arm extends SubsystemBase {
 		setMotor(elev1_vpid, elev_v * ELEV_RAD_PER_METER / 2 / PI, ELEV_IDENTF.getOutput(1, elev_v + elev_fb, elev_a));
 		setMotor(jt1_vpid, jt1_v * JOINT1_RATIO / 2 / PI, JOINT1_IDENTF.getOutput(jt1_cos, jt1_v + jt1_fb, jt1_a));
 		setMotor(jt2_vpid, jt2_v * JOINT2_RATIO / 2 / PI, JOINT2_IDENTF.getOutput(jt2_cos, jt2_v + jt2_fb, jt2_a));
-		// setMotor(jt2_vpid, 0, 4);
 	}
 
 	@Override
 	public void periodic() {
 		// TODO automatic zeroing at start
-		if (isTopLimitSwitch()) elev.getEncoder().setPosition(ELEV_LEN * ELEV_RAD_PER_METER / 2 / PI);
 		if (isBotLimitSwitch()) elev.getEncoder().setPosition(0);
 
 		// TODO limits (use sparkmax builtins?)
@@ -168,10 +167,6 @@ public class Arm extends SubsystemBase {
 	}
 
 	public boolean isBotLimitSwitch() {
-		return !(lower_limit1.get() && lower_limit2.get());
-	}
-
-	public boolean isTopLimitSwitch() {
-		return !(upper_limit1.get() && upper_limit2.get());
+		return !lower_limit.get();
 	}
 }

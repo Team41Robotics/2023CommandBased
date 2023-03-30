@@ -4,6 +4,7 @@ import static frc.robot.RobotContainer.*;
 import static frc.robot.constants.Constants.isCone;
 import static java.lang.Math.*;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -12,12 +13,12 @@ public class RunIntake extends CommandBase {
 	double startTime;
 	final double mintime;
 	final double maxtime;
-	boolean preserve;
+	boolean automatic_choice;
 	double maxVel = 0;
 
-	public RunIntake(double d, boolean preserve) {
+	public RunIntake(double d, boolean automatic_choice) {
 		this(d, .5, 99);
-		this.preserve = preserve;
+		this.automatic_choice = automatic_choice;
 	}
 
 	public RunIntake(double d) {
@@ -36,11 +37,13 @@ public class RunIntake extends CommandBase {
 	}
 
 	@Override
-	public void initialize() { // PRESERVE FALSE: -cone +cube intake
+	public void initialize() { // automatic_choice FALSE: -cone +cube intake
 		maxVel = 0;
 		startTime = Timer.getFPGATimestamp();
-		if (preserve)
-			intake.run(speed * (isCone[operator.queuedValue != null ? (int) operator.queuedValue.getY() : 0] ? 1 : -1));
+		if (automatic_choice && !DriverStation.isAutonomous()) {
+                        int y = operator.queuedValue==null?0:(int)operator.queuedValue.getY();
+			intake.run(speed * (isCone[y] ? -1 : 1));
+                }
 		else intake.run(speed);
 	}
 

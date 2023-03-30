@@ -37,12 +37,12 @@ public final class Constants {
 		ALL_BOT(0.116, -0.850, 1.172),
 		CONE_TOP(0.900, 0.104, 0.423),
 		CONE_MID(0.40, 0.163, 0.294),
-		CONE_PICKUP(0.050, -0.700, 0.740),
+		CONE_PICKUP(0.150, -0.700, 0.740),
 		BALL_PICKUP(0.000, -0.900, 1.000),
 		BALL_PLATFORM(0.950, 0.249, 0.55),
 		CONE_PLATFORM(0.950, 0.249, 0.0),
 		CONE_SLIDE(0.050, -0.739, 1.808),
-                BALL_SLIDE(0.140, -0.200, 1.523);
+		BALL_SLIDE(0.140, -0.200, 1.523);
 
 		public final double e;
 		public final double j1;
@@ -74,10 +74,7 @@ public final class Constants {
 
 		public static final int CAN_INTAKE = 13;
 
-		public static final int DIO_LOWERLIMIT1 = 2;
-		public static final int DIO_LOWERLIMIT2 = 3;
-		public static final int DIO_UPPERLIMIT1 = 0;
-		public static final int DIO_UPPERLIMIT2 = 1;
+		public static final int DIO_LOWERLIMIT = 0;
 		public static final int DIO_JOINT2_LIMIT = 5;
 	}
 

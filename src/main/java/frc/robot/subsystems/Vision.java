@@ -60,6 +60,7 @@ public class Vision extends SubsystemBase {
 		double time = res.getTimestampSeconds();
 
 		if (time > last_time[ci] && res.hasTargets()) {
+			// System.out.println("photon ci="+ci);
 			last_time[ci] = time;
 			PhotonPoseEstimator poseestimator = new PhotonPoseEstimator(
 					field,
@@ -107,12 +108,12 @@ public class Vision extends SubsystemBase {
 			tcos += o.cos * areas[i];
 			totarea += areas[i];
 		}
-		ptr = 0;
 		double norm = sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / totarea, ty / totarea, tcos / norm, tsin / norm);
 
 		if (sz > 3 && DriverStation.isDisabled()) LEDSegment.midSide.setColor(Color.kGreen);
 		else if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
+		// System.out.println("SEEING " + sz + " tags");
 		if (sz > 3) odom.update_origin(avg);
 	}
 
