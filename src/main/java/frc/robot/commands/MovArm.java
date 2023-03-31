@@ -26,6 +26,9 @@ public class MovArm extends CommandBase {
 
 	@Override
 	public void initialize() {
+		arm.elev_pid.reset();
+		arm.jt1_pid.reset();
+		arm.jt2_pid.reset();
 		st = Timer.getFPGATimestamp();
 		e = arm.getElevPos();
 		j1 = arm.getJoint1Pos();

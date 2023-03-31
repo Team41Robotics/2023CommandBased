@@ -130,9 +130,9 @@ public class Arm extends SubsystemBase {
 			double jt1_a,
 			double jt2_a) {
 		if (abs(elev_pos - getElevPos()) > 0.1) elev_pid.setI(0);
-		else elev_pid.setI(1);
+		else elev_pid.setI(2);
 		double elev_fb = elev_pid.calculate(getElevPos(), elev_pos);
-                elev_fb = MathUtil.clamp(elev_fb, -2, 2);
+                elev_fb = MathUtil.clamp(elev_fb, -1, 1);
 		double jt1_fb = jt1_pid.calculate(getJoint1Pos(), jt1_pos);
 		jt1_fb = MathUtil.clamp(jt1_fb, -0.5, 0.5);
 		double jt2_fb = jt2_pid.calculate(getJoint2Pos(), jt2_pos);

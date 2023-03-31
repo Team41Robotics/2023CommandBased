@@ -70,7 +70,7 @@ public class Vision extends SubsystemBase {
 							new Translation3d(camlocs[ci].x, camlocs[ci].y, 0),
 							new Rotation3d(0, 0, camlocs[ci].theta)));
 
-			poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+			poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
 			if (odom.origin.x == 0 && odom.origin.y == 0 && odom.origin.theta == 0)
 				poseestimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
 
@@ -81,6 +81,7 @@ public class Vision extends SubsystemBase {
 						pose.estimatedPose.getX(),
 						pose.estimatedPose.getY(),
 						pose.estimatedPose.getRotation().getZ());
+                                // poses[ptr % 32].print();
 				times[ptr % 32] = time;
 				areas[ptr % 32] =
 						pose.targetsUsed.stream().mapToDouble(x -> x.getArea()).sum();

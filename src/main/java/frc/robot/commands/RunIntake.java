@@ -16,6 +16,10 @@ public class RunIntake extends CommandBase {
 	boolean automatic_choice;
 	double maxVel = 0;
 
+        public RunIntake(double d, double maxtime, boolean automatic_choice) {
+                this(d,.5,maxtime);
+                this.automatic_choice = automatic_choice;
+        }
 	public RunIntake(double d, boolean automatic_choice) {
 		this(d, .5, 99);
 		this.automatic_choice = automatic_choice;

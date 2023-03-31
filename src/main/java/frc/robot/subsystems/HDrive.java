@@ -101,16 +101,18 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	@Override
 	public void periodic() {
 		if (DriverStation.isEnabled()) {
-			double am = 0;
 			if (abs(dvm - vm) > LOOP_TIME * MID_CONSTRAINTS.maxAcceleration) {
 				vm += signum(dvm - vm) * LOOP_TIME * MID_CONSTRAINTS.maxAcceleration;
-				am = signum(dvm - vm) * MID_CONSTRAINTS.maxAcceleration;
 			} else vm = dvm;
+			if (abs(dvl - vl) > LOOP_TIME * FWD_CONSTRAINTS.maxAcceleration) {
+				vl += signum(dvl - vl) * LOOP_TIME * FWD_CONSTRAINTS.maxAcceleration;
+			} else vl = dvl;
+			if (abs(dvr - vr) > LOOP_TIME * FWD_CONSTRAINTS.maxAcceleration) {
+				vr += signum(dvr - vr) * LOOP_TIME * FWD_CONSTRAINTS.maxAcceleration;
+			} else vr = dvr;
 
-			vl = dvl;
-			vr = dvr;
 			setLeft(vl, 0);
-			setMid(vm, am); // TODO does this even work properly
+			setMid(vm, 0); // TODO does this even work properly
 			setRight(vr, 0);
 		} else {
 			lpid.reset();

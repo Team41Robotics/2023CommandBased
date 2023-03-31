@@ -95,13 +95,17 @@ public class Robot extends TimedRobot {
 	}
 
 	public ArmPos getCurrentArm() {
+                System.out.println(operator.queuedValue);
 		int x = (operator.queuedValue != null ? operator.queuedValue.x : 0);
-		if (x == 0) return ALL_BOT;
-		return ArmPos.values()[x + (isCone[x] ? 3 : 0)];
+		int y = (operator.queuedValue != null ? operator.queuedValue.y : 0);
+                System.out.println(x);
+		if (x == 2) return ALL_BOT;
+                System.out.println(ArmPos.values()[x + (isCone[x] ? 0 : 3)].name());
+		return ArmPos.values()[x + (isCone[y] ? 3 : 0)];
 	}
 
 	public void configureButtons() { // TODO remap
-		new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
+		//new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
 
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
@@ -111,14 +115,16 @@ public class Robot extends TimedRobot {
 
 		new JoystickButton(leftjs, 3)
 				.onTrue(new ProxyCommand(() -> new GoTo(new Transform2d(
-								1.02690 + 1.5,
+								1.02690 + 1,
 								(operator.queuedValue != null ? operator.queuedValue.getY() - 1 : -1) * -0.5588
 										+ 4.41621,
 								Math.PI)))
-						.andThen(new ArmTo(getCurrentArm()).asProxy())
-						.andThen(new RunIntake(-.6, true))
+						.andThen(new ProxyCommand(() -> new ArmTo(getCurrentArm())))
+						.andThen(new RunIntake(-.6, 1, true))
+                                                .andThen(new ArmTo(BALL_SLIDE).asProxy())
+                                                 
 						.until(() -> rightjs.getRawButton(3)));
-		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
-		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
+		//new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
+		//new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
 	}
 }

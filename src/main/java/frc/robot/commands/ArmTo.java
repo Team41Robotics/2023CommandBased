@@ -21,6 +21,13 @@ public class ArmTo extends CommandBase { // TODO future trapezoid profile?
 		this.pos = pos;
 	}
 
+        @Override
+        public void initialize() {
+		arm.elev_pid.reset();
+		arm.jt1_pid.reset();
+		arm.jt2_pid.reset();
+        }
+
 	@Override
 	public void execute() {
 		arm.set(pos.e, pos.j1, pos.j2, 0, 0, 0);

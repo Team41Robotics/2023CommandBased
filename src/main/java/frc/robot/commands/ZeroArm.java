@@ -19,6 +19,8 @@ public class ZeroArm extends SequentialCommandGroup {
 	public ZeroArm() {
 		super(
                         // run arm until switch
+                        new InstantCommand(() -> arm.elev.set(0)),
+                        new InstantCommand(() -> arm.jt1.set(0)),
                         new InstantCommand(() -> arm.jt2.set(.3), arm),
                         new WaitUntilCommand(() -> !arm.joint2_limit.get()),
                         new InstantCommand(() -> arm.jt2.set(0)),
@@ -28,9 +30,13 @@ public class ZeroArm extends SequentialCommandGroup {
 
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
-                                        new InstantCommand(() -> arm.jt2.set(-.5)), // go back out
-                                        new WaitUntilCommand(() -> arm.getJoint2Pos() < 1.2),
-                                        new InstantCommand(() -> arm.jt2.set(0))
+                                        new InstantCommand(() -> arm.jt2.set(-1)), // go back out
+                                        new WaitUntilCommand(() -> arm.getJoint2Pos() < PI*75/180.),
+                                        new InstantCommand(() -> arm.jt2.setVoltage(ArmConstants.JOINT2_IDENTF.kG * cos(PI/4))),
+                                        new WaitCommand(1),
+                                        new InstantCommand(() -> arm.jt2.set(-1)), // go back out
+                                        new WaitUntilCommand(() -> arm.getJoint2Pos() < PI*55/180.),
+                                        new InstantCommand(() -> arm.jt2.setVoltage(ArmConstants.JOINT2_IDENTF.kG * cos(PI/4)))
                                 ),
                                 new SequentialCommandGroup(
                                         new WaitCommand(1),
@@ -42,6 +48,8 @@ public class ZeroArm extends SequentialCommandGroup {
                                         new InstantCommand(() -> arm.jt1.set(0))
                                 )
                         )
+                        /*
+                        */
                 );
 	}
         // spotless:on
