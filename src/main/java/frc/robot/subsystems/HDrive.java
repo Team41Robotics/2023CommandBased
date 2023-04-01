@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.Balance;
 
 public class HDrive extends SubsystemBase { // TODO sense wheel current if touching ground
 	final WPI_TalonFX lef = new WPI_TalonFX(Ports.CAN_DT_L1);
@@ -54,24 +55,26 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 		ShuffleboardTab dttab = Shuffleboard.getTab("Drivetrain");
 
 		dttab.add(this);
-		dttab.addNumber("l Encoder", () -> getLeftPos());
-		dttab.addNumber("m Encoder", () -> getMidPos());
-		dttab.addNumber("r Encoder", () -> getRightPos());
-		dttab.add("l", lpid);
-		dttab.add("m", mpid);
-		dttab.add("r", rpid);
+		// dttab.addNumber("l Encoder", () -> getLeftPos());
+		// dttab.addNumber("m Encoder", () -> getMidPos());
+		// dttab.addNumber("r Encoder", () -> getRightPos());
+		// dttab.add("l", lpid);
+		// dttab.add("m", mpid);
+		// dttab.add("r", rpid);
 
-		dttab.addNumber("l PID err", () -> lpid.getPositionError());
-		dttab.addNumber("m PID err", () -> mpid.getPositionError());
-		dttab.addNumber("r PID err", () -> rpid.getPositionError());
+		// dttab.addNumber("l PID err", () -> lpid.getPositionError());
+		// dttab.addNumber("m PID err", () -> mpid.getPositionError());
+		// dttab.addNumber("r PID err", () -> rpid.getPositionError());
 
-		dttab.addNumber("l Encoder Velocity", () -> getLeftVel());
-		dttab.addNumber("m Encoder Velocity", () -> getMidVel());
-		dttab.addNumber("r Encoder Velocity", () -> getRightVel());
+		// dttab.addNumber("l Encoder Velocity", () -> getLeftVel());
+		// dttab.addNumber("m Encoder Velocity", () -> getMidVel());
+		// dttab.addNumber("r Encoder Velocity", () -> getRightVel());
 
-		dttab.addNumber("l motor setpoint", () -> vl);
-		dttab.addNumber("r motor setpoint", () -> vr);
-		dttab.addNumber("m motor setpoint", () -> vm);
+		// dttab.addNumber("l motor setpoint", () -> vl);
+		// dttab.addNumber("r motor setpoint", () -> vr);
+		// dttab.addNumber("m motor setpoint", () -> vm);
+
+		dttab.add(new Balance());
 	}
 
 	public void drive(double vx, double vy, double w) {
@@ -101,7 +104,7 @@ public class HDrive extends SubsystemBase { // TODO sense wheel current if touch
 	@Override
 	public void periodic() {
 		if (DriverStation.isEnabled()) {
-			if (abs(dvm - vm) > LOOP_TIME * MID_CONSTRAINTS.maxAcceleration) {
+			if (abs(vm) < abs(dvm) && abs(dvm - vm) > LOOP_TIME * MID_CONSTRAINTS.maxAcceleration) {
 				vm += signum(dvm - vm) * LOOP_TIME * MID_CONSTRAINTS.maxAcceleration;
 			} else vm = dvm;
 			if (abs(dvl - vl) > LOOP_TIME * FWD_CONSTRAINTS.maxAcceleration) {

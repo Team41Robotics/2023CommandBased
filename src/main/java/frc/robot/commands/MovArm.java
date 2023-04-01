@@ -66,6 +66,6 @@ public class MovArm extends CommandBase {
 		double v = sec * (vx * cos(alpha) + vy * sin(alpha));
 		if (arm.isBotLimitSwitch() && v < 0) return true;
 		return Timer.getFPGATimestamp() > st + t
-				|| Util.normRot(arm.getJoint1Pos() + Math.PI / 2 - ELEV_THETA) < 5 / 180. * Math.PI;
+				|| Util.normRot(arm.getJoint1Pos() + Math.PI / 2 - ELEV_THETA) < 1 / 180. * Math.PI;
 	}
 }

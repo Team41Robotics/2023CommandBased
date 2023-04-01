@@ -22,7 +22,7 @@ public class MechanicalConstants {
 		public static final SystemIdentification MID_IDENTF = new SystemIdentification(0, 0.22879, 4.4621, 0.69337);
 
 		public static final Constraints FWD_CONSTRAINTS = new Constraints(4, 4);
-		public static final Constraints MID_CONSTRAINTS = new Constraints(3, 3);
+		public static final Constraints MID_CONSTRAINTS = new Constraints(1.5, 0.3);
 
 		// public static final double RADIUS = 0.6512 / 2;
 		public static final double RADIUS = 0.50833;

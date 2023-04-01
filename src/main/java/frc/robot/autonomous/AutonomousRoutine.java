@@ -1,12 +1,25 @@
 package frc.robot.autonomous;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.GoTo;
 import frc.robot.commands.ZeroArm;
 import frc.robot.util.Transform2d;
+import frc.robot.util.Util;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -27,17 +40,51 @@ public class AutonomousRoutine {
 	private static final Map<String, AutonomousRoutine> AUTO_REGISTRY = new HashMap<>();
 
 	/** Most basic auto already defined */
-	public static final AutonomousRoutine DO_NOTHING =
-			new AutonomousRoutine("Do Nothing", () -> new ZeroArm(), new Transform2d());
+	public static final AutonomousRoutine DO_NOTHING = new AutonomousRoutine("Do Nothing", () -> new ZeroArm());
 
 	private final AutonomousProvider provider;
 	private final String name;
-	public final Transform2d startPos;
+	public final ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
 
-	private AutonomousRoutine(String name, AutonomousProvider provider, Transform2d startPos) {
+	@SuppressWarnings("unchecked")
+	public void dfs_show(ArrayList<Pose2d> poses, Command auton)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		if (auton == null) return;
+		if (auton instanceof GoTo) {
+			Transform2d pose = ((GoTo) auton).target;
+			if (DriverStation.getAlliance() == Alliance.Red) pose = Util.flipPoseAcrossField(pose);
+			poses.add(new Pose2d(pose.x, pose.y, new Rotation2d(pose.theta)));
+		}
+		if (auton instanceof SequentialCommandGroup) {
+			Field f = SequentialCommandGroup.class.getDeclaredField("m_commands");
+			f.setAccessible(true);
+			for (Command cmd : (ArrayList<Command>) f.get(auton)) dfs_show(poses, cmd);
+		}
+		if (auton instanceof ParallelCommandGroup) {
+			Field f = ParallelCommandGroup.class.getDeclaredField("m_commands");
+			f.setAccessible(true);
+			for (Command cmd : ((HashMap<Command, Boolean>) f.get(auton)).keySet()) dfs_show(poses, cmd);
+		}
+		if (auton instanceof ParallelDeadlineGroup) {
+			Field f = ParallelDeadlineGroup.class.getDeclaredField("m_commands");
+			f.setAccessible(true);
+			for (Command cmd : ((HashMap<Command, Boolean>) f.get(auton)).keySet()) dfs_show(poses, cmd);
+		}
+		if (auton instanceof ParallelRaceGroup) {
+			Field f = ParallelRaceGroup.class.getDeclaredField("m_commands");
+			f.setAccessible(true);
+			for (Command cmd : (HashSet<Command>) f.get(auton)) dfs_show(poses, cmd);
+		}
+	}
+
+	private AutonomousRoutine(String name, AutonomousProvider provider) {
 		this.provider = provider;
 		this.name = name;
-		this.startPos = startPos;
+		try {
+			dfs_show(poses, provider.construct());
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getName() {
@@ -59,11 +106,11 @@ public class AutonomousRoutine {
 	 * @param name The name to show in SmartDashboard
 	 * @param provider A lambda which returns a command or null
 	 */
-	public static void create(String name, AutonomousProvider provider, Transform2d startPos) {
+	public static void create(String name, AutonomousProvider provider) {
 		if (AUTO_REGISTRY.get(name) != null)
 			throw new IllegalArgumentException(String.format("Duplicate autonomous registered with name \"%s\"", name));
 
-		AUTO_REGISTRY.put(name, new AutonomousRoutine(name, provider, startPos));
+		AUTO_REGISTRY.put(name, new AutonomousRoutine(name, provider));
 	}
 
 	/**

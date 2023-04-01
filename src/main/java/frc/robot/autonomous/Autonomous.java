@@ -6,8 +6,8 @@ import static java.lang.Math.PI;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArmTo;
 import frc.robot.commands.Balance;
 import frc.robot.commands.GoTo;
@@ -26,7 +26,6 @@ public class Autonomous {
                                 new ZeroArm().asProxy()
                         ),
                         new ArmTo(first).asProxy(),
-                        new WaitCommand(1),
                         new GoTo(new Transform2d(1.02690 + .9, y, PI)),
                         new RunIntake(-.6, .5),
                         new ArmTo(second).asProxy()
@@ -37,45 +36,51 @@ public class Autonomous {
                 // HP SIDE AUTONS
                 create(
                         "HP SIDE Score Auton",
-                        () -> createScoreAuton(4.41621, BALL_TOP, BALL_SLIDE),
-                        new Transform2d(1.02690 + 1, 4.41621, 0)
+                        () -> createScoreAuton(4.41621, BALL_TOP, BALL_SLIDE)
                 );
 		create(
                         "Taxi HP SIDE Auton",
                         () -> new SequentialCommandGroup(
                                 createScoreAuton(4.41621, BALL_TOP, BALL_SLIDE),
-                                new GoTo(new Transform2d(1.02690 + 5, 4.41621, 0))
-                        ), new Transform2d(1.02690 + 1, 4.41621, 0)
+                                new GoTo(new Transform2d(1.02690 + 5, 4.41621, PI))
+                        )
                 );
                 // CENTER AUTONS
                 create(
                         "Center Score Auton",
-                        () -> createScoreAuton(2.73981, BALL_TOP, BALL_SLIDE),
-                        new Transform2d(1.02690 + 1, 2.73981, 0)
+                        () -> createScoreAuton(2.73981, BALL_TOP, BALL_SLIDE)
+                );
+		create(
+                        "Balance Auton",
+                        () -> new SequentialCommandGroup(
+                                createScoreAuton(2.73981, BALL_TOP, BALL_SLIDE),
+                                new GoTo(new Transform2d(1.02690 + 1.2, 2.73891, 0)),
+                                new GoTo(new Transform2d(1.02690 + 3, 2.73981, 0)),
+                                new Balance()
+                        )
                 );
 		create(
                         "Taxi Balance Auton",
                         () -> new SequentialCommandGroup(
                                 createScoreAuton(2.73981, BALL_TOP, BALL_SLIDE),
-                                new GoTo(new Transform2d(1.02690 + 5, 2.73981, PI)),
-                                new GoTo(new Transform2d(1.02690 + 3, 2.73981, PI)),
+                                new GoTo(new Transform2d(1.02690 + 1.2, 2.73891, 0)),
+                                new GoTo(new Transform2d(1.02690 + 5, 2.73981, 0)),
+                                new GoTo(new Transform2d(1.02690 + 3, 2.73981, 0)),
                                 new Balance()
-                        ), new Transform2d(1.02690 + 1, 2.73981, 0)
+                        )
                 );
                 // OTHER SIDE AUTONS
                 create(
                         "OTHER Score Auton",
-                        () -> createScoreAuton(1.05314, BALL_TOP, BALL_SLIDE),
-                        new Transform2d(1.02690 + 1, 1.05314, 0)
+                        () -> createScoreAuton(1.05314, BALL_TOP, BALL_SLIDE)
                 );
 		create(
                         "Taxi OTHER Auton",
                         () -> new SequentialCommandGroup(
                                 createScoreAuton(1.05341, BALL_TOP, BALL_SLIDE),
-                                new GoTo(new Transform2d(1.02690 + 5, 1.06341, 0))
-                        ), new Transform2d(1.02690 + 1, 1.06431, 0)
+                                new GoTo(new Transform2d(1.02690 + 5, 1.06341, PI))
+                        )
                 );
-                /*
 		create(
                         "OTHER 22BALL Auton",
                         () -> new SequentialCommandGroup(
@@ -96,8 +101,8 @@ public class Autonomous {
                                 new ArmTo(BALL_TOP).asProxy(),
                                 new RunIntake(-.6, .5),
                                 new ArmTo(BALL_SLIDE).asProxy()
-                        ), new Transform2d(1.02690 + 3, 1.06431, 0)
-                ); */
+                        )
+                );
 	}
         // spotless:on
 }

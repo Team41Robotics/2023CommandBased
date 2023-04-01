@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.ArmTo;
+import frc.robot.commands.ZeroArm;
 import frc.robot.constants.Constants.Ports;
 
 public class Arm extends SubsystemBase {
@@ -78,22 +79,23 @@ public class Arm extends SubsystemBase {
 		for (ArmPos pos : ArmPos.values()) {
 			armposes.addOption(pos.name(), pos);
 		}
-		createShuffleboardPosition(BALL_PICKUP, 0, 1);
-		createShuffleboardPosition(BALL_TOP, 0, 2);
-		createShuffleboardPosition(BALL_MID, 0, 3);
-		createShuffleboardPosition(BALL_PLATFORM, 0, 5);
-		createShuffleboardPosition(BALL_SLIDE, 0, 6);
+		createShuffleboardPosition(BALL_TOP, 0, 0);
+		createShuffleboardPosition(BALL_MID, 1, 0);
+		createShuffleboardPosition(CONE_TOP, 0, 2);
+		createShuffleboardPosition(CONE_MID, 1, 2);
+		createShuffleboardPosition(ALL_BOT, 2, 1);
 
-		createShuffleboardPosition(ALL_BOT, 1, 1);
+		createShuffleboardPosition(BALL_PICKUP, 0, 4);
+		createShuffleboardPosition(BALL_PLATFORM, 1, 4);
+		createShuffleboardPosition(BALL_SLIDE, 2, 4);
 
-		createShuffleboardPosition(CONE_PICKUP, 2, 1);
-		createShuffleboardPosition(CONE_TOP, 2, 2);
-		createShuffleboardPosition(CONE_MID, 2, 3);
-		createShuffleboardPosition(CONE_PLATFORM, 2, 5);
-		createShuffleboardPosition(CONE_SLIDE, 2, 6);
+		createShuffleboardPosition(CONE_PICKUP, 0, 5);
+		createShuffleboardPosition(CONE_PLATFORM, 1, 5);
+		createShuffleboardPosition(CONE_SLIDE, 2, 5);
 
 		armtab.add(armposes);
 		armtab.add("GOTO POS", new ProxyCommand(() -> new ArmTo(armposes.getSelected())));
+		armtab.add("ZERO", new ZeroArm());
 	}
 
 	private void createShuffleboardPosition(ArmPos pos, int y, int x) {

@@ -3,13 +3,16 @@ package frc.robot;
 import static frc.robot.RobotContainer.*;
 import static frc.robot.constants.Constants.*;
 import static frc.robot.constants.Constants.ArmPos.*;
+import static java.lang.Math.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -18,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autonomous.AutonomousRoutine;
 import frc.robot.commands.ArmTo;
 import frc.robot.commands.Balance;
@@ -25,18 +29,17 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
 import frc.robot.commands.GoTo;
 import frc.robot.commands.HoldArm;
+import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
+import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.ArmPos;
 import frc.robot.util.Transform2d;
-import frc.robot.util.Util;
+import java.util.ArrayList;
 
 public class Robot extends TimedRobot {
 	public boolean FOD;
 	public Command autonomousCommand;
 	public Field2d autonField = new Field2d();
-
-	public Robot() {
-		super();
-	}
 
 	public void schedule(Command cmd) {
 		CommandScheduler.getInstance().schedule(cmd);
@@ -59,9 +62,17 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic() {
 		CommandScheduler.getInstance().run();
 
-		Transform2d auton = AutonomousRoutine.AUTO_CHOOSER.getSelected().startPos;
-		if (DriverStation.getAlliance() == Alliance.Red) auton = Util.flipPoseAcrossField(auton);
-		autonField.setRobotPose(auton.x, auton.y, new Rotation2d(auton.theta));
+		ArrayList<Pose2d> poses = AutonomousRoutine.AUTO_CHOOSER.getSelected().poses;
+		autonField.setRobotPose(odom.now().x, odom.now().y, new Rotation2d(odom.now().theta));
+		if (DriverStation.getAlliance() == Alliance.Red)
+			for (int i = 0; i < poses.size(); i++)
+				poses.set(
+						i,
+						new Pose2d(
+								Constants.FIELD_LENGTH - poses.get(i).getX(),
+								poses.get(i).getY(),
+								new Rotation2d(PI - poses.get(i).getRotation().getRadians())));
+		autonField.getObject("Robt").setPoses(poses);
 	}
 
 	boolean has_been_enabled = false;
@@ -82,8 +93,6 @@ public class Robot extends TimedRobot {
 			SequentialCommandGroup cmd = new SequentialCommandGroup(new WaitCommand(delay), autonomousCommand);
 			schedule(cmd);
 		}
-		// schedule(new SequentialCommandGroup(
-		// new ZeroArm().asProxy().andThen(new ArmTo(CONE_MID).asProxy()).andThen(new RunIntake(.6, 1))));
 	}
 
 	@Override
@@ -118,7 +127,7 @@ public class Robot extends TimedRobot {
 		// new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
 
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
-		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
+
 		new JoystickButton(rightjs, 1).onTrue(new RunIntake(.6, true));
 		new JoystickButton(leftjs, 1).onTrue(new RunIntake(-.6, true));
 		new JoystickButton(rightjs, 2).onTrue(new RunIntake(0));
@@ -133,7 +142,14 @@ public class Robot extends TimedRobot {
 						.andThen(new RunIntake(-.6, 1, true))
 						.andThen(new ArmTo(BALL_SLIDE).asProxy())
 						.until(() -> rightjs.getRawButton(3)));
-		// new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
-		// new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
+
+		new JoystickButton(DS, 2).onTrue(new Balance().until(() -> rightjs.getRawButton(3)));
+		new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
+		new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
+
+		new POVButton(leftjs, 0).onTrue(new InstantCommand(() -> leds.flash(Color.kYellow)));
+		new POVButton(rightjs, 0).onTrue(new InstantCommand(() -> leds.flash(Color.kBlue)));
+		new POVButton(leftjs, 180).onTrue(new InstantCommand(() -> leds.flash(Color.kBlack)));
+		new POVButton(rightjs, 180).onTrue(new InstantCommand(() -> leds.flash(Color.kBlack)));
 	}
 }

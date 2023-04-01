@@ -714,7 +714,7 @@ public class Operator extends SubsystemBase {
 				}
 			}
 		}
-		if (DriverStation.isEnabled() && leftjs.getPOV() == 180) {
+		if (DriverStation.isEnabled() && DS.getRawButton(1)) {
 			if (heldObject == HeldObject.CONE) leds.flash(Color.kYellow);
 			if (heldObject == HeldObject.CUBE) leds.flash(Color.kPurple);
 			if (heldObject == HeldObject.NONE) leds.allRainbow();

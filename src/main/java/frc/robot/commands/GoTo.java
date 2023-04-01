@@ -13,8 +13,8 @@ import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
 
 public class GoTo extends CommandBase {
-	Transform2d target;
-	double fvx, fvy;
+	public Transform2d target;
+	public double fvx, fvy;
 
 	public GoTo(Transform2d target) {
 		this(target, true);

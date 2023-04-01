@@ -71,6 +71,7 @@ public class Odometry extends SubsystemBase {
 		pl_enc = lenc;
 		pm_enc = menc;
 		pr_enc = renc;
+		// double dtheta = (dr - dl) / 2 / DrivetrainConstants.RADIUS;
 		double df = (dl + dr) / 2;
 		if (!isStarted) return;
 

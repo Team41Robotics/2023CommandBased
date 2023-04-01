@@ -47,8 +47,6 @@ public class ZeroArm extends SequentialCommandGroup {
                                         new InstantCommand(() -> arm.jt1.set(0))
                                 )
                         )
-                        /*
-                        */
                 );
 	}
         // spotless:on
