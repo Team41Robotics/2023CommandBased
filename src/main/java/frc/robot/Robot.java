@@ -4,8 +4,12 @@ import static frc.robot.RobotContainer.*;
 import static frc.robot.constants.Constants.*;
 import static frc.robot.constants.Constants.ArmPos.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -21,13 +25,14 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.FODdrive;
 import frc.robot.commands.GoTo;
 import frc.robot.commands.HoldArm;
-import frc.robot.commands.MovArm;
 import frc.robot.commands.RunIntake;
 import frc.robot.util.Transform2d;
+import frc.robot.util.Util;
 
 public class Robot extends TimedRobot {
 	public boolean FOD;
 	public Command autonomousCommand;
+	public Field2d autonField = new Field2d();
 
 	public Robot() {
 		super();
@@ -46,12 +51,17 @@ public class Robot extends TimedRobot {
 		Shuffleboard.getTab("Drivetrain").addBoolean("FOD", () -> FOD);
 		hdrive.setDefaultCommand(new ConditionalCommand(new FODdrive(), new Drive(), () -> FOD));
 		arm.setDefaultCommand(new HoldArm());
+		AutonomousRoutine.AUTO_TAB.add(autonField);
 		AutonomousRoutine.initShuffleboard();
 	}
 
 	@Override
 	public void robotPeriodic() {
 		CommandScheduler.getInstance().run();
+
+		Transform2d auton = AutonomousRoutine.AUTO_CHOOSER.getSelected().startPos;
+		if (DriverStation.getAlliance() == Alliance.Red) auton = Util.flipPoseAcrossField(auton);
+		autonField.setRobotPose(auton.x, auton.y, new Rotation2d(auton.theta));
 	}
 
 	boolean has_been_enabled = false;
@@ -95,17 +105,17 @@ public class Robot extends TimedRobot {
 	}
 
 	public ArmPos getCurrentArm() {
-                System.out.println(operator.queuedValue);
+		System.out.println(operator.queuedValue);
 		int x = (operator.queuedValue != null ? operator.queuedValue.x : 0);
 		int y = (operator.queuedValue != null ? operator.queuedValue.y : 0);
-                System.out.println(x);
+		System.out.println(x);
 		if (x == 2) return ALL_BOT;
-                System.out.println(ArmPos.values()[x + (isCone[x] ? 0 : 3)].name());
+		System.out.println(ArmPos.values()[x + (isCone[x] ? 0 : 3)].name());
 		return ArmPos.values()[x + (isCone[y] ? 3 : 0)];
 	}
 
 	public void configureButtons() { // TODO remap
-		//new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
+		// new JoystickButton(DS, 1).onTrue(new InstantCommand(operator::setPiece));
 
 		new JoystickButton(leftjs, 2).onTrue(new InstantCommand(() -> FOD = !FOD));
 		new JoystickButton(leftjs, 4).onTrue(new Balance().until(() -> rightjs.getRawButton(2)));
@@ -121,10 +131,9 @@ public class Robot extends TimedRobot {
 								Math.PI)))
 						.andThen(new ProxyCommand(() -> new ArmTo(getCurrentArm())))
 						.andThen(new RunIntake(-.6, 1, true))
-                                                .andThen(new ArmTo(BALL_SLIDE).asProxy())
-                                                 
+						.andThen(new ArmTo(BALL_SLIDE).asProxy())
 						.until(() -> rightjs.getRawButton(3)));
-		//new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
-		//new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
+		// new JoystickButton(DS, 5).whileTrue(new MovArm(0, -0.1, 1));
+		// new JoystickButton(DS, 6).whileTrue(new MovArm(0, 0.1, 1));
 	}
 }

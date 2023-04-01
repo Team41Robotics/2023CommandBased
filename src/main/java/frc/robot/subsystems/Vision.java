@@ -81,7 +81,7 @@ public class Vision extends SubsystemBase {
 						pose.estimatedPose.getX(),
 						pose.estimatedPose.getY(),
 						pose.estimatedPose.getRotation().getZ());
-                                // poses[ptr % 32].print();
+				// poses[ptr % 32].print();
 				times[ptr % 32] = time;
 				areas[ptr % 32] =
 						pose.targetsUsed.stream().mapToDouble(x -> x.getArea()).sum();

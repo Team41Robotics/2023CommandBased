@@ -3,10 +3,9 @@ package frc.robot.autonomous;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ZeroArm;
-
+import frc.robot.util.Transform2d;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,14 +27,17 @@ public class AutonomousRoutine {
 	private static final Map<String, AutonomousRoutine> AUTO_REGISTRY = new HashMap<>();
 
 	/** Most basic auto already defined */
-	public static final AutonomousRoutine DO_NOTHING = new AutonomousRoutine("Do Nothing", () -> new ZeroArm());
+	public static final AutonomousRoutine DO_NOTHING =
+			new AutonomousRoutine("Do Nothing", () -> new ZeroArm(), new Transform2d());
 
 	private final AutonomousProvider provider;
 	private final String name;
+	public final Transform2d startPos;
 
-	private AutonomousRoutine(String name, AutonomousProvider provider) {
+	private AutonomousRoutine(String name, AutonomousProvider provider, Transform2d startPos) {
 		this.provider = provider;
 		this.name = name;
+		this.startPos = startPos;
 	}
 
 	public String getName() {
@@ -47,7 +49,7 @@ public class AutonomousRoutine {
 	 *
 	 * @return The instaniated base command of the auto (Might be null)
 	 */
-	public CommandBase construct() {
+	public Command construct() {
 		return provider.construct();
 	}
 
@@ -57,11 +59,11 @@ public class AutonomousRoutine {
 	 * @param name The name to show in SmartDashboard
 	 * @param provider A lambda which returns a command or null
 	 */
-	public static void create(String name, AutonomousProvider provider) {
+	public static void create(String name, AutonomousProvider provider, Transform2d startPos) {
 		if (AUTO_REGISTRY.get(name) != null)
 			throw new IllegalArgumentException(String.format("Duplicate autonomous registered with name \"%s\"", name));
 
-		AUTO_REGISTRY.put(name, new AutonomousRoutine(name, provider));
+		AUTO_REGISTRY.put(name, new AutonomousRoutine(name, provider, startPos));
 	}
 
 	/**
@@ -70,7 +72,7 @@ public class AutonomousRoutine {
 	 * @return
 	 */
 	interface AutonomousProvider {
-		CommandBase construct();
+		Command construct();
 	}
 
 	/** Adds all values from registry to Shuffleboard */

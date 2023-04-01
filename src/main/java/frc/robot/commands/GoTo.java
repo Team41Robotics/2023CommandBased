@@ -6,8 +6,8 @@ import static java.lang.Math.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.util.Transform2d;
 import frc.robot.util.Util;
@@ -44,7 +44,7 @@ public class GoTo extends CommandBase {
 		xPID.reset();
 		yPID.reset();
 		wPID.reset();
-                last_time = Timer.getFPGATimestamp();
+		last_time = Timer.getFPGATimestamp();
 	}
 
 	@Override
@@ -80,19 +80,19 @@ public class GoTo extends CommandBase {
 		hdrive.drive(0, 0, 0);
 	}
 
-        public double last_time;
+	public double last_time;
 
 	public boolean isFinished() {
-                if(fvx == 0 && fvy == 0) {
-                        if(abs(odom.now().x - target.x) <= GOTO_XY_TOLERANCE
-                                        && abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
-                                        && abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_TOLERANCE);
-                        else
-                                        last_time = Timer.getFPGATimestamp();
-                        return Timer.getFPGATimestamp() - last_time > .5;
-                }
-                else return abs(odom.now().x - target.x) <= GOTO_XY_TOLERANCE
-                                        && abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
-                                        && abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_TOLERANCE;
+		if (fvx == 0 && fvy == 0) {
+			if (abs(odom.now().x - target.x) <= GOTO_XY_TOLERANCE
+					&& abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
+					&& abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_TOLERANCE)
+				;
+			else last_time = Timer.getFPGATimestamp();
+			return Timer.getFPGATimestamp() - last_time > .5;
+		} else
+			return abs(odom.now().x - target.x) <= GOTO_XY_TOLERANCE
+					&& abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
+					&& abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_TOLERANCE;
 	}
 }

@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
 		jt1.setIdleMode(IdleMode.kBrake);
 		jt2.setIdleMode(IdleMode.kCoast);
 		jt2.setInverted(true);
-                jt1.setInverted(true);
+		jt1.setInverted(true);
 
 		setPID(elev_vpid, 0, 0, 0, 0); // TODO actually have vpids (use LQR gains?)
 		setPID(elev1_vpid, 0, 0, 0, 0);
@@ -61,7 +61,7 @@ public class Arm extends SubsystemBase {
 		setPID(jt2_vpid, 0, 0, 0, 0);
 		// TODO maybe config vel meas filter
 
-                elev.getEncoder().setPosition(0);
+		elev.getEncoder().setPosition(0);
 	}
 
 	public void initShuffleboard() {
@@ -72,7 +72,7 @@ public class Arm extends SubsystemBase {
 		armtab.addNumber("joint 1 pos", () -> getJoint1Pos());
 		armtab.addNumber("joint 2 pos", () -> getJoint2Pos());
 		armtab.addNumber("joint 2 net pos", () -> getJoint1Pos() + getJoint2Pos());
-                armtab.addBoolean("lower limit", this::isBotLimitSwitch);
+		armtab.addBoolean("lower limit", this::isBotLimitSwitch);
 		armtab.addBoolean("joint2 limit switch", () -> !joint2_limit.get());
 
 		for (ArmPos pos : ArmPos.values()) {
@@ -132,7 +132,7 @@ public class Arm extends SubsystemBase {
 		if (abs(elev_pos - getElevPos()) > 0.1) elev_pid.setI(0);
 		else elev_pid.setI(2);
 		double elev_fb = elev_pid.calculate(getElevPos(), elev_pos);
-                elev_fb = MathUtil.clamp(elev_fb, -1, 1);
+		elev_fb = MathUtil.clamp(elev_fb, -1, 1);
 		double jt1_fb = jt1_pid.calculate(getJoint1Pos(), jt1_pos);
 		jt1_fb = MathUtil.clamp(jt1_fb, -0.5, 0.5);
 		double jt2_fb = jt2_pid.calculate(getJoint2Pos(), jt2_pos);

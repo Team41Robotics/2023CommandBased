@@ -16,10 +16,11 @@ public class RunIntake extends CommandBase {
 	boolean automatic_choice;
 	double maxVel = 0;
 
-        public RunIntake(double d, double maxtime, boolean automatic_choice) {
-                this(d,.5,maxtime);
-                this.automatic_choice = automatic_choice;
-        }
+	public RunIntake(double d, double maxtime, boolean automatic_choice) {
+		this(d, .5, maxtime);
+		this.automatic_choice = automatic_choice;
+	}
+
 	public RunIntake(double d, boolean automatic_choice) {
 		this(d, .5, 99);
 		this.automatic_choice = automatic_choice;
@@ -45,10 +46,9 @@ public class RunIntake extends CommandBase {
 		maxVel = 0;
 		startTime = Timer.getFPGATimestamp();
 		if (automatic_choice && !DriverStation.isAutonomous()) {
-                        int y = operator.queuedValue==null?0:(int)operator.queuedValue.getY();
+			int y = operator.queuedValue == null ? 0 : (int) operator.queuedValue.getY();
 			intake.run(speed * (isCone[y] ? -1 : 1));
-                }
-		else intake.run(speed);
+		} else intake.run(speed);
 	}
 
 	@Override

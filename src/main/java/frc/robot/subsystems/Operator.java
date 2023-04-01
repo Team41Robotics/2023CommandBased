@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.RobotContainer.*;
+import static frc.robot.constants.Constants.ArmPos.*;
 import static frc.robot.constants.Constants.OperatorConstants.*;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ArmTo;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 import java.awt.Point;
@@ -87,6 +89,9 @@ public class Operator extends SubsystemBase {
 		OPERATOR_TAB
 				.add("Cone", new InstantCommand(() -> heldObjectIn = HeldObject.CONE))
 				.withPosition(5, 0);
+
+		OPERATOR_TAB.add("BALL SLIDE", new ArmTo(BALL_SLIDE));
+		OPERATOR_TAB.add("CONE SLIDE", new ArmTo(CONE_SLIDE));
 
 		hpSuggestion = OPERATOR_TAB
 				.add("HP Suggestion", 0)
@@ -709,16 +714,10 @@ public class Operator extends SubsystemBase {
 				}
 			}
 		}
-		if (DriverStation.isEnabled()) {
-			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CONE.value) {
-				leds.flash(Color.kYellow);
-			}
-			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.CUBE.value) {
-				leds.flash(Color.kPurple);
-			}
-			if (hpSuggestion.getInteger(NodeState.NONE.value) == NodeState.NONE.value) {
-				leds.allRainbow();
-			}
+		if (DriverStation.isEnabled() && leftjs.getPOV() == 180) {
+			if (heldObject == HeldObject.CONE) leds.flash(Color.kYellow);
+			if (heldObject == HeldObject.CUBE) leds.flash(Color.kPurple);
+			if (heldObject == HeldObject.NONE) leds.allRainbow();
 		}
 	}
 }

@@ -13,7 +13,7 @@ public class MechanicalConstants {
 		public static final double FWD_WHEEL_RADIUS = 3 * 2.54 / 100;
 		public static final double FWD_METERS_PER_ROT = FWD_WHEEL_RADIUS * 2 * PI;
 		public static final double H_WHEEL_RADIUS = 2 * 2.54 / 100;
-                public static final double H_METERS_PER_ROT = H_WHEEL_RADIUS * 2 * PI;
+		public static final double H_METERS_PER_ROT = H_WHEEL_RADIUS * 2 * PI;
 
 		public static final double FWD_METER_PER_RAD = FWD_WHEEL_RADIUS / FWD_RATIO;
 		public static final double H_METER_PER_RAD = H_WHEEL_RADIUS / H_RATIO;

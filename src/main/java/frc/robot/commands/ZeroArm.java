@@ -4,7 +4,6 @@ import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -13,9 +12,9 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.MechanicalConstants.ArmConstants;
 
 public class ZeroArm extends SequentialCommandGroup {
-        static RelativeEncoder enc = arm.jt1.getEncoder();
+	static RelativeEncoder enc = arm.jt1.getEncoder();
 
-        // spotless:off
+	// spotless:off
 	public ZeroArm() {
 		super(
                         // run arm until switch
