@@ -112,8 +112,8 @@ public class Vision extends SubsystemBase {
 		double norm = sqrt(tsin * tsin + tcos * tcos);
 		Transform2d avg = new Transform2d(tx / totarea, ty / totarea, tcos / norm, tsin / norm);
 
-		if (sz > 3 && DriverStation.isDisabled()) LEDSegment.midSide.setColor(Color.kGreen);
-		else if (DriverStation.isDisabled()) LEDSegment.midSide.flashColor(Color.kRed);
+		if (sz > 3 && DriverStation.isDisabled()) LEDSegment.leftSide.setColor(Color.kGreen);
+		else if (DriverStation.isDisabled()) LEDSegment.leftSide.flashColor(Color.kRed);
 		// System.out.println("SEEING " + sz + " tags");
 		if (sz > 3) odom.update_origin(avg);
 	}

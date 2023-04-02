@@ -73,6 +73,14 @@ public class Robot extends TimedRobot {
 								poses.get(i).getY(),
 								new Rotation2d(PI - poses.get(i).getRotation().getRadians())));
 		autonField.getObject("Robt").setPoses(poses);
+		if (DriverStation.getAlliance() == Alliance.Red)
+			for (int i = 0; i < poses.size(); i++)
+				poses.set(
+						i,
+						new Pose2d(
+								Constants.FIELD_LENGTH - poses.get(i).getX(),
+								poses.get(i).getY(),
+								new Rotation2d(PI - poses.get(i).getRotation().getRadians())));
 	}
 
 	boolean has_been_enabled = false;
