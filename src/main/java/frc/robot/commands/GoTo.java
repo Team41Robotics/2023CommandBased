@@ -35,9 +35,9 @@ public class GoTo extends CommandBase {
 		this.fvy = fvy;
 	}
 
-	final PIDController xPID = new PIDController(3, 0, 1);
-	final PIDController yPID = new PIDController(3, 0, 1);
-	final PIDController wPID = new PIDController(1.3, 0, 0);
+	final PIDController xPID = new PIDController(4, 0, 1.5);
+	final PIDController yPID = new PIDController(4, 0, 1.5);
+	final PIDController wPID = new PIDController(4, 0, 4);
 
 	@Override
 	public void initialize() {
@@ -64,7 +64,7 @@ public class GoTo extends CommandBase {
 		double vf = cos(robot_angle) * vx + sin(robot_angle) * vy;
 		double vs = -sin(robot_angle) * vx + cos(robot_angle) * vy;
 
-		double max = hdrive.renormalize(vx, vy, w, 3);
+		double max = hdrive.renormalize(vx, vy, w, 2);
 		vf /= max;
 		vs /= max;
 		w /= max;
@@ -85,7 +85,7 @@ public class GoTo extends CommandBase {
 	public boolean isFinished() {
 		if (fvx == 0 && fvy == 0) {
 			if (abs(odom.now().x - target.x) <= GOTO_XY_TOLERANCE
-					&& abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
+					// && abs(odom.now().y - target.y) <= GOTO_XY_TOLERANCE
 					&& abs(Util.normRot(odom.now().theta - target.theta)) <= GOTO_TURN_TOLERANCE)
 				;
 			else last_time = Timer.getFPGATimestamp();

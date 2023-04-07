@@ -6,7 +6,7 @@ import static java.lang.Math.PI;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmTo;
 import frc.robot.commands.Balance;
@@ -82,23 +82,18 @@ public class Autonomous {
                         )
                 );
 		create(
-                        "OTHER 22BALL Auton",
+                        "2BALL OTHER Auton",
                         () -> new SequentialCommandGroup(
                                 createScoreAuton(1.05341, BALL_TOP, BALL_PICKUP),
-
-                                // there
-                                new GoTo(new Transform2d(3.02690, 0.86341, -10 / 180. * PI), true, 4, 0),
-                                new ParallelDeadlineGroup(
-                                        new GoTo(new Transform2d(6.02690, 0.86341, 0)),
+                                new GoTo(new Transform2d(1.02690 + 1.2, 1.05341, 0)),
+                                new ParallelRaceGroup(
+                                        new GoTo(new Transform2d(1.02690 + 3, 1.05341, 0)),
                                         new RunIntake(.6)
                                 ),
-
-                                // back
-                                new GoTo(new Transform2d(3.02690, 0.86341, -10 / 180. * PI), true, -2, 0),
-                                new GoTo(new Transform2d(2.02690, 1.06341, 0)),
-
-                                // score
+                                new GoTo(new Transform2d(1.02690 + 1.2, 1.05341, 0)),
+                                new GoTo(new Transform2d(1.02690 + 1.2, 1.05341, PI)),
                                 new ArmTo(BALL_TOP).asProxy(),
+                                new GoTo(new Transform2d(1.02690 + .9, 1.05341, PI)),
                                 new RunIntake(-.6, .5),
                                 new ArmTo(BALL_SLIDE).asProxy()
                         )
