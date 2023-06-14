@@ -13,13 +13,15 @@ public class Drive extends CommandBase {
 
 	@Override
 	public void execute() {
-		double vf = -Util.curvedDeadZone(leftjs.getY()) * DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity;
-		double vs = -Util.curvedDeadZone(leftjs.getX()) * DrivetrainConstants.MID_CONSTRAINTS.maxVelocity;
-		double w = -Util.curvedDeadZone(rightjs.getZ(), .5)
+
+		double vf = -Util.curvedDeadZone(controller.getLeftY()) * DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity;
+		double vs = -Util.curvedDeadZone(controller.getLeftX()) * DrivetrainConstants.MID_CONSTRAINTS.maxVelocity;
+		double w = -Util.curvedDeadZone(controller.getRightX())
 				* DrivetrainConstants.FWD_CONSTRAINTS.maxVelocity
 				/ DrivetrainConstants.RADIUS;
-		int d = (rightjs.getRawButton(2) ? 1 : 2);
-		hdrive.drive(vf / d, vs / d, w / 2 / d);
+		double  d = slider.getDouble(0.25);
+		System.out.println("d" +d );
+		hdrive.drive(vf * d, vs * d, w * 0.5 * d);
 	}
 
 	@Override
